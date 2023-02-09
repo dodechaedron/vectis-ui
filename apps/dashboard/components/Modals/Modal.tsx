@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, PropsWithChildren } from "react";
 
 import { Dialog, Transition } from "@headlessui/react";
 
@@ -10,7 +10,7 @@ interface Props {
   title?: string;
 }
 
-const Modal: React.FC<Props> = ({ children, isModalVisible, title, closeModal }) => {
+const Modal: React.FC<PropsWithChildren<Props>> = ({ children, isModalVisible, title, closeModal }) => {
   return (
     <Transition.Root show={isModalVisible} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={closeModal}>

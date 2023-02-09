@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import * as localStorage from "services/localStorage";
 
 import locales from "../locales";
@@ -18,7 +18,7 @@ const SUPPORTED_LANGUAGES = ["en", "es", "it"];
 
 const TranslationsContext = React.createContext<TranslationsContext | null>(null);
 
-export const TranslationsProvider: React.FC<{ debug?: boolean }> = ({ children, debug }) => {
+export const TranslationsProvider: React.FC<PropsWithChildren<{ debug?: boolean }>> = ({ children, debug }) => {
   const [language, setLanguage] = React.useState<string>("en");
   const [translations, setTranslations] = React.useState<ITranslations>(locales[language]);
 

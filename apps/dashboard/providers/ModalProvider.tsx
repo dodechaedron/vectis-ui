@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo,useState } from "react";
+import React, { PropsWithChildren, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
 import * as Sentry from "@sentry/nextjs";
@@ -15,7 +15,7 @@ interface ModalStatus {
 
 const ModalContext = React.createContext<ModalStatus | null>(null);
 
-export const ModalProvider: React.FC = ({ children }) => {
+export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { push: goToPage } = useRouter();
   const { language } = useTranslations();
   const [activeModal, setSelectedModal] = useState<"send" | "charge">();

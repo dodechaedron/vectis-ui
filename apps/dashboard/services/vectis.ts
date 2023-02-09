@@ -21,14 +21,11 @@ import { HttpBatchClient, Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import * as indexerService from './indexer';
 
 import { GuardianGroup, Wallet } from 'interfaces';
+import { ProposalResponse } from '@dao-dao/types/contracts/CwProposalSingle.v1';
 import {
-  ExecuteMsg,
-  Proposal,
-  ProposalResponse,
-  QueryMsg,
   Vote,
   VoteInfo
-} from '@dao-dao/types/contracts/cw-proposal-single/CwProposalSingleContract';
+} from '@dao-dao/types/contracts/DaoProposalSingle.common';
 import { FactoryT, ProxyT } from '@vectis/types';
 
 const factoryContractAddress = process.env.NEXT_PUBLIC_CONTRACT_FACTORY_ADDRESS;
@@ -98,7 +95,7 @@ export class VectisQueryService {
   }
 
   async getProposals(multisigAddress: string): Promise<ProposalResponse[]> {
-    const queryProps: QueryMsg = { list_proposals: { limit: 1000 } };
+    const queryProps = { list_proposals: { limit: 1000 } };
     const { proposals } = await this.queryClient.wasm.queryContractSmart(multisigAddress, queryProps);
     return proposals;
   }
@@ -106,8 +103,7 @@ export class VectisQueryService {
   async getTransactionHistory(address: string, page: number, limit: number): Promise<any> {
     const order = 'ORDER_BY_DESC';
     const receive = await fetch(
-      `${network.httpUrl}/cosmos/tx/v1beta1/txs?events=execute._contract_address='${address}'&pagination.limit=${limit}&pagination.offset=${
-        (page - 1) * limit
+      `${network.httpUrl}/cosmos/tx/v1beta1/txs?events=execute._contract_address='${address}'&pagination.limit=${limit}&pagination.offset=${(page - 1) * limit
       }&order_by=${order}`
     );
     const { txs, pagination, tx_responses } = await receive.json();
@@ -205,7 +201,7 @@ export class VectisService extends VectisQueryService {
   }
 
   async executeProposal(multisigAddress: string, proposalId: number): Promise<ExecuteResult> {
-    const execute: ExecuteMsg = {
+    const execute = {
       execute: {
         proposal_id: proposalId
       }
@@ -350,7 +346,7 @@ export class VectisService extends VectisQueryService {
         }
       }
     };
-    const proposal: ExecuteMsg = {
+    const proposal = {
       propose: {
         title: `${isFrozen ? 'Unfreeze' : 'Freeze'} Smart Account`,
         description: isFrozen ? 'Request to unfreeze Smart Account' : 'Request to freeze Smart Account for security reasons',
@@ -379,7 +375,7 @@ export class VectisService extends VectisQueryService {
         }
       }
     };
-    const proposal: ExecuteMsg = {
+    const proposal = {
       propose: {
         title: 'Rotate Controller Address in Smart Account',
         description: `Rotate Smart Account controller address to ${controllerAddr}`,
