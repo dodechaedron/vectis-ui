@@ -1,17 +1,24 @@
 import React, { createRef, Suspense, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { PointLight } from 'three';
 
 import { useSpring } from '@react-spring/core';
 import { a } from '@react-spring/three';
 import { ContactShadows, Environment, MeshDistortMaterial, PerspectiveCamera } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { AmbientLightProps, useFrame, PointLightProps } from '@react-three/fiber';
+import { AnimatedComponent } from '@react-spring/web';
 
-const AnimatedMaterial = a(MeshDistortMaterial);
+const AnimatedMaterial = a(MeshDistortMaterial) as unknown as AnimatedComponent<typeof MeshDistortMaterial>;
+const AmbientLight = a.ambientLight as React.FC<Pick<AmbientLightProps, 'intensity'>>;
+const PointLight = a.pointLight as React.FC<Pick<PointLightProps, 'intensity' | 'color' | 'ref' | 'position'>>;
 
-export default function Scene({ setBg, setCursor }) {
-  const sphere = createRef();
-  const light = createRef();
+interface Props {
+  setBg: ({ background, fill }: { background: string, fill: string }) => void;
+  setCursor: (c: string) => void;
+}
+
+export const Scene: React.FC<Props> = ({ setBg, setCursor }) => {
+  const sphere = createRef<THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>>();
+  const light = createRef<THREE.PointLight>();
   const [mode, setMode] = useState(false);
   const [down, setDown] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -34,14 +41,14 @@ export default function Scene({ setBg, setCursor }) {
     }
   });
 
-  const [{ wobble, coat, color, ambient, env }] = useSpring(
+  const [{ wobble, coat, color, ambient, env }] = useSpring<any>(
     {
       wobble: down ? 1.2 : hovered ? 1.05 : 1,
       coat: mode && !hovered ? 0.04 : 1,
       ambient: mode && !hovered ? 1.5 : 0.5,
       env: mode && !hovered ? 0.4 : 1,
       color: hovered ? '#566fa1' : mode ? '#202020' : 'white',
-      config: (n) => n === 'wobble' && hovered && { mass: 2, tension: 1000, friction: 10 }
+      config: (n: string) => n === 'wobble' && hovered && { mass: 2, tension: 1000, friction: 10 }
     },
     [mode, hovered, down]
   );
@@ -49,13 +56,10 @@ export default function Scene({ setBg, setCursor }) {
   return (
     <>
       <PerspectiveCamera makeDefault position={[0, 0, 4]} fov={75}>
-        {() => {
-          <>
-            <a.ambientLight intensity={ambient} />
-            <a.pointLight ref={light} position-z={-15} intensity={env} color="#566fa1" />
-          </>;
-        }}
+
       </PerspectiveCamera>
+      <AmbientLight intensity={ambient} />
+      <PointLight ref={light} position={[0, 0, -15]} intensity={env} color="#566fa1" />
       <Suspense fallback={null}>
         <a.mesh
           ref={sphere}

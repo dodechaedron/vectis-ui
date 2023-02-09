@@ -4,7 +4,7 @@ import SmartAccountMiniCard from "components/SmartAccountMiniCard";
 import { socialsLinks } from "utils/links";
 import Link from "next/link";
 
-import VectisLogo from "../Icons/VectisLogo";
+import { VectisLogo } from "@vectis/components/Logos";
 
 import Hamburguer from "./Hamburguer";
 import MenuLinks from "./MenuLinks";

@@ -29,7 +29,7 @@ const GuaridanPage: NextPage = () => {
   const fetchGuardian = async () => {
     const guardians = await queryClient.getGuardianGroupByWalletAddr(query.address as string);
     if (!guardians.guardians.includes(userAddr)) {
-      goToPage("/dashboard");
+      goToPage("/");
       return;
     }
     if (guardians.multisigAddress) {

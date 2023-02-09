@@ -18,7 +18,7 @@ export const socialsLinks = [
 ];
 
 export const generalMenu = [
-  { text: 'Dashboard', href: '/dashboard', Icon: RiDashboardFill },
+  { text: 'Dashboard', href: '/', Icon: RiDashboardFill },
   { text: 'Smart Accounts', href: '/accounts', Icon: CubeTransparentIcon },
   { text: 'Guardian View', href: '/guardians', Icon: RiSecurePaymentFill },
   /*  { text: "Address Book", href: "/agenda", Icon: FaRegAddressBook }, */

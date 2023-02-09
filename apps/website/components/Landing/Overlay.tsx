@@ -1,8 +1,12 @@
 import React from 'react';
 
-import { a } from '@react-spring/web';
+import { a, SpringValue } from '@react-spring/web';
 
-export default function Overlay({ fill }) {
+interface Props {
+  fill: SpringValue<string>;
+}
+
+export const Overlay: React.FC<Props> = ({ fill }) => {
   return (
     <div className="relative order-2 h-[50vh] mb-[-20rem] md:mb-0 md:h-full md:order-1 flex-1 pointer-none">
       <a.svg viewBox="0 0 583 720" fill={fill} xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">

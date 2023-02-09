@@ -11,17 +11,6 @@ import 'react-tooltip/dist/react-tooltip.css';
 import 'styles/globals.css';
 
 function VectisApp({ Component, pageProps }: AppProps) {
-  if (Component.displayName === 'LandingPage') {
-    return (
-      <>
-        <Head>
-          <title>Vectis</title>
-        </Head>
-        <Component {...pageProps} />
-      </>
-    );
-  }
-
   return (
     <>
       <Head>

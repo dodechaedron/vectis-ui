@@ -17,7 +17,7 @@ const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
   const links = useMemo(
     () =>
       generalMenu.filter((l) => {
-        const dashboard = l.href === '/dashboard';
+        const dashboard = l.href === '/';
         if (!dashboard) return true;
         return account?.controller_addr === userAddr;
       }),

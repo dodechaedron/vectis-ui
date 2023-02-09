@@ -25,8 +25,7 @@ const Button: React.FC<PropsWithChildren<ButtonAttributes & Props>> = ({ childre
       )}
       {...props}
     >
-      {isLoading && <Spinner className={variant.includes("primary") ? "border-white" : "border-kashmir-blue-500"} />}
-      {children}
+      {isLoading ? <Spinner className={variant.includes("primary") ? "border-white" : "border-kashmir-blue-500"} /> : children}
     </button>
   );
 };

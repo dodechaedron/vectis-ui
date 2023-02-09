@@ -26,7 +26,7 @@ const SmartAccountCard: React.FC<Props> = ({ smartAccount }) => {
   const selectWallet = useCallback(async () => {
     if (!smartAccount) return;
     changeAccount(smartAccount);
-    goToPage('/dashboard');
+    goToPage('/');
   }, [smartAccount]);
 
   return (

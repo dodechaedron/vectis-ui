@@ -23,7 +23,7 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
 
   useEffect(() => {
     if (!isReady) return;
-    if (account?.controller_addr !== userAddr && pathname === '/dashboard') goToPage('/accounts');
+    if (account?.controller_addr !== userAddr && pathname === '/') goToPage('/accounts');
   }, [pathname, isReady]);
 
   if (!isReady) return <Loading />;

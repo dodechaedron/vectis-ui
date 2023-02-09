@@ -1,5 +1,5 @@
 import React, { createRef, useState } from 'react';
-import * as random from 'maath/random/dist/maath-random.cjs.prod';
+import { inSphere } from 'maath/random';
 import { BufferGeometry, Material, Points as TPoints } from 'three';
 
 import { SpringValue } from '@react-spring/core';
@@ -12,7 +12,7 @@ interface Props {
 
 const Stars: React.FC<Props> = ({ color, ...props }) => {
   const pointsRef = createRef<TPoints<BufferGeometry, Material | Material[]>>();
-  const [sphere] = useState(() => random.inSphere(new Float32Array(1000), { radius: 1.5 }));
+  const [sphere] = useState(() => inSphere(new Float32Array(1000), { radius: 1.5 }));
 
   useFrame((_, delta) => {
     if (!pointsRef.current) return;
@@ -22,7 +22,7 @@ const Stars: React.FC<Props> = ({ color, ...props }) => {
 
   return (
     <group rotation={[0, 0, Math.PI / 4]}>
-      <Points ref={pointsRef} positions={sphere} stride={3} frustumCulled={false}>
+      <Points ref={pointsRef} positions={sphere as Float32Array} stride={3} frustumCulled={false}>
         <PointMaterial transparent color={color} size={0.005} sizeAttenuation={true} depthWrite={false} />
       </Points>
     </group>

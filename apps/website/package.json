@@ -1,0 +1,44 @@
+{
+  "name": "@vectis/website",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@vectis/components": "1.0.0",
+    "@next/font": "13.1.6",
+    "@notionhq/client": "^2.2.3",
+    "@react-spring/core": "^9.6.1",
+    "@react-spring/web": "^9.6.1",
+    "@react-three/drei": "^9.56.20",
+    "@react-three/fiber": "^8.11.0",
+    "@tailwindcss/line-clamp": "^0.4.2",
+    "@types/node": "18.13.0",
+    "@types/react": "18.0.27",
+    "@types/react-dom": "18.0.10",
+    "clsx": "^1.2.1",
+    "eslint": "8.33.0",
+    "eslint-config-next": "13.1.6",
+    "maath": "^0.5.2",
+    "next": "13.1.6",
+    "notion-client": "^6.15.8",
+    "notion-to-md": "^2.5.5",
+    "notion-utils": "^6.15.8",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-markdown": "^8.0.5",
+    "react-notion-x": "6.15.7",
+    "three": "^0.149.0",
+    "typescript": "4.9.5"
+  },
+  "devDependencies": {
+    "@types/three": "^0.149.0",
+    "autoprefixer": "^10.4.13",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.6"
+  }
+}
