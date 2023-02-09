@@ -1,0 +1,20 @@
+{
+  "name": "vectis-ui",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "website": "yarn workspace @vectis/website"
+  },
+  "devDependencies": {
+    "turbo": "^1.7.4",
+    "turbo-ignore": "^1.7.4"
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=14.0.0"
+  }
+}

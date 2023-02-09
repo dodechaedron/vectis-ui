@@ -1,0 +1,62 @@
+specVersion: 1.0.0
+name: vectis-indexer
+version: 0.0.1
+runner:
+  node:
+    name: "@subql/node-cosmos"
+    version: "*"
+  query:
+    name: "@subql/query"
+    version: "*"
+description: >-
+  This project is used for indexing vectis
+repository: https://github.com/nymlab/vectis-subquery
+schema:
+  file: ./schema.graphql
+
+network:
+  chainId: uni-6
+  # You must connect to an archive (non-pruned) node
+  endpoint: https://uni-rpc.reece.sh/
+  # Using a dictionary can massively improve indexing speed
+  dictionary: https://api.subquery.network/sq/subquery/cosmos-juno-dictionary
+
+dataSources:
+  - kind: cosmos/Runtime
+    startBlock: 36497
+
+    mapping:
+      file: "./dist/index.js"
+      handlers:
+        - handler: onWalletInstantiate
+          kind: cosmos/EventHandler
+          filter:
+            type: "wasm-vectis.proxy.v1.MsgInstantiate"
+        - handler: onAddRelayer
+          kind: cosmos/EventHandler
+          filter:
+            type: "wasm-vectis.proxy.v1.MsgAddRelayer"
+        - handler: onRemoveRelayer
+          kind: cosmos/EventHandler
+          filter:
+            type: "wasm-vectis.proxy.v1.MsgRemoveRelayer"
+        - handler: onRevertFreezeStatus
+          kind: cosmos/EventHandler
+          filter:
+            type: "wasm-vectis.proxy.v1.MsgRevertFreezeStatus"
+        - handler: onRotateControllerKey
+          kind: cosmos/EventHandler
+          filter:
+            type: "wasm-vectis.proxy.v1.MsgRotateControlKey"
+        - handler: onUpdateGuardian
+          kind: cosmos/EventHandler
+          filter:
+            type: "wasm-vectis.proxy.v1.MsgUpdateGuardians"
+        - handler: onUpdateLabel
+          kind: cosmos/EventHandler
+          filter:
+            type: "wasm-vectis.proxy.v1.MsgUpdateLabel"
+        - handler: onReplyMultisigInstantiate
+          kind: cosmos/EventHandler
+          filter:
+            type: "wasm-vectis.proxy.v1.MsgReplyMultisigInstantiate"
