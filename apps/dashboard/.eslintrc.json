@@ -1,0 +1,63 @@
+{
+  "plugins": [
+    "simple-import-sort"
+  ],
+  "extends": [
+    "next/core-web-vitals"
+  ],
+  "rules": {
+    "react-hooks/exhaustive-deps": "off",
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          [
+            "^react$",
+            "^next/router",
+            "^[a-z]",
+            "^next/head",
+            "^next/link"
+          ],
+          [
+            "^@"
+          ],
+          [
+            "^~",
+            "^~/configs",
+            "^~/services",
+            "^~/providers",
+            "^~/hooks",
+            "^~/utils"
+          ],
+          [
+            "^~/components"
+          ],
+          [
+            "^\\.\\.(?!/?$)",
+            "^\\.\\./?$"
+          ],
+          [
+            "^\\./(?=.*/)(?!/?$)",
+            "^\\.(?!/?$)",
+            "^\\./?$"
+          ],
+          [
+            "icon"
+          ],
+          [
+            "^next",
+            "interface",
+            "type"
+          ]
+        ]
+      }
+    ]
+  }
+  /* "settings": {
+    "import/resolver": {
+      "typescript": {
+        "project": "./tsconfig.json"
+      }
+    }
+  } */
+}
