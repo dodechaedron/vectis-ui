@@ -34,7 +34,7 @@ const Landing: React.FC = () => {
       <div className="absolute top-0 left-0  h-fit w-full overflow-hidden p-4 z-10">
         <div className="flex items-center justify-between">
           <VectisLogo className="h-[24px] w-[100px]" fill='#566fa1' />
-          <Link href="https://dashboard.vectis.space" className={`bg-kashmir-blue-500 text-white hover:brightness-110 px-4 py-2 gap-2 flex justify-center items-center font-medium rounded-md border border-transparent disabled:opacity-25 disabled:cursor-not-allowed transition-all duration-150 ease-in`}>Launch App</Link>
+          <Link href="https://testnet-dashboard.vectis.space/accounts" className={`bg-kashmir-blue-500 text-white hover:brightness-110 px-4 py-2 gap-2 flex justify-center items-center font-medium rounded-md border border-transparent disabled:opacity-25 disabled:cursor-not-allowed transition-all duration-150 ease-in`}>Launch App</Link>
         </div>
       </div>
       <div className='absolute h-screen w-screen overflow-hidden cursor-round'>

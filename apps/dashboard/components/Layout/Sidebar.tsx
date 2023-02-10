@@ -15,7 +15,7 @@ const Sidebar: React.FC = () => {
   return (
     <div className="relative flex w-full flex-col bg-white md:sticky md:top-0 md:h-screen md:w-[15rem] md:min-w-[15rem] md:p-0">
       <div className="flex items-center justify-between border-b px-5 py-6 md:h-[4.5rem]">
-        <Link href="/dashboard">
+        <Link href="/accounts">
           <VectisLogo className="h-[24px] w-[100px] fill-kashmir-blue-500" />
         </Link>
         <Hamburguer isOpen={isOpen} toggle={toggleOpen} />

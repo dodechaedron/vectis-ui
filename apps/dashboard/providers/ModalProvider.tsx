@@ -25,7 +25,7 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const closeButton = window.document.querySelector(".sentry-error-embed .close");
     if (!closeButton) return;
     const handlerOnClose = () => {
-      goToPage("/dashboard");
+      goToPage("/accounts");
       closeButton.removeEventListener("click", handlerOnClose);
     };
     closeButton.addEventListener("click", handlerOnClose);

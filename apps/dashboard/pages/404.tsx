@@ -21,7 +21,7 @@ const NotFound: NextPage = () => {
 
           <p className="mb-8 text-center text-gray-500 md:text-lg">The page you’re looking for doesn’t exist.</p>
           <Button>
-            <Link href="/dashboard">Home Page</Link>
+            <Link href="/accounts">Accounts Page</Link>
           </Button>
         </div>
       </div>
