@@ -11,6 +11,7 @@ import Address from "~/components/Address";
 import { Button } from "~/components/Buttons";
 import { Input } from "~/components/Inputs";
 import NotFound from "~/components/NotFound";
+import Spinner from "~/components/Spinner";
 
 import { ArrowDownTrayIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
 
@@ -113,7 +114,7 @@ const GuardianPage: NextPage = () => {
         <title>Vectis | Guardian</title>
       </Head>
 
-      <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-[repeat(auto-fit,_minmax(500px,_1fr))]">
+      {guardianInfo ? (<div className="grid w-full grid-cols-1 gap-4 md:grid-cols-[repeat(auto-fit,_minmax(500px,_1fr))]">
         <div className="flex flex-col rounded-md bg-white shadow-sm max-h-[22rem]">
           <div className="border-b border-gray-200 bg-gray-50/30 px-4 py-5 sm:px-6">
             <h3 className="text-lg font-medium leading-6 text-gray-900">Smart Account</h3>
@@ -230,7 +231,7 @@ const GuardianPage: NextPage = () => {
             )}
           </div>
         ) : null}
-      </div>
+      </div>) : <Spinner size="md" wrapper />}
     </>
   );
 };
