@@ -21,9 +21,8 @@ import { HttpBatchClient, Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import * as indexerService from './indexer';
 
 import { GuardianGroup, Wallet } from 'interfaces';
-import { ProposalResponse } from '@dao-dao/types/contracts/CwProposalSingle.v1';
+import { Proposal } from '@dao-dao/types/contracts/CwProposalSingle.v1';
 import {
-  Vote,
   VoteInfo
 } from '@dao-dao/types/contracts/DaoProposalSingle.common';
 import { FactoryT, ProxyT } from '@vectis/types';
@@ -94,10 +93,15 @@ export class VectisQueryService {
     return votes;
   }
 
-  async getProposals(multisigAddress: string): Promise<ProposalResponse[]> {
-    const queryProps = { list_proposals: { limit: 1000 } };
+  async getProposals(multisigAddress: string): Promise<Proposal[]> {
+    const queryProps = { reverse_proposals: { limit: 5 } };
     const { proposals } = await this.queryClient.wasm.queryContractSmart(multisigAddress, queryProps);
     return proposals;
+  }
+
+  async getThreshold(multisigAddress: string): Promise<{ absolute_count: { weight: number; total_weight: number } }> {
+    const queryProps = { threshold: {} };
+    return await this.queryClient.wasm.queryContractSmart(multisigAddress, queryProps);
   }
 
   async getTransactionHistory(address: string, page: number, limit: number): Promise<any> {
@@ -196,7 +200,7 @@ export class VectisService extends VectisQueryService {
     return await this.signingClient.execute(this.userAddr, proxyAddr, msg, 'auto');
   }
 
-  async voteProposal(multisigAddress: string, proposalId: number, vote: Vote): Promise<ExecuteResult> {
+  async voteProposal(multisigAddress: string, proposalId: number, vote: 'yes' | 'no'): Promise<ExecuteResult> {
     return await this.signingClient.execute(this.userAddr, multisigAddress, { vote: { proposal_id: proposalId, vote } }, 'auto');
   }
 
@@ -365,8 +369,8 @@ export class VectisService extends VectisQueryService {
           msg: toBase64(
             toUtf8(
               JSON.stringify({
-                rotate_user_key: {
-                  new_user_address: controllerAddr
+                rotate_controller_key: {
+                  new_controller_address: controllerAddr
                 }
               })
             )

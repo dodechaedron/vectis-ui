@@ -29,10 +29,10 @@ const GuardianWalletList: React.FC<Props> = ({ guardianGroups }) => {
                 </div>
                 <div className="mt-2 w-full sm:flex sm:justify-between">
                   <div className="sm:flex">
-                    <p className="flex items-center text-sm text-gray-500">
+                    <div className="flex items-center text-sm text-gray-500">
                       <CubeTransparentIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
                       <Address address={g.wallet.id} />
-                    </p>
+                    </div>
                   </div>
                   <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                     <UserGroupIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />

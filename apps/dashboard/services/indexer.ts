@@ -26,6 +26,7 @@ const queryWalletGuardians = gql`
   query guardians($walletId: String) {
     guardianGroups(filter: { walletId: { equalTo: $walletId } }) {
       nodes {
+        id
         guardians
         multisigCodeId
         multisigAddress
@@ -44,6 +45,7 @@ const queryGuardianGroupsByGuardianAddr = gql`
   query guardianGroupsByGuardianAddr($guardianAddr: String) {
     guardianGroups(filter: { guardians: { containsKey: $guardianAddr } }) {
       nodes {
+        id
         guardians
         multisigCodeId
         multisigAddress

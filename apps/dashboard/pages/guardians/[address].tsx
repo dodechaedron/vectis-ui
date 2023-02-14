@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import clsx from "clsx";
 import Head from "next/head";
 
 import { IntlTimeAgo } from "~/services/browser";
@@ -15,31 +16,47 @@ import { ArrowDownTrayIcon, InformationCircleIcon } from "@heroicons/react/24/ou
 
 import type { NextPage } from "next";
 import { GuardianGroup } from "~/interfaces";
+import { Proposal } from "@dao-dao/types/contracts/CwProposalSingle.v1";
+import { VoteInfo } from "@dao-dao/types/contracts/DaoProposalSingle.common";
 
-const GuaridanPage: NextPage = () => {
+const GuardianPage: NextPage = () => {
   const { queryClient, signingClient, userAddr } = useVectis();
   const { query, push: goToPage } = useRouter();
   const { toast, isLoading } = useToast();
   const [guardianInfo, setGuardianInfo] = useState<GuardianGroup | null>(null);
+  const [threshold, setThreshold] = useState<{ weight: number; total_weight: number } | null>(null);
   const [controllerAddr, setControllerAddr] = useState<string>("");
-  const [proposals, setProposals] = useState<any[]>([]);
+  const [proposals, setProposals] = useState<{ votes: VoteInfo[], proposal: Proposal, isAlreadyVoted: boolean }[]>([]);
 
   const multisig = useMemo(() => guardianInfo?.multisigCodeId, [guardianInfo]);
-
   const fetchGuardian = async () => {
     const guardians = await queryClient.getGuardianGroupByWalletAddr(query.address as string);
     if (!guardians.guardians.includes(userAddr)) {
       goToPage("/");
       return;
     }
-    if (guardians.multisigAddress) {
-      const proposals = await signingClient.getProposals(guardians?.multisigAddress as string);
-      setProposals(proposals);
-      await signingClient.getProposalVoteList(guardians.multisigAddress as string, proposals[0].id)
-    }
+    await fetchProposals(guardians?.multisigAddress as string);
     setControllerAddr(guardians?.wallet.controllerAddr);
     setGuardianInfo(guardians);
   };
+
+  const fetchProposals = async (address: string) => {
+    if (address) {
+      const proposals = await signingClient.getProposals(address);
+      const { absolute_count } = await signingClient.getThreshold(address);
+      setThreshold(absolute_count)
+      const openProposals = proposals.filter((proposal) => ["open", "passed"].includes(proposal.status));
+      if (proposals.length) {
+        const proposalsInfo = await Promise.all(
+          openProposals.map(async (proposal) => {
+            const votes = await signingClient.getProposalVoteList(address, proposal.id as number);
+            return { votes, proposal, isAlreadyVoted: votes.some((vote) => vote.voter === userAddr) }
+          })
+        );
+        setProposals(proposalsInfo)
+      }
+    }
+  }
 
   useEffect(() => {
     if (!query.address) return;
@@ -61,6 +78,7 @@ const GuaridanPage: NextPage = () => {
       await fetchGuardian();
     }
   };
+
   const freeze = async () => {
     if (multisig) {
       const promise = signingClient.proxyProposeFreezeOperation(
@@ -77,6 +95,18 @@ const GuaridanPage: NextPage = () => {
     }
   };
 
+  const vote = async (proposalId: number, vote: 'yes' | 'no') => {
+    const promise = signingClient.voteProposal(guardianInfo?.multisigAddress as string, proposalId, vote);
+    await toast.promise(promise);
+    await fetchProposals(guardianInfo?.multisigAddress as string);
+  }
+
+  const executeProposal = async (proposalId: number) => {
+    const promise = signingClient.executeProposal(guardianInfo?.multisigAddress as string, proposalId);
+    await toast.promise(promise, 5000);
+    await fetchGuardian();
+  }
+
   return (
     <>
       <Head>
@@ -84,7 +114,7 @@ const GuaridanPage: NextPage = () => {
       </Head>
 
       <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-[repeat(auto-fit,_minmax(500px,_1fr))]">
-        <div className="flex flex-col rounded-md bg-white shadow-sm">
+        <div className="flex flex-col rounded-md bg-white shadow-sm max-h-[22rem]">
           <div className="border-b border-gray-200 bg-gray-50/30 px-4 py-5 sm:px-6">
             <h3 className="text-lg font-medium leading-6 text-gray-900">Smart Account</h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">Useful information for guardianship</p>
@@ -104,20 +134,20 @@ const GuaridanPage: NextPage = () => {
               <p className="text-sm font-medium text-gray-900">
                 Multisig: <span className="col-span-1 mt-0 text-sm text-gray-500">{guardianInfo?.multisigCodeId ? "Yes" : "No"}</span>
               </p>
-              {guardianInfo?.multisigCodeId ? (
+              {threshold ? (
                 <p className="text-sm font-medium text-gray-900">
-                  Threshold: <span className="col-span-1 mt-0 text-sm text-gray-500">{ }</span>
+                  Threshold: <span className="col-span-1 mt-0 text-sm text-gray-500">{threshold.weight} of {threshold.total_weight}</span>
                 </p>
               ) : null}
               {guardianInfo?.multisigAddress ? (
-                <p className="text-sm font-medium text-gray-900">
+                <div className="text-sm font-medium text-gray-900">
                   Multisig Address: <Address className="text-gray-500" address={guardianInfo?.multisigAddress} />
-                </p>
+                </div>
               ) : null}
             </div>
           </div>
         </div>
-        <div className="flex flex-col rounded-md bg-white shadow-sm">
+        <div className="flex flex-col rounded-md bg-white shadow-sm max-h-[22rem]">
           <div className="border-b border-gray-200 bg-gray-50/30 px-4 py-5 sm:px-6">
             <h3 className="text-lg font-medium leading-6 text-gray-900">Guardian Actions</h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">Execute guardianship actions over this account</p>
@@ -154,33 +184,45 @@ const GuaridanPage: NextPage = () => {
         {guardianInfo?.multisigAddress ? (
           <div className="flex flex-col gap-4">
             {proposals.length ? (
-              proposals.map((p) => {
-                const threshold = p.threshold.absolute_count;
+              proposals.map(({ votes, proposal, isAlreadyVoted }) => {
+                if (!threshold) return null;
                 return (
-                  <div key={p.id} className="flex h-fit flex-col rounded-md bg-white shadow-sm">
-                    <div className="border-b border-gray-200 bg-gray-50/30 px-4 py-5 sm:px-6">
-                      <h3 className="text-lg font-medium leading-6 text-gray-900 ">Active Proposals</h3>
-                      <span className="mt-1 max-w-2xl text-sm text-gray-500">{p.title}</span>
-                    </div>
+                  <>
+                    <div key={proposal.id as number} className="flex h-fit flex-col rounded-md bg-white shadow-sm">
+                      <div className="border-b border-gray-200 bg-gray-50/30 px-4 py-5 sm:px-6">
+                        <h3 className="text-lg font-medium leading-6 text-gray-900 ">Active Proposal</h3>
+                        <span className="mt-1 max-w-2xl text-sm text-gray-500">{proposal.title}</span>
+                      </div>
 
-                    <div className="divide-y divide-gray-200">
-                      <p className="py-4 px-6 text-sm font-medium text-gray-900">
-                        Proposal Id: <span className="mt-1 text-sm text-gray-500 sm:col-span-2 sm:mt-0">{p.id}</span>
-                      </p>
-                      <div className="py-4 px-6 text-sm font-medium text-gray-900">
-                        Expires At: <span className="text-gray-500">{IntlTimeAgo(+new Date(p.expires.at_time / 1e6))}</span>
-                      </div>
-                      <p className="py-4 px-6 text-sm font-medium text-gray-900">
-                        Status: <span className="mt-1 text-sm text-gray-500 sm:col-span-2 sm:mt-0">{p.status}</span>
-                      </p>
-                      <div className="grid grid-cols-3 gap-4 py-4 px-6">
-                        <p className="text-sm font-medium text-gray-900">
-                          Threshold:{" "}
-                          <span className="col-span-1 mt-0 text-sm text-gray-500">{threshold.weight + " of " + threshold.total_weight}</span>
+                      <div className="divide-y divide-gray-200">
+                        <p className="py-4 px-6 text-sm font-medium text-gray-900">
+                          Proposal Id: <span className="mt-1 text-sm text-gray-500 sm:col-span-2 sm:mt-0">{proposal.id as number}</span>
                         </p>
+                        <div className="py-4 px-6 text-sm font-medium text-gray-900">
+                          Expires At: <span className="text-gray-500">{IntlTimeAgo(+new Date((proposal.expires as { at_time: number }).at_time / 1e6))}</span>
+                        </div>
+                        <p className="py-4 px-6 text-sm font-medium text-gray-900">
+                          Status: <span className="mt-1 text-sm text-gray-500 sm:col-span-2 sm:mt-0 capitalize">{proposal.status}</span>
+                        </p>
+                        <div className="grid grid-cols-3 gap-4 py-4 px-6">
+                          <p className="text-sm font-medium text-gray-900">
+                            Votes:{" "}
+                            <span className="col-span-1 mt-0 text-sm text-gray-500">{votes.length + " of " + threshold?.total_weight}</span>
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                    <div className={clsx("flex", {
+                      "justify-between": !isAlreadyVoted,
+                      "justify-end": isAlreadyVoted,
+                    })}>
+                      {votes.length === threshold.total_weight ? (<Button disabled={isLoading} onClick={() => executeProposal(proposal.id as number)}>Execute Proposal</Button>) : null}
+                      {!isAlreadyVoted ? (<>
+                        <Button disabled={isLoading} onClick={() => vote(proposal.id as number, 'no')}>Decline</Button>
+                        <Button disabled={isLoading} onClick={() => vote(proposal.id as number, 'yes')}>Accept</Button>
+                      </>) : null}
+                    </div>
+                  </>
                 );
               })
             ) : (
@@ -193,4 +235,4 @@ const GuaridanPage: NextPage = () => {
   );
 };
 
-export default GuaridanPage;
+export default GuardianPage;
