@@ -20,8 +20,8 @@ interface Inputs {
 
 const SendModal: React.FC = () => {
   const { hideModal, isModalVisible } = useModal();
-  const { toast } = useToast();
-  const { account, signingClient, network } = useVectis();
+  const { toast, isLoading } = useToast();
+  const { account, signingClient, network, updateBalances } = useVectis();
   const { register, handleSubmit, watch, setValue } = useForm<Inputs>();
 
   const tokens = [
@@ -35,6 +35,7 @@ const SendModal: React.FC = () => {
     const promise = signingClient.proxyTransfer(account.address, recipient, amount, memo);
     await toast.promise(promise);
     hideModal();
+    updateBalances();
   };
   return (
     <Modal isModalVisible={isModalVisible} closeModal={hideModal}>
@@ -51,7 +52,7 @@ const SendModal: React.FC = () => {
             />
             <Input label="Amount" {...register("amount")} />
             <Input label="Memo (Optional)" className="py-6" {...register("memo")} />
-            <Button type="submit" className="w-full">
+            <Button disabled={isLoading} type="submit" className="w-full">
               Send
             </Button>
           </form>

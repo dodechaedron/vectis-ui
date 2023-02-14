@@ -1,4 +1,4 @@
-import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { isPast } from 'date-fns';
 import { useLocalStorage } from 'react-use';
 
@@ -24,7 +24,10 @@ export interface VectisState {
   signingClient: VectisService;
   isReady: boolean;
   account: WalletInfo & { balance: Coin; address: string; createdAt: string };
+  balance: Coin;
+  balances: Coin[];
   changeAccount: (wallet: WalletInfo & { balance: Coin; address: string; createdAt: string }) => void;
+  updateBalances: () => Promise<void>
   connectWallet: () => void;
   disconnect: () => void;
 }
@@ -35,6 +38,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
   const [address, setAddress] = useState<string | null>(null);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [session, setSession] = useLocalStorage<{ message: string; signature: string; chainId: string } | null>('session');
+  const [balance, updateBalance] = useReducer((prevState, state) => ({ ...prevState, ...state }), { balance: { amount: 0, denom: networkConfig.feeToken }, balances: [] });
   const [keyDetails, setKeyDetails] = useState<Key | any | null>(null);
   const [signingClient, setSigningClient] = useState<VectisService | null>(null);
   const [queryClient, setQueryClient] = useState<VectisQueryService | null>(null);
@@ -65,6 +69,10 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
     setNetwork(networkConfig);
     VectisQueryService.connect().then(setQueryClient);
   }, [networkConfig]);
+
+  useEffect(() => {
+    updateBalances();
+  }, [account, network, queryClient])
 
   const connectWallet = async () => {
     try {
@@ -99,6 +107,13 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
       console.log(error);
     }
   };
+
+  const updateBalances = useCallback(async () => {
+    if (!queryClient || !account || !network) return;
+    const balance = await queryClient.getBalance(account.address, network.feeToken);
+    const balances = await queryClient.getBalances(account.address);
+    updateBalance({ balance, balances });
+  }, [queryClient, account, network]);
 
   const getSigner = useCallback(async () => {
     const isVectisInstalled = isInstalled();
@@ -167,6 +182,8 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
           network,
           account,
           isReady,
+          ...balance,
+          updateBalances,
           changeAccount,
           connectWallet,
           disconnect

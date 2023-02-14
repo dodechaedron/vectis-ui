@@ -16,8 +16,8 @@ const ChargeModal: React.FC = () => {
   const { hideModal, isModalVisible } = useModal();
   const [amount, setAmount] = useState("0");
 
-  const { toast } = useToast();
-  const { account, signingClient, network, userAddr } = useVectis();
+  const { toast, isLoading } = useToast();
+  const { account, signingClient, network, userAddr, updateBalances } = useVectis();
 
   const tokens = [
     {
@@ -30,6 +30,7 @@ const ChargeModal: React.FC = () => {
     const promise = signingClient.signingClient.sendTokens(userAddr, account.address, [coin(+amount)], "auto");
     await toast.promise(promise);
     hideModal();
+    updateBalances();
   };
 
   return (
@@ -47,7 +48,7 @@ const ChargeModal: React.FC = () => {
         </div>
       </div>
       <div className="mt-5 sm:mt-6">
-        <Button className="w-full" onClick={onSubmit}>
+        <Button disabled={isLoading} className="w-full" onClick={onSubmit}>
           Top up
         </Button>
       </div>
