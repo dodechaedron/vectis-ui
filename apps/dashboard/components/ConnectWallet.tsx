@@ -4,6 +4,8 @@ import { useVectis } from "~/providers";
 
 import Spinner from "~/components/Spinner";
 
+import Image from "next/image";
+
 const ConnectWallet: React.FC = () => {
   const { connectWallet } = useVectis();
   const [isConnecting, setIsConnecting] = useState(false);
@@ -19,10 +21,13 @@ const ConnectWallet: React.FC = () => {
         <div className="lg:grid lg:grid-cols-12">
           <div className="relative z-10 lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:bg-transparent lg:py-16">
             <div className="inset-x-0 h-1/2 bg-gray-50 lg:hidden" aria-hidden="true" />
-            <div className="mx-auto px-6 sm:max-w-3xl lg:max-w-none lg:p-0 absolute lg:relative top-[-7rem] w-full lg:top-auto lg:w-auto">
-              <img
-                className="rounded-3xl object-cover object-center shadow-2xl h-[10rem] md:h-[12rem] w-full lg:h-full"
-                src="https://plus.unsplash.com/premium_photo-1663931932648-cf5545116c35?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+            <div className="mx-auto px-6 sm:max-w-3xl lg:max-w-none lg:p-0 absolute lg:relative top-[-7.5rem] md:top-[-15rem] w-full lg:top-auto lg:w-auto">
+              <Image
+                width={900}
+                height={1600}
+                className="rounded-3xl object-cover object-center shadow-2xl h-[12rem] md:h-[20rem] w-full lg:h-full lg:max-h-[40rem]"
+                alt="Wallet Purple"
+                src="/wallet-purple.png"
               />
             </div>
           </div>
