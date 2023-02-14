@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "build": "turbo run build --continue --filter=\"!@vectis/indexer\"",
-    "website": "yarn workspace @vectis/website"
+    "website": "yarn workspace @vectis/website",
+    "dashboard": "yarn workspace @vectis/dashboard"
   },
   "devDependencies": {
     "turbo": "^1.7.4",
