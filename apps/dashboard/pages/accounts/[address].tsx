@@ -24,7 +24,7 @@ const ManageWallet: NextPage = () => {
       { name: 'Account', component: SettingsAccount, props: { walletInfo }, disabled: false },
       { name: 'Guardians', component: SettingsGuardians, props: { walletInfo }, disabled: false },
       { name: 'Execute Message', component: SettingsBuilderMsg, disabled: false },
-      { name: 'Relayers', component: SettingsAccount, disabled: true },
+      /* { name: 'Relayers', component: SettingsAccount, disabled: true }, */
       { name: 'Plugins', component: SettingsAccount, disabled: true },
       { name: 'Spending Limits', component: SettingsAccount, disabled: true },
       { name: 'Migrate', component: SettingsAccount, disabled: true }

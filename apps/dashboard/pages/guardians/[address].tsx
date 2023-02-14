@@ -81,11 +81,12 @@ const GuardianPage: NextPage = () => {
   };
 
   const freeze = async () => {
+    if (!guardianInfo) return;
     if (multisig) {
       const promise = signingClient.proxyProposeFreezeOperation(
         query.address as string,
-        guardianInfo?.multisigAddress as string,
-        !guardianInfo?.wallet.frozen
+        guardianInfo.multisigAddress as string,
+        guardianInfo.wallet.frozen
       );
       await toast.promise(promise);
       await fetchGuardian();
@@ -208,7 +209,7 @@ const GuardianPage: NextPage = () => {
                         <div className="grid grid-cols-3 gap-4 py-4 px-6">
                           <p className="text-sm font-medium text-gray-900">
                             Votes:{" "}
-                            <span className="col-span-1 mt-0 text-sm text-gray-500">{votes.length + " of " + threshold?.total_weight}</span>
+                            <span className="col-span-1 mt-0 text-sm text-gray-500">{votes.length + " of " + threshold?.weight}</span>
                           </p>
                         </div>
                       </div>
@@ -217,7 +218,7 @@ const GuardianPage: NextPage = () => {
                       "justify-between": !isAlreadyVoted,
                       "justify-end": isAlreadyVoted,
                     })}>
-                      {votes.length === threshold.total_weight ? (<Button disabled={isLoading} onClick={() => executeProposal(proposal.id as number)}>Execute Proposal</Button>) : null}
+                      {votes.length === threshold.weight ? (<Button disabled={isLoading} onClick={() => executeProposal(proposal.id as number)}>Execute Proposal</Button>) : null}
                       {!isAlreadyVoted ? (<>
                         <Button disabled={isLoading} onClick={() => vote(proposal.id as number, 'no')}>Decline</Button>
                         <Button disabled={isLoading} onClick={() => vote(proposal.id as number, 'yes')}>Accept</Button>

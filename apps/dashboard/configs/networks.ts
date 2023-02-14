@@ -31,8 +31,8 @@ const juno_testnet = {
   chainId: "uni-6",
   chainName: "Juno Testnet (uni-6)",
   addressPrefix: "juno",
-  rpcUrl: "https://uni-rpc.reece.sh/",
-  httpUrl: "https://uni-api.reece.sh/",
+  rpcUrl: "https://rpc.uni.juno.deuslabs.fi:443/",
+  httpUrl: "https://lcd.uni.juno.deuslabs.fi/",
   feeToken: "ujunox",
   stakingToken: "ujunox",
   coinMap: {
