@@ -27,7 +27,7 @@ const ChargeModal: React.FC = () => {
   ];
 
   const onSubmit = async () => {
-    const promise = signingClient.signingClient.sendTokens(userAddr, account.address, [coin(+convertDenomToMicroDenom(amount))], "auto");
+    const promise = signingClient.signingClient.sendTokens(userAddr, account.address, [coin(+amount)], "auto");
     await toast.promise(promise);
     hideModal();
   };

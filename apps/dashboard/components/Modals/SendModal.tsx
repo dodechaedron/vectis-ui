@@ -32,7 +32,7 @@ const SendModal: React.FC = () => {
   ];
 
   const onSubmit = async ({ recipient, amount, memo }) => {
-    const promise = signingClient.proxyTransfer(account.address, recipient, +convertDenomToMicroDenom(amount), memo);
+    const promise = signingClient.proxyTransfer(account.address, recipient, amount, memo);
     await toast.promise(promise);
     hideModal();
   };
