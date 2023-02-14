@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export async function onUpdateGuardian({ event, msg }: CosmosEvent): Promise<void> {
   const { value: guaridans } = event.attributes.find((attr) => attr.key === 'guaridans');
-  const walletId = msg.msg.decodedMsg.contract;
+  const { value: walletId } = event.attributes.find((attr) => attr.key === '_contract_address');
 
   const [g] = await GuardianGroup.getByWalletId(walletId);
   await GuardianGroup.remove(g.id);
