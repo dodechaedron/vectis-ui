@@ -32,7 +32,7 @@ const Sidebar: React.FC = () => {
           <SmartAccountMiniCard />
           <ul className="flex w-full items-center justify-center gap-4">
             {socialsLinks.map(({ Icon, href, text }) => (
-              <Link key={href} target="_blank" className="text-gray-600 hover:text-kashmir-blue-700" href={href}>
+              <Link key={href} target="_blank" className="text-gray-600 hover:text-kashmir-blue-500" href={href}>
                 <Icon aria-label={text} size={20} />
               </Link>
             ))}
