@@ -58,7 +58,7 @@ const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
             <div className="grid grid-cols-2">
               <div className="col-span-2 gap-2 lg:col-span-1">
                 <InputPrice
-                  label="How much do you want to charge"
+                  label="How much do you want to fund your Vectis Account?"
                   placeholder="0"
                   currency={network.feeToken}
                   value={initialFunds}

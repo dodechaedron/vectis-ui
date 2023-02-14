@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import InputArray from "components/Inputs/InputArray";
 import InputRange from "components/Inputs/InputRange";
 import InputSwitch from "components/Inputs/InputSwitch";
@@ -11,11 +11,15 @@ interface Props {
 }
 
 const StepGuardianSelection: React.FC<Props> = ({ goNext }) => {
-  const { control, register, watch, formState, setValue } = useFormContext();
+  const { control, watch, formState, setValue } = useFormContext();
   const { errors, isValid } = formState;
 
   const multisig = watch("multisig");
-  const threshold = watch("threshold", 1);
+  const threshold = watch("threshold");
+
+  useEffect(() => {
+    setValue("threshold", multisig ? 1 : 0);
+  }, [multisig])
 
   return (
     <div className="mt-5">
