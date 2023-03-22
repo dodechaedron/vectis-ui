@@ -1,34 +1,12 @@
-import React, { useEffect, useState } from "react";
-import {
-  ArcElement,
-  Chart as ChartJS,
-  ChartData,
-  CoreChartOptions,
-  DatasetChartOptions,
-  DoughnutControllerChartOptions,
-  ElementChartOptions,
-  Legend,
-  Plugin,
-  PluginChartOptions,
-  ScaleChartOptions,
-  Tooltip,
-} from "chart.js";
-import { Doughnut } from "react-chartjs-2";
+import React, { useEffect, useState } from 'react';
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
 
-import { useVectis } from "~/providers";
-
-import { _DeepPartialObject } from "chart.js/dist/types/utils";
+import { useVectis } from '~/providers';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export const chartOptions: _DeepPartialObject<
-  CoreChartOptions<"doughnut"> &
-    ElementChartOptions<"doughnut"> &
-    PluginChartOptions<"doughnut"> &
-    DatasetChartOptions<"doughnut"> &
-    ScaleChartOptions<"doughnut"> &
-    DoughnutControllerChartOptions
-> = {
+export const chartOptions = {
   responsive: true,
   maintainAspectRatio: true,
   layout: {
@@ -38,31 +16,31 @@ export const chartOptions: _DeepPartialObject<
         top: 0,
         right: 10,
         bottom: 0,
-        left: 0,
+        left: 0
       };
-    },
+    }
   },
   plugins: {
     legend: {
       display: true,
-      position: "right" as const,
-      fullSize: false,
-    },
+      position: 'right' as const,
+      fullSize: false
+    }
   },
-  cutout: 45,
+  cutout: 45
 };
 
 const TokenAllocation: React.FC = () => {
   const { signingClient, account } = useVectis();
   const [allocation, setAllocation] = useState<number[]>([]);
-  const data: ChartData<"doughnut", number[], string> = {
-    labels: ["Bonded", "Rewards", "Available", "Unbonding"],
+  const data = {
+    labels: ['Bonded', 'Rewards', 'Available', 'Unbonding'],
     datasets: [
       {
         data: allocation,
-        backgroundColor: ["#d0d7e7", "#778db9", "#475d90", "#303d5c"],
-      },
-    ],
+        backgroundColor: ['#d0d7e7', '#778db9', '#475d90', '#303d5c']
+      }
+    ]
   };
 
   useEffect(() => {

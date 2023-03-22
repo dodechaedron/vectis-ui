@@ -54,6 +54,7 @@ export const useToast = () => {
   return {
     isLoading,
     toast: {
+      ...toast,
       promise,
       error
     }

@@ -32,30 +32,18 @@ export function IntlDate(date: string | number) {
   return new Intl.DateTimeFormat(language).format(new Date(date));
 }
 
-export function IntlTimeAgo(date: string | number) {
-  const DATE_UNITS = {
-    year: 31536000,
-    week: 604800,
-    day: 86400,
-    hour: 3600,
-    minute: 60,
-    second: 1,
-  };
+export function IntlTimeAgo(date: string | number | Date, lang = navigator.language) {
+  const timeMs = new Date(date).getTime();
 
-  const getUnitAndValueDate = (secondsElapsed: number) => {
-    for (const [unit, secondsInUnit] of Object.entries(DATE_UNITS)) {
-      if (Math.abs(secondsElapsed) >= secondsInUnit || unit === "second") {
-        const value = Math.floor(secondsElapsed / secondsInUnit) * -1;
-        return { value, unit };
-      }
-    }
-  };
+  const deltaSeconds = Math.round((timeMs - Date.now()) / 1000);
 
-  const lg = window.navigator.language;
-  const rtf = new Intl.RelativeTimeFormat();
+  const cutoffs = [60, 3600, 86400, 86400 * 7, 86400 * 30, 86400 * 365, Infinity];
+  const units: Intl.RelativeTimeFormatUnit[] = ["second", "minute", "hour", "day", "week", "month", "year"];
 
-  const secondsElapsed = (Date.now() - +new Date(date)) / 1000;
-  const { value, unit } = getUnitAndValueDate(secondsElapsed)!;
+  const unitIndex = cutoffs.findIndex(cutoff => cutoff > Math.abs(deltaSeconds));
 
-  return rtf.format(value, unit as Intl.RelativeTimeFormatUnit);
+  const divisor = unitIndex ? cutoffs[unitIndex - 1] : 1;
+
+ const rtf = new Intl.RelativeTimeFormat(lang, { numeric: "auto" });
+  return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex]);
 }
