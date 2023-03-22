@@ -2,6 +2,9 @@
   "name": "@vectis/components",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
+  "scripts": {},
+  "dependencies": {
+    "clsx": "^1.2.1",
+    "react": "^18.2.0"
   }
 }

@@ -9,7 +9,8 @@
   "scripts": {
     "build": "turbo run build",
     "website": "yarn workspace @vectis/website",
-    "dashboard": "yarn workspace @vectis/dashboard"
+    "dashboard": "yarn workspace @vectis/dashboard",
+    "dao": "yarn workspace @vectis/dao"
   },
   "devDependencies": {
     "turbo": "^1.7.4",

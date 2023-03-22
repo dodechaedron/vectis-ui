@@ -1,0 +1,10 @@
+{
+  "name": "@vectis/services",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@cosmjs/cosmwasm-stargate": "^0.30.0",
+    "@dao-dao/types": "^2.2.0",
+    "@vectis/types": "^1.0.2-rc"
+  }
+}
