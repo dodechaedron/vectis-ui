@@ -22,9 +22,7 @@ import * as indexerService from './indexer';
 
 import { GuardianGroup, Wallet } from 'interfaces';
 import { Proposal } from '@dao-dao/types/contracts/CwProposalSingle.v1';
-import {
-  VoteInfo
-} from '@dao-dao/types/contracts/DaoProposalSingle.common';
+import { VoteInfo } from '@dao-dao/types/contracts/DaoProposalSingle.common';
 import { FactoryT, ProxyT } from '@vectis/types';
 
 const factoryContractAddress = process.env.NEXT_PUBLIC_CONTRACT_FACTORY_ADDRESS;
@@ -107,7 +105,8 @@ export class VectisQueryService {
   async getTransactionHistory(address: string, page: number, limit: number): Promise<any> {
     const order = 'ORDER_BY_DESC';
     const receive = await fetch(
-      `${network.httpUrl}/cosmos/tx/v1beta1/txs?events=execute._contract_address='${address}'&pagination.limit=${limit}&pagination.offset=${(page - 1) * limit
+      `${network.httpUrl}/cosmos/tx/v1beta1/txs?events=execute._contract_address='${address}'&pagination.limit=${limit}&pagination.offset=${
+        (page - 1) * limit
       }&order_by=${order}`
     );
     const { txs, pagination, tx_responses } = await receive.json();
@@ -388,5 +387,13 @@ export class VectisService extends VectisQueryService {
       }
     };
     return await this.signingClient.execute(this.userAddr, multisigAddr, proposal, 'auto');
+  }
+
+  async mintGovec(): Promise<ExecuteResult> {
+    const msg: FactoryT.ExecuteMsg = {
+      claim_govec: {}
+    };
+
+    return await this.signingClient.execute(this.userAddr, factoryContractAddress, msg, 'auto');
   }
 }

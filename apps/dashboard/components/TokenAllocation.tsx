@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
+import { ArcElement, Chart, Legend, Tooltip } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 
-import { useVectis } from '~/providers';
+Chart.register(ArcElement, Legend, Tooltip);
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { useVectis } from '~/providers';
 
 export const chartOptions = {
   responsive: true,

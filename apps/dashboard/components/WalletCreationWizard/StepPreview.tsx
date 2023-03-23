@@ -1,19 +1,20 @@
-import React from "react";
-import { useVectis } from "providers";
-import { useFormContext } from "react-hook-form";
+import React from 'react';
+import { useVectis } from 'providers';
+import { useFormContext } from 'react-hook-form';
 
-import { Button } from "../Buttons";
+import { Button } from '../Buttons';
 
-import { UserIcon } from "@heroicons/react/20/solid";
+import { UserIcon } from '@heroicons/react/20/solid';
 
 interface Props {
   goBack: () => void;
+  goNext: () => void;
 }
 
-const StepPreview: React.FC<Props> = ({ goBack }) => {
+const StepPreview: React.FC<Props> = ({ goBack, goNext }) => {
   const { network } = useVectis();
   const { getValues, formState } = useFormContext();
-  const { isSubmitting } = formState;
+  const { isSubmitting, isSubmitSuccessful } = formState;
   const { guardians, initialFunds, label, multisig, threshold } = getValues();
 
   return (
@@ -32,7 +33,7 @@ const StepPreview: React.FC<Props> = ({ goBack }) => {
             </div>
             <div className="grid grid-cols-3 gap-4 py-4 px-6">
               <p className="text-sm font-medium text-gray-900">
-                Initial Funds:{" "}
+                Initial Funds:{' '}
                 <span className="col-span-2 mt-0 text-sm text-gray-500">
                   {initialFunds} {network.feeToken}
                 </span>
@@ -40,7 +41,7 @@ const StepPreview: React.FC<Props> = ({ goBack }) => {
             </div>
             <div className="grid grid-cols-2 gap-4 py-4 px-6">
               <p className="text-sm font-medium text-gray-900">
-                Multisig: <span className="col-span-1 mt-0 text-sm text-gray-500">{multisig ? "Yes" : "No"}</span>
+                Multisig: <span className="col-span-1 mt-0 text-sm text-gray-500">{multisig ? 'Yes' : 'No'}</span>
               </p>
               {multisig && (
                 <p className="text-sm font-medium text-gray-900">
@@ -68,13 +69,21 @@ const StepPreview: React.FC<Props> = ({ goBack }) => {
           </dl>
         </div>
       </div>
-      <div className="flex justify-between">
-        <Button onClick={goBack} className="mt-5" disabled={isSubmitting}>
-          Back
-        </Button>
-        <Button type="submit" className="mt-5" disabled={isSubmitting}>
-          Create Wallet
-        </Button>
+      <div className="flex flex-row-reverse justify-between">
+        {isSubmitSuccessful ? (
+          <Button type="submit" className="mt-5" onClick={goNext}>
+            Next
+          </Button>
+        ) : (
+          <Button type="submit" className="mt-5" disabled={isSubmitting}>
+            Create Wallet
+          </Button>
+        )}
+        {isSubmitSuccessful ? null : (
+          <Button onClick={goBack} className="mt-5" disabled={isSubmitting}>
+            Back
+          </Button>
+        )}
       </div>
     </>
   );

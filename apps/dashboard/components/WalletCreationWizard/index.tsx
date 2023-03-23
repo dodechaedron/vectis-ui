@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from 'react';
-import { useRouter } from 'next/router';
 import ProgressWizard from 'components/Forms/ProgressWizard';
 import { useToast } from 'hooks';
 import { useVectis } from 'providers';
@@ -10,13 +9,15 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import StepAccountDetails from './StepAccountDetails';
+import StepConfirmation from './StepConfirmation';
 import StepGuardianSelection from './StepGuardianSelection';
 import StepPreview from './StepPreview';
 
 const steps = [
   { id: 1, name: 'Choose Guardians', Component: StepGuardianSelection },
   { id: 2, name: 'Account Details', Component: StepAccountDetails },
-  { id: 3, name: 'Preview', Component: StepPreview }
+  { id: 3, name: 'Preview', Component: StepPreview },
+  { id: 4, name: 'Confirmation', Component: StepConfirmation }
 ];
 
 type FormValues = {
@@ -50,7 +51,6 @@ const WalletCreationWizard: React.FC = () => {
   const methods = useForm<FormValues>({ defaultValues: { guardians: [{ value: '' }] }, resolver: resolver() });
   const { handleSubmit } = methods;
 
-  const { push: goToPage } = useRouter();
   const { toast } = useToast();
   const { signingClient } = useVectis();
 
@@ -60,7 +60,6 @@ const WalletCreationWizard: React.FC = () => {
     const promise = async () => {
       await signingClient.createProxyWallet(data.label, guardians, relayers, data.multisig, data.initialFunds, data.threshold);
       await sleep(5000);
-      goToPage('/accounts');
     };
     await toast.promise(promise());
   };

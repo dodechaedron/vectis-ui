@@ -11,7 +11,6 @@ const queryUserWallets = gql`
       nodes {
         id
         codeId
-        multisigCodeId
         relayers
         label
         frozen

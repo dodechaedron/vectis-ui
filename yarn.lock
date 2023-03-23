@@ -1956,11 +1956,6 @@
   resolved "https://registry.yarnpkg.com/@vectis/extension-client/-/extension-client-0.5.0.tgz#d14d8285927800401a1df2ad043b30ef15feba8c"
   integrity sha512-w6ixIFmRTEKNTNYLjjqd+ABINsga2kbkJTRimbOFh2XTF6tSrTfTJETgBasKC+/bCRI4sEULnMB5hA3ySLXHdQ==
 
-"@vectis/types@^1.0.1-alpha":
-  version "1.0.1-alpha"
-  resolved "https://registry.yarnpkg.com/@vectis/types/-/types-1.0.1-alpha.tgz#7373a28afa1c1e7dd57f8c56f9f0d9ea760435e8"
-  integrity sha512-Q4ELRUD3fGXZo32XUC0D0UdPi0RbkiZybo0ecM9r3bphMKIX3OICuj0fLPPCS3AZG/NJ2YYWxpikC4F/U15odg==
-
 "@vectis/types@^1.0.2-rc":
   version "1.0.2-rc"
   resolved "https://registry.yarnpkg.com/@vectis/types/-/types-1.0.2-rc.tgz#3206617c33b92db3041a904833b271f850d27dac"
@@ -6410,7 +6405,12 @@ randombytes@^2.0.1, randombytes@^2.1.0:
   dependencies:
     safe-buffer "^5.1.0"
 
-react-chartjs-2@^5.1.0, react-chartjs-2@^5.2.0:
+react-chartjs-2@4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/react-chartjs-2/-/react-chartjs-2-4.3.1.tgz#9941e7397fb963f28bb557addb401e9ff96c6681"
+  integrity sha512-5i3mjP6tU7QSn0jvb8I4hudTzHJqS8l00ORJnVwI2sYu0ihpj83Lv2YzfxunfxTZkscKvZu2F2w9LkwNBhj6xA==
+
+react-chartjs-2@^5.1.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/react-chartjs-2/-/react-chartjs-2-5.2.0.tgz#43c1e3549071c00a1a083ecbd26c1ad34d385f5d"
   integrity sha512-98iN5aguJyVSxp5U3CblRLH67J8gkfyGNbiK3c+l1QI/G4irHMPQw44aEPmjVag+YKTyQ260NcF82GTQ3bdscA==
