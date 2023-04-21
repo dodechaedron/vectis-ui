@@ -1,4 +1,5 @@
 import network from 'configs/networks';
+import axios from 'redaxios';
 import { coin, convertMicroDenomToDenom } from 'utils/conversion';
 
 import { ExecuteResult, setupWasmExtension, SigningCosmWasmClient, WasmExtension } from '@cosmjs/cosmwasm-stargate';
@@ -18,9 +19,7 @@ import {
 } from '@cosmjs/stargate';
 import { HttpBatchClient, Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
-import * as indexerService from './indexer';
-
-import { GuardianGroup, Wallet } from 'interfaces';
+import { VectisAccount } from 'interfaces';
 import { Proposal } from '@dao-dao/types/contracts/CwProposalSingle.v1';
 import { VoteInfo } from '@dao-dao/types/contracts/DaoProposalSingle.common';
 import { FactoryT, ProxyT } from '@vectis/types';
@@ -29,8 +28,12 @@ const factoryContractAddress = process.env.NEXT_PUBLIC_CONTRACT_FACTORY_ADDRESS;
 
 export class VectisQueryService {
   queryClient: QueryClient & StakingExtension & BankExtension & TxExtension & DistributionExtension & WasmExtension;
+  http: typeof axios;
   constructor(readonly client: Tendermint34Client) {
     this.client = client;
+    this.http = axios.create({
+      baseURL: process.env.NEXT_PUBLIC_INDEXER_URL
+    });
     this.queryClient = QueryClient.withExtensions(
       client,
       setupStakingExtension,
@@ -51,25 +54,25 @@ export class VectisQueryService {
     return new VectisQueryService(tmClient);
   }
 
-  async getUserWallets(controllerAddr: string): Promise<Wallet[]> {
-    const wallets = await indexerService.getUserWallets(controllerAddr);
-    return wallets;
+  async getAccountsByPubkey(pubKey: string): Promise<VectisAccount[]> {
+    const { data } = await this.http.get(`/auth/global/accounts/${pubKey}`);
+    return data;
   }
 
-  async getWalletGuardians(userAddr: string): Promise<GuardianGroup[]> {
-    return await indexerService.getGuardianGroupsByGuardianAddr(userAddr);
+  async getAccountsByGuardianAddr(chainName: string, guardianAddr: string): Promise<VectisAccount[]> {
+    const { data } = await this.http.get(`/guardian/${chainName}/vectis_accounts_by_guardian/${guardianAddr}`);
+    return data;
   }
 
   async getActiveGuardianRequests(proxyAddr: string): Promise<any> {
     return await this.queryClient.wasm.queryContractSmart(proxyAddr, { guardians_update_request: {} });
   }
 
-  async getGuardianGroupByWalletAddr(addr: string): Promise<GuardianGroup> {
-    return await indexerService.getWalletGuardians(addr);
-  }
+  async getGuardianGroupByWalletAddr(addr: string): Promise<any> {}
 
-  async getWalletInfo(proxyAddr: string): Promise<ProxyT.WalletInfo> {
-    return await this.queryClient.wasm.queryContractSmart(proxyAddr, { info: {} });
+  async getAccountInfo(proxyAddr: string): Promise<VectisAccount> {
+    const { data } = await this.http.get(`/auth/junotestnet/accounts/${proxyAddr}`);
+    return data;
   }
 
   async getFees(): Promise<FactoryT.FeesResponse> {
@@ -124,6 +127,11 @@ export class VectisQueryService {
     const wt = dm.txs.map(d => Tx.decode(d.tx)); */
 
     return { txs: decodedTxs, pagination };
+  }
+
+  async getTest(address: string) {
+    const resp = await this.queryClient.wasm.queryContractSmart(address, { plugins: {} });
+    console.log(resp);
   }
 
   async getAllocation(proxyAddress: string) {

@@ -53,7 +53,7 @@ const TransactionsTable: React.FC<Props> = ({ filter, pagination, defaultLimit =
             return (
               <div className="grid grid-cols-[1fr,_100px,_105px] xl:grid-cols-[200px,_120px,_1fr,_120px,_120px]" key={tx.txHash}>
                 <div className="flex h-fit items-center justify-start py-4 px-2">
-                  <p className="h-fit rounded-md bg-kashmir-blue-500 py-[2px] px-2 text-center text-xs text-white capitalize">{tx.type}</p>
+                  <p className="h-fit rounded-md bg-kashmir-blue-500 py-[2px] px-2 text-center text-xs capitalize text-white">{tx.type}</p>
                 </div>
                 <div className="flex h-fit items-center justify-start py-4 px-2 text-sm text-gray-500">
                   <p>
@@ -62,7 +62,10 @@ const TransactionsTable: React.FC<Props> = ({ filter, pagination, defaultLimit =
                 </div>
                 <div className="hidden overflow-auto py-4 px-2 text-xs xl:flex">
                   <a
-                    href={`https://www.mintscan.io/${network.chainName}/txs/${tx.txHash}`}
+                    href={`https://${network.chainName.includes('testnet') ? 'testnet' : 'www'}.mintscan.io/${network.chainName.replace(
+                      'testnet',
+                      '-testnet'
+                    )}/txs/${tx.txHash}`}
                     target="_blank"
                     className="flex h-full w-full items-center justify-start text-kashmir-blue-600 hover:text-kashmir-blue-900"
                     rel="noreferrer"

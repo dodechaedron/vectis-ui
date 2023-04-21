@@ -1,2 +1,1 @@
-export type { Wallet } from "./wallet";
-export type { GuardianGroup } from "./guardians";
+export type { VectisAccount } from './wallet';

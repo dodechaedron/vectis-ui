@@ -1,11 +1,25 @@
-export interface Wallet {
-  id: string;
-  code_id: number;
-  multisig_code_id: number;
+export interface VectisAccount {
+  deployer: string;
+  version: Version;
+  guardians: string[];
+  relayers: string[];
+  nonce: number;
   label: string;
+  codeId: number;
   frozen: boolean;
   controllerAddr: string;
-  relayers: string[];
-  createdAt: string;
-  updateAt: String;
+  multisigAddress?: string;
+  threshold: Threshold;
+  chainName: string;
+  address: string;
+}
+
+interface Threshold {
+  weight: number;
+  totalWeight: number;
+}
+
+interface Version {
+  contract: string;
+  version: string;
 }

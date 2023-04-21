@@ -12,9 +12,9 @@ import { connectKeplr, getKeplrSignArbitrary, getKey as getKeplrKey, getSigner a
 import { VectisQueryService, VectisService } from '~/services/vectis';
 import { makeADR036AminoDoc, verifyArbitrary } from '~/utils/crypto';
 
+import { VectisAccount } from '~/interfaces';
 import { Network } from '~/interfaces/network';
 import { Key } from '@keplr-wallet/types';
-import { WalletInfo } from '@vectis/types/Proxy.types';
 
 export interface VectisState {
   userAddr: string;
@@ -23,11 +23,11 @@ export interface VectisState {
   queryClient: VectisQueryService;
   signingClient: VectisService;
   isReady: boolean;
-  account: WalletInfo & { balance: Coin; address: string; createdAt: string };
+  account: VectisAccount;
   balance: Coin;
   balances: Coin[];
-  changeAccount: (wallet: WalletInfo & { balance: Coin; address: string; createdAt: string }) => void;
-  updateBalances: () => Promise<void>
+  changeAccount: (wallet: VectisAccount) => void;
+  updateBalances: () => Promise<void>;
   connectWallet: () => void;
   disconnect: () => void;
 }
@@ -38,23 +38,26 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
   const [address, setAddress] = useState<string | null>(null);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [session, setSession] = useLocalStorage<{ message: string; signature: string; chainId: string } | null>('session');
-  const [balance, updateBalance] = useReducer((prevState, state) => ({ ...prevState, ...state }), { balance: { amount: 0, denom: networkConfig.feeToken }, balances: [] });
+  const [balance, updateBalance] = useReducer((prevState, state) => ({ ...prevState, ...state }), {
+    balance: { amount: 0, denom: networkConfig.feeToken },
+    balances: []
+  });
   const [keyDetails, setKeyDetails] = useState<Key | any | null>(null);
   const [signingClient, setSigningClient] = useState<VectisService | null>(null);
   const [queryClient, setQueryClient] = useState<VectisQueryService | null>(null);
-  const [account, changeAccount] = useLocalStorage<WalletInfo & { balance: Coin; address: string; createdAt: string }>('account');
+  const [account, changeAccount] = useLocalStorage<VectisAccount>('account');
 
   const [network, setNetwork] = useState<Network | null>(null);
 
   useEffect(() => {
     const onAccountChange = () => {
-      disconnect()
-      setTimeout(() => connectWallet, 2000)
-    }
+      disconnect();
+      setTimeout(() => connectWallet, 2000);
+    };
     const loadWallet = async () => {
       await waitForDocument();
       await connectWallet();
-      if ((session as unknown as { allowConnection: boolean })?.hasOwnProperty('allowConnection')) setSession(null)
+      if ((session as unknown as { allowConnection: boolean })?.hasOwnProperty('allowConnection')) setSession(null);
       window.addEventListener('keplr_keystorechange', onAccountChange);
       cosmosProvider.onAccountChange(onAccountChange);
     };
@@ -72,7 +75,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
 
   useEffect(() => {
     updateBalances();
-  }, [account, network, queryClient])
+  }, [account, network, queryClient]);
 
   const connectWallet = async () => {
     try {
@@ -125,11 +128,11 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
         await provider.suggestChains([
           {
             chainId: 'uni-6',
-            chainName: "junotestnet",
+            chainName: 'junotestnet',
             prettyName: 'Juno Testnet (uni-6)',
             bech32Prefix: 'juno',
-            rpcUrl: "https://uni-rpc.reece.sh/",
-            httpUrl: "https://uni-api.reece.sh/",
+            rpcUrl: 'https://uni-rpc.reece.sh/',
+            httpUrl: 'https://uni-api.reece.sh/',
             bip44: { coinType: 118 },
             defaultFeeToken: 'ujunox',
             feeTokens: [{ denom: 'ujunox', coinDecimals: 6 }],

@@ -17,7 +17,7 @@ const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
       generalMenu.filter((l) => {
         const dashboard = l.href === '/';
         if (!dashboard) return true;
-        return account?.controller_addr === userAddr;
+        return account?.controllerAddr === userAddr;
       }),
     [userAddr, account]
   );
@@ -29,7 +29,7 @@ const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
         {links.map((item) => {
           const path = pathname.slice(1);
           const isActive = item.href === pathname || path.includes(item.href);
-          const isDisabled = ["Governance", "Plugins"].includes(item.text);
+          const isDisabled = ['Governance', 'Plugins'].includes(item.text);
           return (
             <li key={item.text}>
               <Link
@@ -37,9 +37,10 @@ const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
                 onClick={closeMenu}
                 className={clsx(
                   isActive ? 'bg-gray-100 text-kashmir-blue-500' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                  'group flex w-full items-center rounded-md px-3 py-2 text-sm font-medium', {
-                  'hover:cursor-not-allowed hover:bg-transparent hover:text-gray-600': isDisabled
-                }
+                  'group flex w-full items-center rounded-md px-3 py-2 text-sm font-medium',
+                  {
+                    'hover:cursor-not-allowed hover:bg-transparent hover:text-gray-600': isDisabled
+                  }
                 )}
               >
                 <item.Icon
@@ -51,7 +52,7 @@ const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
                   aria-hidden="true"
                 />
                 <span className="truncate">{item.text}</span>
-                {item.text === "Plugins" && (
+                {item.text === 'Plugins' && (
                   <span className="ml-2 inline-flex items-center rounded-full bg-kashmir-blue-100 px-2.5 py-0.5 text-xs font-medium text-kashmir-blue-800">
                     Soon
                   </span>

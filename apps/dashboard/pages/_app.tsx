@@ -1,4 +1,5 @@
 import { Toaster } from 'react-hot-toast';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import Head from 'next/head';
 
 import { ModalProvider, TranslationsProvider, VectisProvider } from '~/providers';
@@ -10,6 +11,14 @@ import type { AppProps } from 'next/app';
 import 'react-tooltip/dist/react-tooltip.css';
 import 'styles/globals.css';
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      suspense: true
+    }
+  }
+});
+
 function VectisApp({ Component, pageProps }: AppProps) {
   return (
     <>
@@ -18,14 +27,16 @@ function VectisApp({ Component, pageProps }: AppProps) {
       </Head>
 
       <TranslationsProvider>
-        <ModalProvider>
-          <VectisProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-            <Toaster position="bottom-center" reverseOrder={false} />
-          </VectisProvider>
-        </ModalProvider>
+        <QueryClientProvider client={queryClient}>
+          <ModalProvider>
+            <VectisProvider>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+              <Toaster position="bottom-center" reverseOrder={false} />
+            </VectisProvider>
+          </ModalProvider>
+        </QueryClientProvider>
       </TranslationsProvider>
     </>
   );

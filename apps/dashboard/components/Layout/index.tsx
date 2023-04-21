@@ -23,14 +23,14 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
 
   useEffect(() => {
     if (!isReady) return;
-    if (account?.controller_addr !== userAddr && pathname === '/') goToPage('/accounts');
+    if (account?.controllerAddr !== userAddr && pathname === '/') goToPage('/accounts');
   }, [pathname, isReady]);
 
   if (!isReady) return <Loading />;
   const Component = userAddr ? children : <ConnectWallet />;
 
   return (
-    <div className={clsx('flex flex-col bg-gray-100 text-gray-900 md:flex-row w-full h-full', font.className)}>
+    <div className={clsx('flex h-full w-full flex-col bg-gray-100 text-gray-900 md:flex-row', font.className)}>
       <Sidebar />
 
       <main className="flex w-full flex-1 flex-col">

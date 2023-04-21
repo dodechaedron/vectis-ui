@@ -1,46 +1,23 @@
-import { useEffect, useState } from "react";
-import SmartAccountCard from "components/SmartAccountCard";
-import SmartAccountStatictis from "components/SmartAccountStatictis";
-import { useTranslations, useVectis } from "providers";
-import Head from "next/head";
-import Link from "next/link";
+import { useQuery } from 'react-query';
+import Head from 'next/head';
+import Link from 'next/link';
 
-import { Coin } from "@cosmjs/amino";
+import { encodeSecp256k1Pubkey } from '@cosmjs/amino';
 
-import { IoAddCircleOutline } from "react-icons/io5";
+import { useTranslations, useVectis } from '~/providers';
 
-import type { NextPage } from "next";
-import { WalletInfo } from "@vectis/types/Proxy.types";
+import SmartAccountCard from '~/components/SmartAccountCard';
+
+import { IoAddCircleOutline } from 'react-icons/io5';
+
+import type { NextPage } from 'next';
 
 const ListWallets: NextPage = () => {
   const { t } = useTranslations();
-  const { signingClient, userAddr, network } = useVectis();
-  const [smartAccounts, setSmartAccounts] = useState<(WalletInfo & { balance: Coin; address: string; createdAt: string })[]>([]);
-  const [totalBalance, setTotalBalance] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        setIsLoading(true);
-        const wallets = await signingClient.getUserWallets(userAddr);
-        const walletInfo = await Promise.all(
-          wallets.map(async ({ id, createdAt }) => {
-            const walletInfo = await signingClient.getWalletInfo(id);
-            const balance = await signingClient.getBalance(id, network.feeToken);
-            return Object.assign(walletInfo, { balance, address: id, createdAt });
-          })
-        );
-        const totalBalance = walletInfo.reduce((acc, { balance }) => acc + Number(balance.amount), 0);
-        setTotalBalance(totalBalance);
-        setSmartAccounts(walletInfo);
-      } catch (er) {
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchAccounts();
-  }, [userAddr]);
+  const { signingClient, keyDetails } = useVectis();
+  const { isLoading, data: accounts } = useQuery('vectis_accounts', () =>
+    signingClient.getAccountsByPubkey(encodeSecp256k1Pubkey((keyDetails as any).pubkey! || keyDetails.pubKey).value)
+  );
 
   return (
     <>
@@ -59,11 +36,10 @@ const ListWallets: NextPage = () => {
             <IoAddCircleOutline className="text-4xl" />
             <p className="text-sm font-semibold uppercase">Create Smart Account</p>
           </Link>
-          {smartAccounts.map((smartAccount, i) => (
+          {accounts?.map((smartAccount, i) => (
             <SmartAccountCard key={`card-${smartAccount.address}`} smartAccount={smartAccount} />
           ))}
         </div>
-        <SmartAccountStatictis numberOfAccounts={smartAccounts.length} totalBalance={totalBalance} />
       </div>
     </>
   );
