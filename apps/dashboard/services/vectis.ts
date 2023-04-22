@@ -169,9 +169,9 @@ export class VectisService extends VectisQueryService {
     const { wallet_fee }: FactoryT.FeesResponse = await this.queryClient.wasm.queryContractSmart(factoryContractAddress, { fees: {} });
 
     const proxy_initial_funds = initialFunds ? [coin(initialFunds)] : [];
-    const m = multisig ? { guardians_multisig: { threshold_absolute_count: threshold || 1, multisig_initial_funds: [] } } : {};
+    const m = multisig ? { guardians_multisig: { threshold_absolute_count: threshold || 1 } } : {};
 
-    const create_wallet_msg: FactoryT.CreateWalletMsg = {
+    const create_wallet_msg = {
       label,
       relayers,
       controller_addr: this.userAddr,

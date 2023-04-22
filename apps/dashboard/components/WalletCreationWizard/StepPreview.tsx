@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { useVectis } from 'providers';
 import { useFormContext } from 'react-hook-form';
 
@@ -14,8 +15,15 @@ interface Props {
 const StepPreview: React.FC<Props> = ({ goBack, goNext }) => {
   const { network } = useVectis();
   const { getValues, formState } = useFormContext();
+  const { push: goToPage } = useRouter();
   const { isSubmitting, isSubmitSuccessful } = formState;
   const { guardians, initialFunds, label, multisig, threshold } = getValues();
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      goToPage('/accounts');
+    }
+  }, [isSubmitSuccessful]);
 
   return (
     <>
@@ -70,11 +78,7 @@ const StepPreview: React.FC<Props> = ({ goBack, goNext }) => {
         </div>
       </div>
       <div className="flex flex-row-reverse justify-between">
-        {isSubmitSuccessful ? (
-          <Button type="submit" className="mt-5" onClick={goNext}>
-            Next
-          </Button>
-        ) : (
+        {isSubmitSuccessful ? null : (
           <Button type="submit" className="mt-5" disabled={isSubmitting}>
             Create Wallet
           </Button>

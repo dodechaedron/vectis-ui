@@ -9,15 +9,13 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import StepAccountDetails from './StepAccountDetails';
-import StepConfirmation from './StepConfirmation';
 import StepGuardianSelection from './StepGuardianSelection';
 import StepPreview from './StepPreview';
 
 const steps = [
   { id: 1, name: 'Choose Guardians', Component: StepGuardianSelection },
   { id: 2, name: 'Account Details', Component: StepAccountDetails },
-  { id: 3, name: 'Preview', Component: StepPreview },
-  { id: 4, name: 'Confirmation', Component: StepConfirmation }
+  { id: 3, name: 'Preview', Component: StepPreview }
 ];
 
 type FormValues = {
