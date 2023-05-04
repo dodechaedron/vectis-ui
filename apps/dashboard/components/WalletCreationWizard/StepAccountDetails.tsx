@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useMemo } from "react";
-import { Input } from "components/Inputs";
-import InputPrice from "components/Inputs/InputPrice";
-import { useVectis } from "providers";
-import { useFormContext } from "react-hook-form";
-import { convertDenomToMicroDenom, convertMicroDenomToDenom } from "utils/conversion";
+import React, { useEffect, useState } from 'react';
+import { useMemo } from 'react';
+import { Input } from 'components/Inputs';
+import InputPrice from 'components/Inputs/InputPrice';
+import { useVectis } from 'providers';
+import { useFormContext } from 'react-hook-form';
+import { convertDenomToMicroDenom, convertMicroDenomToDenom } from 'utils/conversion';
 
-import { Coin } from "@cosmjs/amino";
+import { Coin } from '@cosmjs/amino';
 
-import { Button } from "../Buttons";
+import { Button } from '../Buttons';
 
 interface Props {
   goBack: () => void;
@@ -16,22 +16,22 @@ interface Props {
 }
 
 const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
-  const { queryClient, network, userAddr } = useVectis();
+  const { queryClient, defaultFee, userAddr } = useVectis();
   const [walletFee, setWalletFee] = useState<Coin>();
   const { register, watch, setValue } = useFormContext();
-  const [balance, setBalance] = useState<Coin>({ amount: "0", denom: network.feeToken });
+  const [balance, setBalance] = useState<Coin>({ amount: '0', denom: defaultFee.udenom });
 
-  const initialFunds = watch("initialFunds");
+  const initialFunds = watch('initialFunds');
 
   const totalCost = useMemo(
-    () => Math.ceil(Number(walletFee?.amount || 0) + Number(convertDenomToMicroDenom(initialFunds))),
+    () => Number(convertMicroDenomToDenom(walletFee?.amount, defaultFee.exponent)) + Number(initialFunds),
     [walletFee, initialFunds]
   );
 
   useEffect(() => {
     queryClient.getFees().then(({ wallet_fee }) => setWalletFee(wallet_fee));
-    queryClient.getBalance(userAddr, network.feeToken).then((balance) => setBalance(balance));
-  }, []);
+    queryClient.getBalance(userAddr, defaultFee.udenom).then((balance) => setBalance(balance));
+  }, [defaultFee]);
 
   return (
     <div className="mt-5">
@@ -51,7 +51,7 @@ const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
             <div className="col-span-1">
               <h3 className="text-lg font-medium leading-6 text-gray-900">Account Name</h3>
               <p className="mt-1 text-sm text-gray-500">This is the name given to the wallet to make easily to identify.</p>
-              <Input className="my-4" placeholder="Account Name" {...register("label")} />
+              <Input className="my-4" placeholder="Account Name" {...register('label')} />
             </div>
             <p className="my-2 sm:border-t sm:border-gray-200" />
 
@@ -60,26 +60,26 @@ const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
                 <InputPrice
                   label="How much do you want to fund your Vectis Account?"
                   placeholder="0"
-                  currency={network.feeToken}
+                  currency={defaultFee.symbol}
                   value={initialFunds}
-                  onChange={(e) => setValue("initialFunds", e.target.value)}
+                  onChange={(e) => setValue('initialFunds', e.target.value)}
                 />
                 <div className="my-4">
                   <div className="flex justify-between rounded-t-md border border-gray-200 py-2 px-3">
                     <span>
-                      {convertMicroDenomToDenom(walletFee?.amount)} {walletFee?.denom}
+                      {convertMicroDenomToDenom(walletFee?.amount, defaultFee.exponent)} {defaultFee.symbol}
                     </span>
                     <span className="text-sm text-gray-500">Creation Fee</span>
                   </div>
                   <div className="flex justify-between rounded-b-md border border-t-0 border-gray-200 py-2 px-3">
                     <span>
-                      {convertMicroDenomToDenom(balance.amount)} {balance.denom}
+                      {convertMicroDenomToDenom(balance.amount, defaultFee.exponent)} {defaultFee.symbol}
                     </span>
                     <span className="text-sm text-gray-500">Current Balance</span>
                   </div>
                 </div>
 
-                <InputPrice label="Total cost" value={convertMicroDenomToDenom(totalCost)} currency={network.feeToken} disabled />
+                <InputPrice label="Total cost" value={totalCost} currency={defaultFee.symbol} disabled />
               </div>
             </div>
           </div>

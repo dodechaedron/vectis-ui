@@ -10,14 +10,15 @@ import HeadingTabs from '~/components/HeadingTabs';
 import SettingsAccount from '~/components/SettingsAccount';
 import SettingsBuilderMsg from '~/components/SettingsBuilderMsg';
 import SettingsGuardians from '~/components/SettingsGuardians';
-import Spinner from '~/components/Spinner';
 
 import type { NextPage } from 'next';
 
 const ManageWallet: NextPage = () => {
-  const { userAddr, signingClient } = useVectis();
+  const { userAddr, signingClient, chainName } = useVectis();
   const { push: goToPage, query } = useRouter();
-  const { data: account } = useQuery('settings_vectis_account', () => signingClient.getAccountInfo(query.address as string));
+  const { data: account } = useQuery(['settings_vectis_account', query.address], () =>
+    signingClient.getAccountInfo(query.address as string, chainName)
+  );
 
   const tabs = useMemo(
     () => [
@@ -43,9 +44,8 @@ const ManageWallet: NextPage = () => {
       <Head>
         <title>Vectis | Manage Wallet</title>
       </Head>
-      <Suspense fallback={<Spinner size="lg" />}>
-        <HeadingTabs tabs={tabs} defaultTab="Account" />
-      </Suspense>
+
+      <HeadingTabs tabs={tabs} defaultTab="Account" />
     </>
   );
 };

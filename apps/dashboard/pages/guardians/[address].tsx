@@ -21,7 +21,7 @@ import { Proposal } from '@dao-dao/types/contracts/CwProposalSingle.v1';
 import { VoteInfo } from '@dao-dao/types/contracts/DaoProposalSingle.common';
 
 const GuardianPage: NextPage = () => {
-  const { queryClient, signingClient, userAddr } = useVectis();
+  const { queryClient, signingClient, userAddr, chainName } = useVectis();
   const { query, push: goToPage } = useRouter();
   const { toast, isLoading } = useToast();
   const [accountInfo, setAccountInfo] = useState<VectisAccount | null>(null);
@@ -30,7 +30,7 @@ const GuardianPage: NextPage = () => {
   const [proposals, setProposals] = useState<{ votes: VoteInfo[]; proposal: Proposal; isAlreadyVoted: boolean }[]>([]);
 
   const fetchGuardian = async () => {
-    const account = await queryClient.getAccountInfo(query.address as string);
+    const account = await queryClient.getAccountInfo(query.address as string, chainName);
 
     if (!account.guardians.includes(userAddr)) {
       goToPage('/');

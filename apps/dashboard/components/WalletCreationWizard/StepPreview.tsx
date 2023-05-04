@@ -13,7 +13,7 @@ interface Props {
 }
 
 const StepPreview: React.FC<Props> = ({ goBack, goNext }) => {
-  const { network } = useVectis();
+  const { defaultFee } = useVectis();
   const { getValues, formState } = useFormContext();
   const { push: goToPage } = useRouter();
   const { isSubmitting, isSubmitSuccessful } = formState;
@@ -43,7 +43,7 @@ const StepPreview: React.FC<Props> = ({ goBack, goNext }) => {
               <p className="text-sm font-medium text-gray-900">
                 Initial Funds:{' '}
                 <span className="col-span-2 mt-0 text-sm text-gray-500">
-                  {initialFunds} {network.feeToken}
+                  {initialFunds || 0} {defaultFee.symbol}
                 </span>
               </p>
             </div>

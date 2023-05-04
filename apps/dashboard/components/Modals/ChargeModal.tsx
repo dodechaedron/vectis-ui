@@ -1,36 +1,40 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import { Dialog } from "@headlessui/react";
+import { Dialog } from '@headlessui/react';
 
-import { useModal, useVectis } from "~/providers";
-import { useToast } from "~/hooks";
-import { coin, convertDenomToMicroDenom } from "~/utils/conversion";
+import { useModal, useVectis } from '~/providers';
+import { useToast } from '~/hooks';
+import { coin, convertDenomToMicroDenom } from '~/utils/conversion';
 
-import { Button } from "../Buttons";
-import { Input } from "../Inputs";
-import InputSelector from "../Inputs/InputSelector";
+import { Button } from '../Buttons';
+import { Input } from '../Inputs';
+import InputSelector from '../Inputs/InputSelector';
 
-import Modal from "./Modal";
+import Modal from './Modal';
 
 const ChargeModal: React.FC = () => {
   const { hideModal, isModalVisible } = useModal();
-  const [amount, setAmount] = useState("0");
+  const [amount, setAmount] = useState('0');
 
   const { toast, isLoading } = useToast();
-  const { account, signingClient, network, userAddr, updateBalances } = useVectis();
+  const { account, signingClient, defaultFee, userAddr } = useVectis();
 
   const tokens = [
     {
-      label: network.feeToken.slice(1).toUpperCase(),
-      value: network.feeToken,
-    },
+      label: defaultFee.symbol,
+      value: defaultFee.udenom
+    }
   ];
 
   const onSubmit = async () => {
-    const promise = signingClient.signingClient.sendTokens(userAddr, account.address, [coin(+amount)], "auto");
+    const promise = signingClient.sendTokens(
+      userAddr,
+      account.address,
+      [coin(convertDenomToMicroDenom(amount, defaultFee.exponent), defaultFee.udenom)],
+      'auto'
+    );
     await toast.promise(promise);
     hideModal();
-    updateBalances();
   };
 
   return (

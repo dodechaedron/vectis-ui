@@ -1,38 +1,38 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import { useVectis } from "~/providers";
+import { useVectis } from '~/providers';
 
-import Spinner from "~/components/Spinner";
+import Spinner from '~/components/Spinner';
 
-import Image from "next/image";
+import Image from 'next/image';
 
 const ConnectWallet: React.FC = () => {
-  const { connectWallet } = useVectis();
+  const { connect: connectWallet } = useVectis();
   const [isConnecting, setIsConnecting] = useState(false);
 
   const connect = async () => {
     setIsConnecting(true);
-    await connectWallet();
+    await connectWallet('vectis-extension');
     setIsConnecting(false);
   };
   return (
-    <div className="h-full flex items-center justify-center">
-      <div className="mx-auto max-w-7xl lg:bg-transparent lg:px-8 mt-[8rem] lg:mt-0">
+    <div className="flex h-full items-center justify-center">
+      <div className="mx-auto mt-[8rem] max-w-7xl lg:mt-0 lg:bg-transparent lg:px-8">
         <div className="lg:grid lg:grid-cols-12">
           <div className="relative z-10 lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:bg-transparent lg:py-16">
             <div className="inset-x-0 h-1/2 bg-gray-50 lg:hidden" aria-hidden="true" />
-            <div className="mx-auto px-6 sm:max-w-3xl lg:max-w-none lg:p-0 absolute lg:relative top-[-7.5rem] md:top-[-15rem] w-full lg:top-auto lg:w-auto">
+            <div className="absolute top-[-7.5rem] mx-auto w-full px-6 sm:max-w-3xl md:top-[-15rem] lg:relative lg:top-auto lg:w-auto lg:max-w-none lg:p-0">
               <Image
                 width={900}
                 height={1600}
-                className="rounded-3xl object-cover object-center shadow-2xl h-[12rem] md:h-[20rem] w-full lg:h-full lg:max-h-[40rem]"
+                className="h-[12rem] w-full rounded-3xl object-cover object-center shadow-2xl md:h-[20rem] lg:h-full lg:max-h-[40rem]"
                 alt="Wallet Purple"
                 src="/wallet-purple.png"
               />
             </div>
           </div>
 
-          <div className="relative bg-kashmir-blue-500 pt-[3rem] lg:pt-0 lg:col-span-10 lg:col-start-3 lg:row-start-1 lg:grid lg:grid-cols-10 lg:items-center rounded-xl">
+          <div className="relative rounded-xl bg-kashmir-blue-500 pt-[3rem] lg:col-span-10 lg:col-start-3 lg:row-start-1 lg:grid lg:grid-cols-10 lg:items-center lg:pt-0">
             <div className="absolute inset-0 hidden overflow-hidden rounded-3xl lg:block" aria-hidden="true">
               <svg
                 className="absolute bottom-full left-full translate-y-1/3 -translate-x-2/3 transform xl:bottom-auto xl:top-0 xl:translate-y-0"
@@ -74,10 +74,10 @@ const ConnectWallet: React.FC = () => {
                 understanding.
               </p>
               <button
-                className="flex justify-center items-center w-full max-h-12 rounded-md border border-transparent bg-gray-50 py-3 px-5 text-center text-base font-medium text-kashmir-blue-500 shadow-md hover:bg-gray-200 md:w-[10rem]"
+                className="flex max-h-12 w-full items-center justify-center rounded-md border border-transparent bg-gray-50 py-3 px-5 text-center text-base font-medium text-kashmir-blue-500 shadow-md hover:bg-gray-200 md:w-[10rem]"
                 onClick={connect}
               >
-                {isConnecting ? <Spinner /> : "Connect Wallet"}
+                {isConnecting ? <Spinner /> : 'Connect Wallet'}
               </button>
             </div>
           </div>

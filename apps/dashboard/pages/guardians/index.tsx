@@ -12,9 +12,9 @@ import { UserGroupIcon } from '@heroicons/react/24/solid';
 import type { NextPage } from 'next';
 
 const Guardian: NextPage = () => {
-  const { queryClient, userAddr, network } = useVectis();
-  const { isLoading, data: accounts } = useQuery('accounts_by_guardians', () =>
-    queryClient.getAccountsByGuardianAddr(network.chainName, userAddr)
+  const { queryClient, userAddr, chainName } = useVectis();
+  const { isLoading, data: accounts } = useQuery(['accounts_by_guardians', chainName, userAddr], () =>
+    queryClient.getAccountsByGuardianAddr(chainName, userAddr)
   );
 
   return (

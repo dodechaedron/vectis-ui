@@ -8,6 +8,8 @@ import * as yup from 'yup';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { convertDenomToMicroDenom } from '~/utils/conversion';
+
 import StepAccountDetails from './StepAccountDetails';
 import StepGuardianSelection from './StepGuardianSelection';
 import StepPreview from './StepPreview';
@@ -45,6 +47,7 @@ const resolver = () =>
   );
 
 const WalletCreationWizard: React.FC = () => {
+  const { defaultFee } = useVectis();
   const [step, setStep] = React.useState(1);
   const methods = useForm<FormValues>({ defaultValues: { guardians: [{ value: '' }] }, resolver: resolver() });
   const { handleSubmit } = methods;
@@ -56,7 +59,8 @@ const WalletCreationWizard: React.FC = () => {
     const guardians = data.guardians.map((g) => g.value);
     const relayers = [];
     const promise = async () => {
-      await signingClient.createProxyWallet(data.label, guardians, relayers, data.multisig, data.initialFunds, data.threshold);
+      const initialFunds = convertDenomToMicroDenom(data.initialFunds, defaultFee.exponent);
+      await signingClient.createProxyWallet(data.label, guardians, relayers, data.multisig, Number(initialFunds), data.threshold);
       await sleep(5000);
     };
     await toast.promise(promise());
