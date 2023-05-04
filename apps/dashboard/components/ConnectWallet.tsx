@@ -12,7 +12,7 @@ const ConnectWallet: React.FC = () => {
 
   const connect = async () => {
     setIsConnecting(true);
-    await connectWallet('vectis-extension');
+    connectWallet();
     setIsConnecting(false);
   };
   return (

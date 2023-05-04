@@ -9,6 +9,8 @@ import { ModalProvider, TranslationsProvider, VectisProvider } from '~/providers
 import assets from '~/utils/assets';
 import chains from '~/utils/chains';
 
+import ModalWallet from '~/components/Modals/WalletModal';
+
 const queryClient = new QueryClient();
 
 const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
@@ -18,7 +20,7 @@ const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
         <ChainProvider
           assetLists={assets}
           chains={chains}
-          walletModal={(props) => <div></div>}
+          walletModal={(props) => <ModalWallet {...props} />}
           wallets={[...keplrWallet, ...vectisWallet]}
           endpointOptions={{
             endpoints: {

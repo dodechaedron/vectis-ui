@@ -21,7 +21,7 @@ export interface VectisState {
   signingClient: VectisService;
   account: VectisAccount;
   changeAccount: (wallet: VectisAccount) => void;
-  connect: (walletName: string) => void;
+  connect: () => void;
   disconnect: () => void;
 }
 
@@ -42,6 +42,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
     disconnect,
     getOfflineSignerDirect,
     walletRepo,
+    connect,
     isWalletConnected
   } = useChain(chainName as string);
   const addresses = useMemo(
@@ -106,7 +107,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
           signingClient,
           account,
           changeAccount,
-          connect: (walletName: string) => walletRepo.connect(walletName),
+          connect,
           disconnect
         } as VectisState
       }
