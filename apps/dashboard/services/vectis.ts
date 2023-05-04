@@ -27,6 +27,8 @@ import { CoinInfo, ContractAddresses, Endpoints, VectisAccount } from '~/interfa
 import { Proposal } from '@dao-dao/types/contracts/CwProposalSingle.v1';
 import { VoteInfo } from '@dao-dao/types/contracts/DaoProposalSingle.common';
 import { FactoryT, ProxyT } from '@vectis/types';
+import { Plugin, PluginsResponse } from '@vectis/types/PluginRegistry.types';
+import { PluginListResponse } from '@vectis/types/Proxy.types';
 
 export class VectisQueryService {
   queryClient: QueryClient & StakingExtension & BankExtension & TxExtension & DistributionExtension & WasmExtension;
@@ -66,11 +68,11 @@ export class VectisQueryService {
     return data;
   }
 
-  async getPluginsFromRegistry() {
+  async getPluginsFromRegistry(): Promise<PluginsResponse> {
     return await this.queryClient.wasm.queryContractSmart(this.addresses.pluginRegistryAddress, { get_plugins: {} });
   }
 
-  async getPluginByIdFromRegistry(id: number) {
+  async getPluginByIdFromRegistry(id: number): Promise<Plugin> {
     return await this.queryClient.wasm.queryContractSmart(this.addresses.pluginRegistryAddress, { get_plugin_by_id: { id } });
   }
 
@@ -89,9 +91,8 @@ export class VectisQueryService {
     return await this.queryClient.wasm.queryContractSmart(this.addresses.factoryAddress, { fees: {} });
   }
 
-  async getPlugins(proxyAddress: string): Promise<any> {
+  async getPlugins(proxyAddress: string): Promise<PluginListResponse> {
     const plugins = await this.queryClient.wasm.queryContractSmart(proxyAddress, { plugins: {} });
-    console.log(plugins);
     return plugins;
   }
 
@@ -497,13 +498,5 @@ export class VectisService extends VectisQueryService {
       }
     };
     return await this.signingClient.execute(this.userAddr, multisigAddr, proposal, 'auto');
-  }
-
-  async mintGovec(): Promise<ExecuteResult> {
-    const msg: FactoryT.ExecuteMsg = {
-      claim_govec: {}
-    };
-
-    return await this.signingClient.execute(this.userAddr, this.addresses.factoryAddress, msg, 'auto');
   }
 }

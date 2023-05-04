@@ -2754,6 +2754,11 @@
   resolved "https://registry.yarnpkg.com/@vectis/extension-client/-/extension-client-0.6.0.tgz#17f727712040001b43c1581a3d147d7205dce30b"
   integrity sha512-VthQXEY2vZJRPA5LRjcurgeoYAuymik0Zw2n9XpUUTGmiHLHieknCh9t/E5qF0R/4wIeOSAOL0heQITM1Lgimg==
 
+"@vectis/types@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@vectis/types/-/types-0.2.1.tgz#a622a022081f89ded18f357b608fc13a394b0c20"
+  integrity sha512-JN76dfCWuXb7Z9BBGStPYxiFvqnjywrRa4owd3teGSHCaJEkEV+K0T3oVSEPhT8vShER7KIQyYrgrhtkj9unhw==
+
 "@vectis/types@^1.0.2-rc":
   version "1.0.2-rc"
   resolved "https://registry.yarnpkg.com/@vectis/types/-/types-1.0.2-rc.tgz#3206617c33b92db3041a904833b271f850d27dac"
