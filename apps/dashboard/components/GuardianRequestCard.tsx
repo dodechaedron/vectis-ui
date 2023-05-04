@@ -18,7 +18,7 @@ const GuardianRequestCard: React.FC = () => {
   const { query } = useRouter();
   const { signingClient } = useVectis();
   const { toast } = useToast();
-  const [activeProposal, setActiveProposal] = useState<GuardiansUpdateRequest | null>(null);
+  const [activeProposal, setActiveProposal] = useState<any | null>(null);
 
   useEffect(() => {
     const fetchActiveRequest = async () => {

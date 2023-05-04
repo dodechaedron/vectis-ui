@@ -284,7 +284,7 @@ export class VectisService extends VectisQueryService {
     const instMsg = { cred_def };
 
     const identityPlugin = await this.getPluginByIdFromRegistry(1);
-    const codeId = identityPlugin.versions[identityPlugin.latest_version].code_id;
+    // const codeId = identityPlugin.versions[identityPlugin.latest_version].code_id;
 
     await this.instantiatePlugin(
       proxyAddr,

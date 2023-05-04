@@ -12,7 +12,6 @@ const StepConfirmation: React.FC = () => {
   const { push: goToPage } = useRouter();
 
   const handleMint = async () => {
-    await toast.promise(signingClient.mintGovec());
     goToPage('/accounts');
   };
 
