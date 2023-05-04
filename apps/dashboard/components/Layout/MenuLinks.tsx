@@ -29,7 +29,7 @@ const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
         {links.map((item) => {
           const path = pathname.slice(1);
           const isActive = item.href === pathname || path.includes(item.href);
-          const isDisabled = ['Governance', 'Plugins'].includes(item.text);
+          const isDisabled = ['Governance'].includes(item.text);
           return (
             <li key={item.text}>
               <Link
@@ -47,12 +47,12 @@ const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
                   className={clsx(
                     isActive ? 'text-kashmir-blue-500' : 'text-gray-400 group-hover:text-kashmir-blue-500',
                     '-ml-1 mr-3 h-6 w-6 flex-shrink-0',
-                    { 'text-gray-400 group-hover:text-gray-400': isDisabled }
+                    { 'group-hover:!text-gray-400': isDisabled }
                   )}
                   aria-hidden="true"
                 />
                 <span className="truncate">{item.text}</span>
-                {item.text === 'Plugins' && (
+                {item.text === 'Governance' && (
                   <span className="ml-2 inline-flex items-center rounded-full bg-kashmir-blue-100 px-2.5 py-0.5 text-xs font-medium text-kashmir-blue-800">
                     Soon
                   </span>

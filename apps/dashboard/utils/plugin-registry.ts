@@ -1,0 +1,2 @@
+export const junotestnet_plugin_registry = process.env.NEXT_PUBLIC_JUNO_PLUGIN_REGISTRY_ADDRESS;
+export const injectivetestnet_plugin_registry = process.env.NEXT_PUBLIC_INJECTIVE_PLUGIN_REGISTRY_ADDRESS;

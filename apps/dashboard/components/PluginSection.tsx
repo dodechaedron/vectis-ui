@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 import { Button } from './Buttons';
 
@@ -8,7 +9,7 @@ const PluginSection: React.FC = () => {
   return (
     <div className="flex flex-col gap-1">
       <p>Plugins</p>
-      <div className="flex flex-col gap-2 justify-center items-center bg-white px-4 py-4 sm:px-6 rounded-md shadow-sm min-h-[15.3rem]">
+      <div className="flex min-h-[15.3rem] flex-col items-center justify-center gap-2 rounded-md bg-white px-4 py-4 shadow-sm sm:px-6">
         <div>
           <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path
@@ -22,9 +23,9 @@ const PluginSection: React.FC = () => {
           <h3 className="text-sm font-medium text-gray-900">No Plugins</h3>
         </div>
         <p className="mt-1 text-sm text-gray-500">Plugins are optional helpers installable on your smart account</p>
-        <Button disabled>
+        <Button>
           <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-          <p>Install Plugin</p>
+          <Link href="/plugins">Install Plugin</Link>
         </Button>
       </div>
     </div>

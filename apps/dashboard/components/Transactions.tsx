@@ -23,7 +23,7 @@ interface Props {
 }
 
 const TransactionsTable: React.FC<Props> = ({ filter, pagination, defaultLimit = 10 }) => {
-  const { chainName, signingClient, account } = useVectis();
+  const { chainName, signingClient, account, defaultFee } = useVectis();
   const [txs, setTxs] = useState<Transaction[]>([]);
   const methods = usePagination({ limit: defaultLimit });
   const { setTotal, page } = methods;
@@ -74,7 +74,7 @@ const TransactionsTable: React.FC<Props> = ({ filter, pagination, defaultLimit =
                   </a>
                 </div>
                 <div className="hidden h-fit items-center justify-start py-4 px-2 text-center text-sm text-gray-500 xl:flex">
-                  {convertMicroDenomToDenom(tx.fee.amount, 3)} {tx.fee.denom}
+                  {convertMicroDenomToDenom(tx.fee.amount, defaultFee.exponent)} {tx.fee.denom}
                 </div>
                 <div className="flex h-fit items-center justify-start py-4 px-2 text-sm text-gray-500">
                   <p>{IntlTimeAgo(tx.timestamp)}</p>

@@ -5,6 +5,7 @@ import { useChain } from '@cosmos-kit/react-lite';
 
 import { VectisQueryService, VectisService } from '~/services/vectis';
 import * as factories from '~/utils/factories';
+import * as pluginRegistries from '~/utils/plugin-registry';
 
 import { CoinInfo, VectisAccount } from '~/interfaces';
 import { Chain } from '@chain-registry/types';
@@ -43,7 +44,13 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
     walletRepo,
     isWalletConnected
   } = useChain(chainName as string);
-  const factoryAddress = useMemo(() => factories[`${chainInfo.chain_name}_factory`], [chainInfo]);
+  const addresses = useMemo(
+    () => ({
+      factoryAddress: factories[`${chainInfo.chain_name}_factory`],
+      pluginRegistryAddress: pluginRegistries[`${chainInfo.chain_name}_plugin_registry`]
+    }),
+    [chainInfo]
+  );
 
   const defaultFee = useMemo(() => {
     const { average_gas_price, denom } = chainInfo.fees!.fee_tokens[0];
@@ -72,8 +79,8 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
   }, [chainInfo]);
 
   useEffect(() => {
-    VectisQueryService.connect(endpoints, factoryAddress).then(setQueryClient);
-  }, [endpoints, factoryAddress]);
+    VectisQueryService.connect(endpoints, addresses).then(setQueryClient);
+  }, [endpoints, addresses]);
 
   useEffect(() => {
     (async () => {
@@ -81,7 +88,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
       if (!address || !address.includes(chainInfo.bech32_prefix)) return;
       await new Promise((resolve) => setTimeout(resolve, 2000));
       const signer = await getOfflineSignerDirect();
-      VectisService.connectWithSigner(signer, { endpoints, defaultFee, factoryAddress }).then(setSigningClient);
+      VectisService.connectWithSigner(signer, { endpoints, defaultFee, addresses }).then(setSigningClient);
     })();
   }, [chainInfo, address, isWalletConnected]);
 

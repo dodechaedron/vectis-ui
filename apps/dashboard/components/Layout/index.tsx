@@ -18,13 +18,13 @@ const font = Anek_Latin({
 });
 
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
-  const { account, userAddr, signingClient } = useVectis();
+  const { account, userAddr, queryClient } = useVectis();
   const { push: goToPage, pathname } = useRouter();
 
   useEffect(() => {
     if (account?.controllerAddr !== userAddr && pathname === '/') goToPage('/accounts');
   }, [pathname]);
-  const isLoading = signingClient ? false : true;
+  const isLoading = queryClient ? false : true;
 
   if (isLoading) return <Loading />;
   const Component = userAddr ? children : <ConnectWallet />;

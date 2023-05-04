@@ -1,4 +1,6 @@
-import { MICRO_DENOM, REWARDS_RATE, VALIDATOR_RATE } from './constants';
+import { toBase64, toUtf8 } from '@cosmjs/encoding';
+
+import { REWARDS_RATE, VALIDATOR_RATE } from './constants';
 
 export function fromNanoSecondsToSeconds(nanoSeconds: string | number): number {
   return Number(nanoSeconds) / 1e6;
@@ -49,4 +51,8 @@ export const coin = (amount: number | string, denom: string) => {
     amount: typeof amount === 'number' ? amount.toString() : amount,
     denom
   };
+};
+
+export const toCosmosMsg = <T = unknown>(msg: T): string => {
+  return toBase64(toUtf8(JSON.stringify(msg)));
 };

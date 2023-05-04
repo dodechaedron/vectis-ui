@@ -38,7 +38,7 @@ const SmartCardOverview: React.FC = () => {
             <div className="flex flex-col lg:gap-2">
               <p className="w-full text-[10px] uppercase md:text-[10px]">Guardians</p>
               <div className="flex gap-2">
-                <FaUserShield className="h-5 w-5 lg:h-6 lg:w-8" />
+                <FaUserShield className="h-6 w-6 lg:h-6 lg:w-8" />
                 <p className="text-center text-lg">{account.guardians.length}</p>
               </div>
             </div>

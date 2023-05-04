@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import axios from 'redaxios';
-import { coin, convertMicroDenomToDenom } from 'utils/conversion';
+import { coin, convertMicroDenomToDenom, toCosmosMsg } from 'utils/conversion';
 
 import { ExecuteResult, setupWasmExtension, SigningCosmWasmClient, WasmExtension } from '@cosmjs/cosmwasm-stargate';
 import { toBase64, toUtf8 } from '@cosmjs/encoding';
@@ -19,9 +19,11 @@ import {
 } from '@cosmjs/stargate';
 import { HttpBatchClient, Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
+import { parseCredPubKey } from '~/utils/misc';
+
 import InjectiveClient from './injective';
 
-import { CoinInfo, Endpoints, VectisAccount } from '~/interfaces';
+import { CoinInfo, ContractAddresses, Endpoints, VectisAccount } from '~/interfaces';
 import { Proposal } from '@dao-dao/types/contracts/CwProposalSingle.v1';
 import { VoteInfo } from '@dao-dao/types/contracts/DaoProposalSingle.common';
 import { FactoryT, ProxyT } from '@vectis/types';
@@ -29,7 +31,7 @@ import { FactoryT, ProxyT } from '@vectis/types';
 export class VectisQueryService {
   queryClient: QueryClient & StakingExtension & BankExtension & TxExtension & DistributionExtension & WasmExtension;
   http: typeof axios;
-  constructor(readonly client: Tendermint34Client, readonly endpoints: Endpoints, readonly factoryAddress: string) {
+  constructor(readonly client: Tendermint34Client, readonly endpoints: Endpoints, readonly addresses: ContractAddresses) {
     this.client = client;
     this.http = axios.create({
       baseURL: process.env.NEXT_PUBLIC_INDEXER_URL
@@ -49,9 +51,9 @@ export class VectisQueryService {
     return await Tendermint34Client.create(httpClient);
   }
 
-  static async connect(endpoints: Endpoints, factoryAddress: string): Promise<VectisQueryService> {
+  static async connect(endpoints: Endpoints, addresses: ContractAddresses): Promise<VectisQueryService> {
     const tmClient = await this.getTmClient(endpoints.rpcUrl);
-    return new VectisQueryService(tmClient, endpoints, factoryAddress);
+    return new VectisQueryService(tmClient, endpoints, addresses);
   }
 
   async getAccounts(controller: string[]): Promise<VectisAccount[]> {
@@ -62,6 +64,14 @@ export class VectisQueryService {
   async getAccountsByGuardianAddr(chainName: string, guardianAddr: string): Promise<VectisAccount[]> {
     const { data } = await this.http.get(`/guardian/${chainName}/vectis_accounts_by_guardian/${guardianAddr}`);
     return data;
+  }
+
+  async getPluginsFromRegistry() {
+    return await this.queryClient.wasm.queryContractSmart(this.addresses.pluginRegistryAddress, { get_plugins: {} });
+  }
+
+  async getPluginByIdFromRegistry(id: number) {
+    return await this.queryClient.wasm.queryContractSmart(this.addresses.pluginRegistryAddress, { get_plugin_by_id: { id } });
   }
 
   async getActiveGuardianRequests(proxyAddr: string): Promise<any> {
@@ -76,7 +86,13 @@ export class VectisQueryService {
   }
 
   async getFees(): Promise<FactoryT.FeesResponse> {
-    return await this.queryClient.wasm.queryContractSmart(this.factoryAddress, { fees: {} });
+    return await this.queryClient.wasm.queryContractSmart(this.addresses.factoryAddress, { fees: {} });
+  }
+
+  async getPlugins(proxyAddress: string): Promise<any> {
+    const plugins = await this.queryClient.wasm.queryContractSmart(proxyAddress, { plugins: {} });
+    console.log(plugins);
+    return plugins;
   }
 
   async getBalances(address: string): Promise<Coin[]> {
@@ -169,13 +185,13 @@ export class VectisService extends VectisQueryService {
     readonly userAddr: string,
     readonly endpoints: Endpoints,
     readonly defaultFee: CoinInfo,
-    readonly factoryAddress: string
+    readonly addresses: ContractAddresses
   ) {
-    super(client, endpoints, factoryAddress);
+    super(client, endpoints, addresses);
   }
   static async connectWithSigner(
     signer: OfflineDirectSigner,
-    { endpoints, defaultFee, factoryAddress }: { endpoints: Endpoints; defaultFee: CoinInfo; factoryAddress: string }
+    { endpoints, defaultFee, addresses }: { endpoints: Endpoints; defaultFee: CoinInfo; addresses: ContractAddresses }
   ): Promise<VectisService> {
     const tmClient = await this.getTmClient(endpoints.rpcUrl);
     const [{ address }] = await signer.getAccounts();
@@ -187,7 +203,7 @@ export class VectisService extends VectisQueryService {
         gasPrice: GasPrice.fromString(`${defaultFee.averageGasPrice}${defaultFee.udenom}`)
       });
     }
-    return new VectisService(tmClient, client, address, endpoints, defaultFee, factoryAddress);
+    return new VectisService(tmClient, client, address, endpoints, defaultFee, addresses);
   }
 
   async createProxyWallet(
@@ -198,7 +214,7 @@ export class VectisService extends VectisQueryService {
     initialFunds?: number,
     threshold?: number
   ): Promise<ExecuteResult> {
-    const { wallet_fee }: FactoryT.FeesResponse = await this.queryClient.wasm.queryContractSmart(this.factoryAddress, { fees: {} });
+    const { wallet_fee }: FactoryT.FeesResponse = await this.queryClient.wasm.queryContractSmart(this.addresses.factoryAddress, { fees: {} });
 
     const proxy_initial_funds = initialFunds ? [coin(initialFunds, this.defaultFee.udenom)] : [];
     const m = multisig ? { guardians_multisig: { threshold_absolute_count: threshold || 1 } } : {};
@@ -218,9 +234,14 @@ export class VectisService extends VectisQueryService {
       .plus(BigNumber(Number(wallet_fee.amount)))
       .toString();
 
-    return await this.signingClient.execute(this.userAddr, this.factoryAddress, { create_wallet: { create_wallet_msg } }, 'auto', undefined, [
-      coin(funds, this.defaultFee.udenom)
-    ]);
+    return await this.signingClient.execute(
+      this.userAddr,
+      this.addresses.factoryAddress,
+      { create_wallet: { create_wallet_msg } },
+      'auto',
+      undefined,
+      [coin(funds, this.defaultFee.udenom)]
+    );
   }
 
   async sendTokens(
@@ -231,6 +252,48 @@ export class VectisService extends VectisQueryService {
     memo?: string
   ): Promise<unknown> {
     return await this.signingClient.sendTokens(senderAddress, recipientAddress, amount, fee, memo);
+  }
+
+  async instantiatePlugin(
+    proxyAddr: string,
+    codeId: number,
+    instantiateMsg: any,
+    pluginParams: any,
+    label = 'Vectis Plugin',
+    memo?: string,
+    funds?: Coin[]
+  ): Promise<void> {
+    const installPluginMsg = {
+      instantiate_plugin: {
+        instantiate_msg: toCosmosMsg(instantiateMsg),
+        plugin_params: pluginParams,
+        label,
+        src: { code_id: codeId }
+      }
+    };
+
+    await this.signingClient.execute(this.userAddr, proxyAddr, installPluginMsg, 'auto', memo, funds);
+  }
+
+  async instantiateIdentityPlugin(proxyAddr: string): Promise<void> {
+    const { data } = await axios.post(`https://api-testnet.avida.zone/rg-holder-setup/${this.userAddr}/${proxyAddr}`);
+
+    const subPR = JSON.parse(data);
+    const cred_def = parseCredPubKey(JSON.stringify(subPR.credential_pub_key));
+    const instMsg = { cred_def };
+
+    const identityPlugin = await this.getPluginByIdFromRegistry(1);
+    const codeId = identityPlugin.versions[identityPlugin.latest_version].code_id;
+
+    await this.instantiatePlugin(
+      proxyAddr,
+      991,
+      instMsg,
+      { permissions: [{ query: 'anoncreds-pubkey' }] },
+      'Vectis Identity Plugin',
+      undefined,
+      [coin(10, this.defaultFee.udenom)]
+    );
   }
 
   async proxyAcceptGuardianRequest(proxyAddr: string): Promise<ExecuteResult> {
@@ -441,6 +504,6 @@ export class VectisService extends VectisQueryService {
       claim_govec: {}
     };
 
-    return await this.signingClient.execute(this.userAddr, this.factoryAddress, msg, 'auto');
+    return await this.signingClient.execute(this.userAddr, this.addresses.factoryAddress, msg, 'auto');
   }
 }

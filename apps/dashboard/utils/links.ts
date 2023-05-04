@@ -24,7 +24,7 @@ export const generalMenu = [
   { text: 'Guardian View', href: '/guardians', Icon: RiSecurePaymentFill },
   /*  { text: "Address Book", href: "/agenda", Icon: FaRegAddressBook }, */
   { text: 'Transactions', href: '/transactions', Icon: BiTransfer },
-  { text: 'Plugins', href: '#', Icon: PuzzlePieceIcon },
+  { text: 'Plugins', href: '/plugins', Icon: PuzzlePieceIcon },
   { text: 'Governance', href: '#', Icon: FiExternalLink }
 ];
 
