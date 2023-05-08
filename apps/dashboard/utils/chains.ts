@@ -272,6 +272,580 @@ const injectivetestnet = {
   ]
 };
 
-const chains = [junotestnet, injectivetestnet];
+const archwaytestnet = {
+  $schema: '../chain.schema.json',
+  chain_name: 'archwaytestnet',
+  chain_id: 'constantine-2',
+  pretty_name: 'Archway testnet',
+  status: 'live',
+  network_type: 'testnet',
+  website: 'https://archway.io',
+  bech32_prefix: 'archway',
+  daemon_name: 'archwayd',
+  node_home: '$HOME/.archway',
+  key_algos: ['secp256k1'],
+  slip44: 118,
+  fees: {
+    fee_tokens: [
+      {
+        denom: 'uconst',
+        low_gas_price: 0,
+        average_gas_price: 0.025,
+        high_gas_price: 0.05
+      }
+    ]
+  },
+  codebase: {
+    git_repo: 'https://github.com/archway-network/archway'
+  },
+  logo_URIs: {
+    png: 'https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/archwaytestnet/images/ArchwayBrandmark.png',
+    svg: 'https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/archwaytestnet/images/ArchwayBrandmark.svg'
+  },
+  apis: {
+    rpc: [
+      {
+        address: 'https://rpc.constantine-2.archway.tech',
+        provider: 'Quickapi'
+      }
+    ],
+    rest: [
+      {
+        address: 'https://api.constantine-2.archway.tech',
+        provider: 'Quickapi'
+      }
+    ]
+  },
+  explorers: [
+    {
+      kind: 'archwayscan',
+      url: 'https://explorer.constantine-2.archway.tech',
+      tx_page: 'https://explorer.constantine-2.archway.tech/transactions/${txHash}'
+    }
+  ]
+};
+
+const neutrontestnet = {
+  $schema: '../../chain.schema.json',
+  chain_name: 'neutrontestnet',
+  status: 'live',
+  network_type: 'testnet',
+  pretty_name: 'Neutron Testnet',
+  chain_id: 'pion-1',
+  bech32_prefix: 'neutron',
+  daemon_name: 'neutrond',
+  node_home: '$HOME/.neutrond',
+  key_algos: ['secp256k1'],
+  slip44: 118,
+  fees: {
+    fee_tokens: [
+      {
+        denom: 'untrn',
+        low_gas_price: 0,
+        average_gas_price: 0.025,
+        high_gas_price: 0.05
+      }
+    ]
+  },
+  codebase: {
+    git_repo: 'https://github.com/neutron-org/neutron',
+    recommended_version: 'v0.4.3',
+    compatible_versions: [],
+    cosmos_sdk_version: '0.45',
+    consensus: {
+      type: 'tendermint',
+      version: '0.34'
+    },
+    cosmwasm_version: '0.31',
+    cosmwasm_enabled: true,
+    ibc_go_version: '4.3.0',
+    genesis: {
+      genesis_url: 'https://github.com/cosmos/testnets/raw/master/replicated-security/pion-1/pion-1-genesis.json'
+    },
+    versions: [
+      {
+        name: 'v0.4.3',
+        recommended_version: 'v0.4.3',
+        compatible_versions: [],
+        cosmos_sdk_version: '0.45',
+        consensus: {
+          type: 'tendermint',
+          version: '0.34'
+        },
+        cosmwasm_version: '0.31',
+        cosmwasm_enabled: true,
+        ibc_go_version: '4.3.0'
+      }
+    ]
+  },
+  logo_URIs: {
+    png: 'https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/neutrontestnet/images/neutron-black-logo.png',
+    svg: 'https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/neutrontestnet/images/neutron-black-logo.svg'
+  },
+  peers: {
+    seeds: [
+      {
+        id: 'e2c07e8e6e808fb36cca0fc580e31216772841df',
+        address: 'p2p-palvus.pion-1.ntrn.tech:26656',
+        provider: 'Neutron'
+      }
+    ],
+    persistent_peers: [
+      {
+        id: '49d75c6094c006b6f2758e45457c1f3d6002ce7a',
+        address: 'pion-banana.rs-testnet.polypore.xyz:26656',
+        provider: 'Hypha'
+      },
+      {
+        id: 'f2520026fb9086f1b2f09e132d209cbe88064ec1',
+        address: 'pion-cherry.rs-testnet.polypore.xyz:26656',
+        provider: 'Hypha'
+      }
+    ]
+  },
+  apis: {
+    rpc: [
+      {
+        address: 'https://rpc-palvus.pion-1.ntrn.tech',
+        provider: 'Neutron'
+      },
+      {
+        address: 'https://rpc.pion.remedy.tm.p2p.org',
+        provider: 'P2P.ORG'
+      },
+      {
+        address: 'https://rpc.baryon-sentry-01.rs-testnet.polypore.xyz',
+        provider: 'Hypha'
+      }
+    ],
+    rest: [
+      {
+        address: 'https://rest-palvus.pion-1.ntrn.tech',
+        provider: 'Neutron'
+      },
+      {
+        address: 'https://api.pion.remedy.tm.p2p.org',
+        provider: 'P2P.ORG'
+      },
+      {
+        address: 'https://rest.baryon-sentry-01.rs-testnet.polypore.xyz',
+        provider: 'Hypha'
+      }
+    ],
+    grpc: [
+      {
+        address: 'grpc-palvus.pion-1.ntrn.tech:80',
+        provider: 'Neutron'
+      },
+      {
+        address: 'grpc.baryon.remedy.tm.p2p.org:443',
+        provider: 'P2P.ORG'
+      }
+    ]
+  },
+  explorers: [
+    {
+      kind: 'Ping.pub Explorer from Hypha',
+      url: 'https://explorer.rs-testnet.polypore.xyz/pion-1',
+      tx_page: 'https://explorer.rs-testnet.polypore.xyz/pion-1/tx/${txHash}',
+      account_page: 'https://explorer.rs-testnet.polypore.xyz/baryon-1/account/${accountAddress}'
+    },
+    {
+      kind: 'Mintscan',
+      url: 'https://testnet.mintscan.io/neutron-testnet',
+      tx_page: 'https://testnet.mintscan.io/neutron-testnet/txs/${txHash}',
+      account_page: 'https://testnet.mintscan.io/neutron-testnet/account/${accountAddress}'
+    }
+  ]
+};
+
+const juno = {
+  $schema: '../chain.schema.json',
+  chain_name: 'juno',
+  status: 'live',
+  network_type: 'mainnet',
+  website: 'https://www.junonetwork.io/',
+  pretty_name: 'Juno',
+  chain_id: 'juno-1',
+  bech32_prefix: 'juno',
+  daemon_name: 'junod',
+  node_home: '$HOME/.juno',
+  key_algos: ['secp256k1'],
+  slip44: 118,
+  fees: {
+    fee_tokens: [
+      {
+        denom: 'ujuno',
+        fixed_min_gas_price: 0.001,
+        low_gas_price: 0.001,
+        average_gas_price: 0.0025,
+        high_gas_price: 0.004
+      }
+    ]
+  },
+  staking: {
+    staking_tokens: [
+      {
+        denom: 'ujuno'
+      }
+    ]
+  },
+  codebase: {
+    git_repo: 'https://github.com/CosmosContracts/juno',
+    recommended_version: 'v14.0.0',
+    compatible_versions: ['v14.0.0'],
+    cosmos_sdk_version: '0.45',
+    consensus: {
+      type: 'tendermint',
+      version: '0.34'
+    },
+    cosmwasm_version: '0.30',
+    cosmwasm_enabled: true,
+    genesis: {
+      genesis_url: 'https://download.dimi.sh/juno-phoenix2-genesis.tar.gz'
+    },
+    versions: [
+      {
+        name: 'v13',
+        recommended_version: 'v13.0.0',
+        compatible_versions: ['v13.0.0'],
+        cosmos_sdk_version: '0.45',
+        consensus: {
+          type: 'tendermint',
+          version: '0.34'
+        },
+        cosmwasm_version: '0.30',
+        cosmwasm_enabled: true,
+        next_version_name: 'v14'
+      },
+      {
+        name: 'v14',
+        height: 7875721,
+        recommended_version: 'v14.0.0',
+        compatible_versions: ['v14.0.0']
+      }
+    ]
+  },
+  peers: {
+    seeds: [
+      {
+        id: 'babc3f3f7804933265ec9c40ad94f4da8e9e0017',
+        address: 'seed.rhinostake.com:12656',
+        provider: 'RHINO'
+      },
+      {
+        id: '90b09362d9ce3845096c4938eea0dba682b0ad2c',
+        address: 'juno-seed-new.blockpane.com:26656'
+      },
+      {
+        id: 'ade4d8bc8cbe014af6ebdf3cb7b1e9ad36f412c0',
+        address: 'seeds.polkachu.com:12656',
+        provider: 'Polkachu'
+      },
+      {
+        id: '20e1000e88125698264454a884812746c2eb4807',
+        address: 'seeds.lavenderfive.com:12656',
+        provider: 'Lavender.Five Nodes 🐝'
+      },
+      {
+        id: 'ea67180befe4d9ca71142d21ada8ff58cc08f71c',
+        address: 'seeds.goldenratiostaking.net:1627',
+        provider: 'Golden Ratio Staking'
+      },
+      {
+        id: 'e1b058e5cfa2b836ddaa496b10911da62dcf182e',
+        address: 'juno-seed-1.allnodes.me:26656',
+        provider: 'Allnodes.com ⚡️ Nodes & Staking'
+      },
+      {
+        id: 'e726816f42831689eab9378d5d577f1d06d25716',
+        address: 'juno-seed-2.allnodes.me:26656',
+        provider: 'Allnodes.com ⚡️ Nodes & Staking'
+      },
+      {
+        id: 'ebc272824924ea1a27ea3183dd0b9ba713494f83',
+        address: 'juno-mainnet-seed.autostake.com:27136',
+        provider: 'AutoStake 🛡️ Slash Protected'
+      },
+      {
+        id: '70fcee92283edc02340289b2a74e4ab1a0203848',
+        address: 'seed-juno.freshstaking.com:39656',
+        provider: 'FreshSTAKING'
+      }
+    ],
+    persistent_peers: [
+      {
+        id: '7f593757c0cde8972ce929381d8ac8e446837811',
+        address: '178.18.255.244:26656'
+      },
+      {
+        id: 'ebc272824924ea1a27ea3183dd0b9ba713494f83',
+        address: 'juno-mainnet-peer.autostake.com:27136',
+        provider: 'AutoStake 🛡️ Slash Protected'
+      },
+      {
+        id: '70fcee92283edc02340289b2a74e4ab1a0203848',
+        address: 'seed-juno.freshstaking.com:39656',
+        provider: 'FreshSTAKING'
+      }
+    ]
+  },
+  apis: {
+    rpc: [
+      {
+        address: 'https://rpc-juno.whispernode.com:443',
+        provider: 'WhisperNode🤐'
+      },
+      {
+        address: 'https://rpc-juno.goldenratiostaking.net',
+        provider: 'Golden Ratio Staking'
+      },
+      {
+        address: 'https://rpc-juno.itastakers.com',
+        provider: 'itastakers'
+      },
+      {
+        address: 'https://rpc-juno.ecostake.com',
+        provider: 'ecostake'
+      },
+      {
+        address: 'https://juno-rpc.polkachu.com',
+        provider: 'Polkachu'
+      },
+      {
+        address: 'https://juno-rpc.lavenderfive.com:443',
+        provider: 'Lavender.Five Nodes 🐝'
+      },
+      {
+        address: 'https://rpc-juno.pupmos.network',
+        provider: 'PUPMØS'
+      },
+      {
+        address: 'https://rpc-juno-ia.cosmosia.notional.ventures/',
+        provider: 'Notional'
+      },
+      {
+        address: 'https://rpc.juno.chaintools.tech/',
+        provider: 'ChainTools'
+      },
+      {
+        address: 'https://juno-rpc.kleomedes.network',
+        provider: 'Kleomedes'
+      },
+      {
+        address: 'https://rpc.juno.interbloc.org',
+        provider: 'Interbloc'
+      },
+      {
+        address: 'https://juno.rpc.stakin-nodes.com',
+        provider: 'Stakin'
+      },
+      {
+        address: 'https://juno-rpc.icycro.org',
+        provider: 'IcyCRO 🧊'
+      },
+      {
+        address: 'https://rpc.juno.bh.rocks',
+        provider: 'BlockHunters 🎯'
+      },
+      {
+        address: 'https://juno.kingnodes.com',
+        provider: 'kingnodes 👑'
+      },
+      {
+        address: 'https://juno-rpc.reece.sh',
+        provider: 'Reecepbcups'
+      },
+      {
+        address: 'https://juno-rpc.stakeandrelax.net',
+        provider: 'Stake&Relax Validator 🦥'
+      },
+      {
+        address: 'https://juno-mainnet-rpc.autostake.com:443',
+        provider: 'AutoStake 🛡️ Slash Protected'
+      },
+      {
+        address: 'http://rpc-juno.freshstaking.com:39657',
+        provider: 'FreshSTAKING'
+      },
+      {
+        address: 'https://rpc-juno.architectnodes.com',
+        provider: 'Architect Nodes'
+      },
+      {
+        address: 'https://juno.rpc.interchain.ivaldilabs.xyz',
+        provider: 'ivaldilabs'
+      },
+      {
+        address: 'https://juno-rpc.cosmosrescue.com',
+        provider: 'cosmosrescue'
+      },
+      {
+        address: 'http://167.235.211.168:26657',
+        provider: 'CommunityStaking'
+      }
+    ],
+    rest: [
+      {
+        address: 'https://lcd-juno.itastakers.com',
+        provider: 'itastakers'
+      },
+      {
+        address: 'https://rest-juno.ecostake.com',
+        provider: 'ecostake'
+      },
+      {
+        address: 'https://juno-api.lavenderfive.com:443',
+        provider: 'Lavender.Five Nodes 🐝'
+      },
+      {
+        address: 'https://api-juno.pupmos.network',
+        provider: 'PUPMØS'
+      },
+      {
+        address: 'https://api-juno-ia.cosmosia.notional.ventures/',
+        provider: 'Notional'
+      },
+      {
+        address: 'https://api.juno.chaintools.tech/',
+        provider: 'ChainTools'
+      },
+      {
+        address: 'https://juno-api.polkachu.com',
+        provider: 'Polkachu'
+      },
+      {
+        address: 'https://juno-api.kleomedes.network',
+        provider: 'Kleomedes'
+      },
+      {
+        address: 'https://api.juno.interbloc.org',
+        provider: 'Interbloc'
+      },
+      {
+        address: 'https://juno.rest.stakin-nodes.com',
+        provider: 'Stakin'
+      },
+      {
+        address: 'https://api.juno.bh.rocks',
+        provider: 'BlockHunters 🎯'
+      },
+      {
+        address: 'https://juno.kingnodes.com',
+        provider: 'kingnodes 👑'
+      },
+      {
+        address: 'https://juno-api.reece.sh',
+        provider: 'Reecepbcups'
+      },
+      {
+        address: 'https://juno-api.stakeandrelax.net',
+        provider: 'Stake&Relax Validator 🦥'
+      },
+      {
+        address: 'https://rest-juno.architectnodes.com',
+        provider: 'Architect Nodes'
+      },
+      {
+        address: 'https://juno-mainnet-lcd.autostake.com:443',
+        provider: 'AutoStake 🛡️ Slash Protected'
+      },
+      {
+        address: 'https://juno.rest.interchain.ivaldilabs.xyz',
+        provider: 'ivaldilabs'
+      },
+      {
+        address: 'https://juno-api.cosmosrescue.com',
+        provider: 'cosmosrescue'
+      },
+      {
+        address: 'http://167.235.211.168:1317',
+        provider: 'CommunityStaking'
+      }
+    ],
+    grpc: [
+      {
+        address: 'grpc-juno-ia.cosmosia.notional.ventures:443',
+        provider: 'Notional'
+      },
+      {
+        address: 'juno-grpc.lavenderfive.com:443',
+        provider: 'Lavender.Five Nodes 🐝'
+      },
+      {
+        address: 'juno-grpc.polkachu.com:12690',
+        provider: 'Polkachu'
+      },
+      {
+        address: 'juno.grpc.stakin-nodes.com:443',
+        provider: 'Stakin'
+      },
+      {
+        address: 'grpc-juno.kingnodes.com:443',
+        provider: 'kingnodes 👑'
+      },
+      {
+        address: 'http://juno-grpc.stakeandrelax.net:12690',
+        provider: 'Stake&Relax Validator 🦥'
+      },
+      {
+        address: 'grpc-juno.architectnodes.com:1443',
+        provider: 'Architect Nodes'
+      },
+      {
+        address: 'juno-mainnet-grpc.autostake.com:443',
+        provider: 'AutoStake 🛡️ Slash Protected'
+      },
+      {
+        address: 'juno.grpc.interchain.ivaldilabs.xyz:443',
+        provider: 'ivaldilabs'
+      },
+      {
+        address: 'juno-grpc.cosmosrescue.com:9090',
+        provider: 'cosmosrescue'
+      },
+      {
+        address: 'http://167.235.211.168:9091',
+        provider: 'CommunityStaking'
+      }
+    ]
+  },
+  explorers: [
+    {
+      kind: 'EZ Staking Tools',
+      url: 'https://ezstaking.tools/juno',
+      tx_page: 'https://ezstaking.tools/juno/txs/${txHash}',
+      account_page: 'https://ezstaking.tools/juno/account/${accountAddress}'
+    },
+    {
+      kind: 'ping.pub',
+      url: 'https://ping.pub/juno',
+      tx_page: 'https://ping.pub/juno/tx/${txHash}'
+    },
+    {
+      kind: 'explorers.guru',
+      url: 'https://juno.explorers.guru',
+      tx_page: 'https://juno.explorers.guru/transaction/${txHash}'
+    },
+    {
+      kind: 'mintscan',
+      url: 'https://www.mintscan.io/juno',
+      tx_page: 'https://www.mintscan.io/juno/txs/${txHash}',
+      account_page: 'https://www.mintscan.io/juno/account/${accountAddress}'
+    },
+    {
+      kind: 'atomscan',
+      url: 'https://atomscan.com/juno',
+      tx_page: 'https://atomscan.com/juno/transactions/${txHash}'
+    },
+    {
+      kind: 'TC Network',
+      url: 'https://explorer.tcnetwork.io/juno',
+      tx_page: 'https://explorer.tcnetwork.io/juno/transaction/${txHash}'
+    }
+  ]
+};
+
+const chains = [junotestnet, injectivetestnet, archwaytestnet, neutrontestnet, juno];
 
 export default chains;

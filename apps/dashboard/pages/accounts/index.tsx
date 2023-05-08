@@ -15,7 +15,9 @@ import type { NextPage } from 'next';
 const ListWallets: NextPage = () => {
   const { t } = useTranslations();
   const { signingClient, userAddr } = useVectis();
-  const { data: accounts, isLoading } = useQuery(['vectis_accounts', userAddr], () => signingClient.getAccounts([userAddr]), {});
+  const { data: accounts, isLoading } = useQuery(['vectis_accounts', userAddr], () => signingClient.getAccounts([userAddr]), {
+    enabled: !!signingClient
+  });
 
   return (
     <>

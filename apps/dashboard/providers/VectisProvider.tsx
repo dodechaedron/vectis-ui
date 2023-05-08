@@ -25,7 +25,7 @@ export interface VectisState {
   disconnect: () => void;
 }
 
-const supportedChains = ['junotestnet', 'injectivetestnet'];
+const supportedChains = ['junotestnet', 'injectivetestnet', 'archwaytestnet', 'neutrontestnet'];
 
 const VectisContext = createContext<VectisState | null>(null);
 
@@ -35,16 +35,8 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
   const [account, changeAccount] = useLocalStorage<VectisAccount>('vectis@v1:account');
 
   const [chainName, setChain] = useLocalStorage<string>('vectis@v1:selectedNetwork', 'junotestnet');
-  const {
-    address,
-    chain: chainInfo,
-    assets,
-    disconnect,
-    getOfflineSignerDirect,
-    walletRepo,
-    connect,
-    isWalletConnected
-  } = useChain(chainName as string);
+  const { address, chain: chainInfo, assets, disconnect, getOfflineSignerDirect, connect, isWalletConnected } = useChain(chainName as string);
+
   const addresses = useMemo(
     () => ({
       factoryAddress: factories[`${chainInfo.chain_name}_factory`],
@@ -75,7 +67,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
     return {
       rpcUrl: `https://rpc.${domain}/${chainInfo.chain_name}`,
       restUrl: `https://rest.${domain}/${chainInfo.chain_name}`,
-      grpcUrl: chainInfo.apis!.grpc![0].address
+      grpcUrl: chainInfo.apis?.grpc?.[0].address || ''
     };
   }, [chainInfo]);
 
@@ -84,13 +76,12 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
   }, [endpoints, addresses]);
 
   useEffect(() => {
-    (async () => {
-      if (!isWalletConnected) return;
-      if (!address || !address.includes(chainInfo.bech32_prefix)) return;
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+    if (!isWalletConnected) return;
+    setTimeout(async () => {
       const signer = await getOfflineSignerDirect();
-      VectisService.connectWithSigner(signer, { endpoints, defaultFee, addresses }).then(setSigningClient);
-    })();
+      const txService = await VectisService.connectWithSigner(signer, { endpoints, defaultFee, addresses });
+      setSigningClient(txService);
+    }, 100);
   }, [chainInfo, address, isWalletConnected]);
 
   return (

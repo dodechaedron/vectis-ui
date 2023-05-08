@@ -11,7 +11,13 @@ import chains from '~/utils/chains';
 
 import ModalWallet from '~/components/Modals/WalletModal';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false
+    }
+  }
+});
 
 const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
@@ -31,6 +37,14 @@ const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
               injectivetestnet: {
                 rest: ['https://rest.testcosmos.directory/injectivetestnet'],
                 rpc: ['https://rpc.testcosmos.directory/injectivetestnet']
+              },
+              neutrontestnet: {
+                rest: ['https://rest.testcosmos.directory/neutrontestnet'],
+                rpc: ['https://rpc.testcosmos.directory/neutrontestnet']
+              },
+              archwaytestnet: {
+                rest: ['https://rest.testcosmos.directory/archwaytestnet'],
+                rpc: ['https://rpc.testcosmos.directory/archwaytestnet']
               }
             }
           }}
