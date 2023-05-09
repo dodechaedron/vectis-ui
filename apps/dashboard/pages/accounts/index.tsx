@@ -18,7 +18,7 @@ const ListWallets: NextPage = () => {
   const { signingClient, userAddr } = useVectis();
   const { data: accounts, isLoading } = useQuery(['vectis_accounts', userAddr], () => signingClient.getAccounts([userAddr]), {
     enabled: !!signingClient,
-    onSuccess: (accounts) => accounts.forEach((account) => queryClient.setQueryData(['vectis_accounts', account.address], account))
+    onSuccess: (accounts) => accounts.forEach((account) => queryClient.setQueryData(['vectis_account', account.address], account))
   });
 
   return (

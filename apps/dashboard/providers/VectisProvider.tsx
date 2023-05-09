@@ -1,11 +1,13 @@
 import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useQuery } from 'react-query';
 import { useLocalStorage } from 'react-use';
 
 import { useChain } from '@cosmos-kit/react-lite';
 
+import { getContractAddresses } from '~/configs/contracts';
+import { getEndpoints } from '~/configs/endpoints';
 import { VectisQueryService, VectisService } from '~/services/vectis';
-import * as factories from '~/utils/factories';
-import * as pluginRegistries from '~/utils/plugin-registry';
 
 import { CoinInfo, VectisAccount } from '~/interfaces';
 import { Chain } from '@chain-registry/types';
@@ -20,7 +22,6 @@ export interface VectisState {
   queryClient: VectisQueryService;
   signingClient: VectisService;
   account: VectisAccount;
-  changeAccount: (wallet: VectisAccount) => void;
   connect: () => void;
   disconnect: () => void;
 }
@@ -32,18 +33,19 @@ const VectisContext = createContext<VectisState | null>(null);
 export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [signingClient, setSigningClient] = useState<VectisService | null>(null);
   const [queryClient, setQueryClient] = useState<VectisQueryService | null>(null);
-  const [account, changeAccount] = useLocalStorage<VectisAccount>('vectis@v1:account');
-
   const [chainName, setChain] = useLocalStorage<string>('vectis@v1:selectedNetwork', 'junotestnet');
   const { address, chain: chainInfo, assets, disconnect, getOfflineSignerDirect, connect, isWalletConnected } = useChain(chainName as string);
+  const { query } = useRouter();
 
-  const addresses = useMemo(
-    () => ({
-      factoryAddress: factories[`${chainInfo.chain_name}_factory`],
-      pluginRegistryAddress: pluginRegistries[`${chainInfo.chain_name}_plugin_registry`]
-    }),
-    [chainInfo]
+  const { data: account } = useQuery<VectisAccount>(
+    ['vectis_account', query.vectis],
+    () => queryClient!.getAccountInfo(query.vectis as string, chainName as string),
+    {
+      enabled: Boolean(queryClient) && Boolean(chainName)
+    }
   );
+
+  const endpoints = useMemo(() => getEndpoints(chainName as string), [chainName]);
 
   const defaultFee = useMemo(() => {
     const { average_gas_price, denom } = chainInfo.fees!.fee_tokens[0];
@@ -62,22 +64,15 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
     };
   }, [chainInfo, assets]);
 
-  const endpoints = useMemo(() => {
-    const domain = chainInfo.chain_name.includes('testnet') ? 'testcosmos.directory' : 'cosmos.directory';
-    return {
-      rpcUrl: `https://rpc.${domain}/${chainInfo.chain_name}`,
-      restUrl: `https://rest.${domain}/${chainInfo.chain_name}`,
-      grpcUrl: chainInfo.apis?.grpc?.[0].address || ''
-    };
-  }, [chainInfo]);
-
   useEffect(() => {
+    const addresses = getContractAddresses(chainName as string);
     VectisQueryService.connect(endpoints, addresses).then(setQueryClient);
-  }, [endpoints, addresses]);
+  }, [chainName]);
 
   useEffect(() => {
     if (!isWalletConnected) return;
     setTimeout(async () => {
+      const addresses = getContractAddresses(chainName as string);
       const signer = await getOfflineSignerDirect();
       const txService = await VectisService.connectWithSigner(signer, { endpoints, defaultFee, addresses });
       setSigningClient(txService);
@@ -97,7 +92,6 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
           queryClient,
           signingClient,
           account,
-          changeAccount,
           connect,
           disconnect
         } as VectisState

@@ -5,9 +5,9 @@ import { wallets as keplrWallet } from '@cosmos-kit/keplr-extension';
 import { ChainProvider } from '@cosmos-kit/react-lite';
 import { wallets as vectisWallet } from '@cosmos-kit/vectis-extension';
 
+import assets from '~/configs/assets';
+import chains from '~/configs/chains';
 import { ModalProvider, TranslationsProvider, VectisProvider } from '~/providers';
-import assets from '~/utils/assets';
-import chains from '~/utils/chains';
 
 import ModalWallet from '~/components/Modals/WalletModal';
 

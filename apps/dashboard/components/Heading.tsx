@@ -1,7 +1,5 @@
 import React from 'react';
-import { useRouter } from 'next/router';
 import { useVectis } from 'providers';
-import { headingLink } from 'utils/links';
 import Link from 'next/link';
 
 import { VectisLogo } from '@vectis/components';
