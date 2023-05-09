@@ -41,7 +41,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
     ['vectis_account', query.vectis],
     () => queryClient!.getAccountInfo(query.vectis as string, chainName as string),
     {
-      enabled: Boolean(queryClient) && Boolean(chainName)
+      enabled: Boolean(queryClient) && Boolean(chainName) && Boolean(query.vectis)
     }
   );
 

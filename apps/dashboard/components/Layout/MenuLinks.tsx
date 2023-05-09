@@ -33,7 +33,7 @@ const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
           return (
             <li key={item.text}>
               <Link
-                href={item.href}
+                href={`${item.href}?vectis=${account?.address}`}
                 onClick={closeMenu}
                 className={clsx(
                   isActive ? 'bg-gray-100 text-kashmir-blue-500' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',

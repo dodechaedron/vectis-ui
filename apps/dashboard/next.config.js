@@ -1,9 +1,9 @@
-/** @type {import('next').NextConfig} */
 const { withSentryConfig } = require("@sentry/nextjs");
 
-const moduleExports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: false,
-  transpilePackages: ['@vectis/components']
+  transpilePackages: ['@vectis/components'],
 };
 
-module.exports = moduleExports;
+module.exports = nextConfig;

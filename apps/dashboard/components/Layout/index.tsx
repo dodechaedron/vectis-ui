@@ -21,15 +21,14 @@ const font = Anek_Latin({
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
-  const { userAddr, queryClient } = useVectis();
+  const { userAddr, queryClient, account } = useVectis();
   const { pathname } = useRouter();
 
   const shouldShowSidebar = useMemo(() => '/' !== pathname, [pathname]);
   const sideBarToggle = useCallback(() => setIsSidebarOpen((prev) => !prev), []);
 
-  const isLoading = queryClient ? false : true;
-
-  if (isLoading) return <Loading />;
+  if (!queryClient) return <Loading />;
+  if (!account && pathname !== '/accounts') return <Loading />;
   const Component = userAddr ? children : <ConnectWallet />;
 
   return (
