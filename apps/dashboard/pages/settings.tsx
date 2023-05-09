@@ -13,12 +13,9 @@ import SettingsGuardians from '~/components/SettingsGuardians';
 
 import type { NextPage } from 'next';
 
-const ManageWallet: NextPage = () => {
-  const { userAddr, signingClient, chainName } = useVectis();
-  const { push: goToPage, query } = useRouter();
-  const { data: account } = useQuery(['settings_vectis_account', query.address], () =>
-    signingClient.getAccountInfo(query.address as string, chainName)
-  );
+const SettingsPage: NextPage = () => {
+  const { userAddr, account } = useVectis();
+  const { push: goToPage } = useRouter();
 
   const tabs = useMemo(
     () => [
@@ -50,4 +47,4 @@ const ManageWallet: NextPage = () => {
   );
 };
 
-export default ManageWallet;
+export default SettingsPage;
