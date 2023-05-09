@@ -1,18 +1,15 @@
 import React from 'react';
 
 import { useVectis } from '~/providers';
-import { capitalize } from '~/utils/conversion';
-
-import InputSelector from './Inputs/InputSelector';
+import { useSidebar } from '~/providers/SidebarProvider';
 
 const ChainSelector: React.FC = () => {
-  const { supportedChains, chainName, setChain } = useVectis();
+  const { chainName } = useVectis();
+  const { showSidebar } = useSidebar();
   return (
-    <InputSelector
-      options={supportedChains.map((chain) => ({ value: chain, label: capitalize(chain).replace('testnet', ' Testnet') }))}
-      value={{ value: chainName, label: capitalize(chainName).replace('testnet', ' Testnet') }}
-      onChange={(e) => setChain(e.value)}
-    />
+    <div className="cursor-pointer rounded-md bg-kashmir-blue-500 p-2 capitalize text-white" onClick={() => showSidebar('chains')}>
+      {chainName.replace('testnet', ' Testnet')}
+    </div>
   );
 };
 

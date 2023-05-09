@@ -847,5 +847,6 @@ const juno = {
 };
 
 const chains = [junotestnet, injectivetestnet, archwaytestnet, neutrontestnet, juno];
+export const supportedChains = ['junotestnet', 'injectivetestnet', 'archwaytestnet', 'neutrontestnet'];
 
 export default chains;

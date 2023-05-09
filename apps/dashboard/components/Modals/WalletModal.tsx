@@ -1,7 +1,9 @@
 import React, { Dispatch, useRef } from 'react';
-import { useClickAway } from 'react-use';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import { Button } from '../Buttons';
+
+import { modalDropIn } from './Modal';
 
 interface WalletModalProps {
   isOpen: boolean;
@@ -12,26 +14,38 @@ interface WalletModalProps {
 }
 
 const ModalWallet: React.FC<WalletModalProps> = ({ walletRepo, setOpen, isOpen }) => {
-  const modalRef = useRef<HTMLDivElement>(null);
   const handleConnect = async (walletName?: string) => {
     if (!walletRepo) return;
     await walletRepo.connect(walletName);
     setOpen(false);
   };
 
-  useClickAway(modalRef, () => setOpen(false));
-
-  if (!isOpen) return null;
+  if (!isOpen) return <AnimatePresence initial={false} mode="wait" onExitComplete={() => null} />;
 
   return (
-    <div className="fixed z-50 flex h-screen w-screen flex-col items-center justify-center bg-stone-700/50 backdrop-blur-lg">
-      <div ref={modalRef} className="flex w-full max-w-[480px] flex-col gap-8 rounded-3xl bg-white p-4 md:p-10">
-        <h2 className="text-4xl font-bold">Choose your wallet</h2>
+    <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
+      <motion.div
+        onClick={() => setOpen(false)}
+        className="fixed top-0 z-[60] flex h-screen w-screen items-center justify-center p-4 backdrop-blur-lg"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          onClick={(e) => e.stopPropagation()}
+          className="flex w-full max-w-xl flex-col gap-8 rounded-lg bg-white p-4 md:p-8"
+          variants={modalDropIn}
+          initial={modalDropIn.hidden}
+          animate={modalDropIn.visible}
+          exit={modalDropIn.exit}
+        >
+          <h2 className="text-4xl font-bold">Choose your wallet</h2>
 
-        <Button onClick={() => handleConnect('vectis-extension')}>Vectis</Button>
-        <Button onClick={() => handleConnect('keplr-extension')}>Keplr</Button>
-      </div>
-    </div>
+          <Button onClick={() => handleConnect('vectis-extension')}>Vectis</Button>
+          <Button onClick={() => handleConnect('keplr-extension')}>Keplr</Button>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

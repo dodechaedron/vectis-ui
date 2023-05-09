@@ -2,26 +2,31 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { useVectis } from 'providers';
 import { headingLink } from 'utils/links';
+import Link from 'next/link';
+
+import { VectisLogo } from '@vectis/components';
 
 import { IntlAddress } from '~/services/browser';
 
+import Hamburguer from './Layout/Hamburguer';
 import ChainSelector from './ChainSelector';
 
 import { AiOutlineLogout } from 'react-icons/ai';
 
-const Heading: React.FC = () => {
-  const { pathname } = useRouter();
+interface Props {
+  isSidebarOpen: boolean;
+  sideBarToggle: () => void;
+}
+
+const Heading: React.FC<Props> = ({ isSidebarOpen, sideBarToggle }) => {
   const { userAddr, disconnect } = useVectis();
-  const link = headingLink.find((link) => link.href === pathname);
-
-  if (!userAddr) return null;
-
-  if (pathname === '/404') return null;
 
   return (
-    <div className="flex h-[4.5rem] items-center justify-between border-b border-gray-200 bg-white px-4 ">
-      <h2 className="text-2xl font-bold leading-6 text-gray-900">{link?.text || ''}</h2>
-      <div className="flex gap-4">
+    <div className="sticky top-0 z-50 flex h-[4.5rem] w-full items-center justify-between border-b border-gray-200 bg-white px-4 ">
+      <Link href="/dashboard">
+        <VectisLogo className="h-[24px] w-[100px] fill-kashmir-blue-500" />
+      </Link>
+      <div className="hidden gap-4 md:flex">
         {userAddr ? (
           <div className="flex cursor-pointer items-center justify-center gap-2" onClick={disconnect}>
             <AiOutlineLogout className="h-6 w-6 text-kashmir-blue-500" />
@@ -39,6 +44,10 @@ const Heading: React.FC = () => {
         )}
         <ChainSelector />
         <p className="mt-2 max-w-4xl text-xs text-gray-500"></p>
+      </div>
+
+      <div className="flex md:hidden">
+        <Hamburguer isOpen={isSidebarOpen} toggle={sideBarToggle} />
       </div>
     </div>
   );

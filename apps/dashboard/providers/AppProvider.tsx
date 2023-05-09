@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, Suspense } from 'react';
+import React, { PropsWithChildren } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { wallets as keplrWallet } from '@cosmos-kit/keplr-extension';
@@ -10,6 +10,8 @@ import assets from '~/utils/assets';
 import chains from '~/utils/chains';
 
 import ModalWallet from '~/components/Modals/WalletModal';
+
+import { SidebarProvider } from './SidebarProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,9 +51,11 @@ const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
             }
           }}
         >
-          <ModalProvider>
-            <VectisProvider>{children}</VectisProvider>
-          </ModalProvider>
+          <SidebarProvider>
+            <ModalProvider>
+              <VectisProvider>{children}</VectisProvider>
+            </ModalProvider>
+          </SidebarProvider>
         </ChainProvider>
       </QueryClientProvider>
     </TranslationsProvider>

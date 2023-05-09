@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect } from 'react';
+import React, { PropsWithChildren, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import Heading from 'components/Heading';
@@ -9,6 +9,7 @@ import { Anek_Latin } from '@next/font/google';
 import ConnectWallet from '../ConnectWallet';
 import Loading from '../Loading';
 import GlobalModal from '../Modals/GlobalModal';
+import GlobalSidebar from '../Sidebars/GlobalSidebar';
 
 import Sidebar from './Sidebar';
 
@@ -18,24 +19,26 @@ const font = Anek_Latin({
 });
 
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
-  const { account, userAddr, queryClient } = useVectis();
-  const { push: goToPage, pathname } = useRouter();
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
-  useEffect(() => {
-    if (account?.controllerAddr !== userAddr && pathname === '/') goToPage('/accounts');
-  }, [pathname]);
+  const { userAddr, queryClient } = useVectis();
+  const { pathname } = useRouter();
+
+  const shouldShowSidebar = useMemo(() => '/' !== pathname, [pathname]);
+  const sideBarToggle = useCallback(() => setIsSidebarOpen((prev) => !prev), []);
+
   const isLoading = queryClient ? false : true;
 
   if (isLoading) return <Loading />;
   const Component = userAddr ? children : <ConnectWallet />;
 
   return (
-    <div className={clsx('flex h-full w-full flex-col bg-gray-100 text-gray-900 md:flex-row', font.className)}>
-      <Sidebar />
-
-      <main className="flex w-full flex-1 flex-col">
-        <Heading />
-        <div className="flex h-full flex-1 flex-col gap-4 p-4">{Component}</div>
+    <div className={clsx('flex h-screen w-full flex-1 flex-col bg-gray-100 text-gray-900', font.className)}>
+      <Heading isSidebarOpen={isSidebarOpen} sideBarToggle={sideBarToggle} />
+      <GlobalSidebar />
+      <main className="max-w-screen flex h-full w-full flex-1">
+        {shouldShowSidebar ? <Sidebar visible={isSidebarOpen} setVisible={sideBarToggle} /> : null}
+        <div className="flex min-h-full w-full flex-1 gap-4 p-4">{Component}</div>
       </main>
       <GlobalModal />
     </div>
