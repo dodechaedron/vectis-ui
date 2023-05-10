@@ -26,7 +26,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
       setVectisService(vectisService);
     };
     buildVectisService();
-  }, [chainName]);
+  }, [chainName, isWalletConnected]);
 
   return (
     <VectisContext.Provider
