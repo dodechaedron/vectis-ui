@@ -299,6 +299,13 @@ const archwaytestnet: Chain = {
       }
     ]
   },
+  staking: {
+    staking_tokens: [
+      {
+        denom: 'uconst'
+      }
+    ]
+  },
   codebase: {
     git_repo: 'https://github.com/archway-network/archway'
   },
@@ -348,6 +355,13 @@ const neutrontestnet: Chain = {
         low_gas_price: 0,
         average_gas_price: 0.025,
         high_gas_price: 0.05
+      }
+    ]
+  },
+  staking: {
+    staking_tokens: [
+      {
+        denom: 'untrn'
       }
     ]
   },
