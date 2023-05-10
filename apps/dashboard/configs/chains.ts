@@ -1,6 +1,13 @@
+import { archway_testnet_assets, injective_testnet_assets, juno_assets, juno_testnet_assets, neutron_testnet_assets } from './assets';
 import { isTestnet } from './network';
 
-import type { Chain, Chains } from '@chain-registry/types';
+import type { AssetList, Chain as ChainRegistry } from '@chain-registry/types';
+
+export interface Chain extends ChainRegistry {
+  assets: AssetList;
+}
+
+export type Chains = Chain[];
 
 const junotestnet: Chain = {
   $schema: '../../chain.schema.json',
@@ -14,6 +21,7 @@ const junotestnet: Chain = {
   node_home: '$HOME/.juno',
   key_algos: ['secp256k1'],
   slip44: 118,
+  assets: juno_testnet_assets,
   fees: {
     fee_tokens: [
       {
@@ -159,6 +167,7 @@ const injectivetestnet: Chain = {
   slip44: 60,
   daemon_name: 'injectived',
   node_home: '$HOME/.injectived',
+  assets: injective_testnet_assets,
   fees: {
     fee_tokens: [
       {
@@ -289,6 +298,7 @@ const archwaytestnet: Chain = {
   node_home: '$HOME/.archway',
   key_algos: ['secp256k1'],
   slip44: 118,
+  assets: archway_testnet_assets,
   fees: {
     fee_tokens: [
       {
@@ -296,13 +306,6 @@ const archwaytestnet: Chain = {
         low_gas_price: 0,
         average_gas_price: 0.025,
         high_gas_price: 0.05
-      }
-    ]
-  },
-  staking: {
-    staking_tokens: [
-      {
-        denom: 'uconst'
       }
     ]
   },
@@ -348,6 +351,7 @@ const neutrontestnet: Chain = {
   node_home: '$HOME/.neutrond',
   key_algos: ['secp256k1'],
   slip44: 118,
+  assets: neutron_testnet_assets,
   fees: {
     fee_tokens: [
       {
@@ -355,13 +359,6 @@ const neutrontestnet: Chain = {
         low_gas_price: 0,
         average_gas_price: 0.025,
         high_gas_price: 0.05
-      }
-    ]
-  },
-  staking: {
-    staking_tokens: [
-      {
-        denom: 'untrn'
       }
     ]
   },
@@ -490,6 +487,7 @@ const juno: Chain = {
   node_home: '$HOME/.juno',
   key_algos: ['secp256k1'],
   slip44: 118,
+  assets: juno_assets,
   fees: {
     fee_tokens: [
       {

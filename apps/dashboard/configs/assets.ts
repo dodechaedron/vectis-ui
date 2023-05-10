@@ -58,8 +58,7 @@ export const injective_testnet_assets: AssetList = {
   ]
 };
 
-const archway_testnet_assets = {
-  $schema: '../assetlist.schema.json',
+export const archway_testnet_assets: AssetList = {
   chain_name: 'archwaytestnet',
   assets: [
     {
@@ -82,8 +81,7 @@ const archway_testnet_assets = {
   ]
 };
 
-const neutron_testnet_assets = {
-  $schema: '../../assetlist.schema.json',
+export const neutron_testnet_assets: AssetList = {
   chain_name: 'neutrontestnet',
   assets: [
     {
@@ -110,7 +108,7 @@ const neutron_testnet_assets = {
   ]
 };
 
-const juno_assets = {
+export const juno_assets = {
   $schema: '../assetlist.schema.json',
   chain_name: 'juno',
   assets: [

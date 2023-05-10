@@ -69,7 +69,7 @@ const WrapperChainProvider: React.FC<PropsWithChildren> = ({ children }) => {
     if (!isWalletConnected || !chainWallet?.client) return;
     setTimeout(async () => {
       for (const chain of chains) {
-        await chainWallet.client.addChain?.({ chain, name: chain.chain_name });
+        await chainWallet.client.addChain?.({ chain, name: chain.chain_name, assetList: chain.assets });
       }
       await chainWallet.client.enable?.(chainIds);
       const accounts = await Promise.all(
