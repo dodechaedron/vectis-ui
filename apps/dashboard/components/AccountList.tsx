@@ -19,9 +19,9 @@ const AccountList: React.FC<Props> = ({ showCreateAccount }) => {
   const { t } = useTranslations();
   const queryClient = useQueryClient();
 
-  const { signingClient, userAddresses } = useVectis();
-  const { data: accounts, isLoading } = useQuery(['vectis_accounts', ...userAddresses], () => signingClient.getAccounts(userAddresses), {
-    enabled: Boolean(userAddresses.length) && Boolean(signingClient),
+  const { vectis, userAddresses } = useVectis();
+  const { data: accounts, isLoading } = useQuery(['vectis_accounts', ...userAddresses], () => vectis.getAccounts(userAddresses), {
+    enabled: Boolean(userAddresses.length) && Boolean(vectis),
     onSuccess: (accounts) => accounts.forEach((account) => queryClient.setQueryData(['vectis_account', account.address], account))
   });
 

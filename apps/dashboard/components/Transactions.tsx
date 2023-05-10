@@ -23,14 +23,14 @@ interface Props {
 }
 
 const TransactionsTable: React.FC<Props> = ({ filter, pagination, defaultLimit = 10 }) => {
-  const { chainName, signingClient, account, defaultFee } = useVectis();
+  const { chainName, vectis, account, defaultFee } = useVectis();
   const [txs, setTxs] = useState<Transaction[]>([]);
   const methods = usePagination({ limit: defaultLimit });
   const { setTotal, page } = methods;
 
   useEffect(() => {
     const getTxs = async () => {
-      const { txs, pagination } = await signingClient.getTransactionHistory(account.address, page, defaultLimit);
+      const { txs, pagination } = await vectis.getTransactionHistory(account.address, page, defaultLimit);
       setTxs(txs);
       setTotal(pagination.total);
     };

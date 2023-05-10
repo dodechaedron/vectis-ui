@@ -1,7 +1,6 @@
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useMemo } from 'react';
 import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
 import Head from 'next/head';
 
 import { useVectis } from '~/providers';

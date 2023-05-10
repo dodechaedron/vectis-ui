@@ -31,14 +31,14 @@ import { Plugin, PluginsResponse } from '@vectis/types/PluginRegistry.types';
 import { PluginListResponse } from '@vectis/types/Proxy.types';
 
 export class VectisQueryService {
-  queryClient: QueryClient & StakingExtension & BankExtension & TxExtension & DistributionExtension & WasmExtension;
+  query: QueryClient & StakingExtension & BankExtension & TxExtension & DistributionExtension & WasmExtension;
   http: typeof axios;
   constructor(readonly client: Tendermint34Client, readonly endpoints: Endpoints, readonly addresses: ContractAddresses) {
     this.client = client;
     this.http = axios.create({
       baseURL: process.env.NEXT_PUBLIC_INDEXER_URL
     });
-    this.queryClient = QueryClient.withExtensions(
+    this.query = QueryClient.withExtensions(
       client,
       setupStakingExtension,
       setupBankExtension,
@@ -69,15 +69,15 @@ export class VectisQueryService {
   }
 
   async getPluginsFromRegistry(): Promise<PluginsResponse> {
-    return await this.queryClient.wasm.queryContractSmart(this.addresses.pluginRegistryAddress, { get_plugins: {} });
+    return await this.query.wasm.queryContractSmart(this.addresses.pluginRegistryAddress, { get_plugins: {} });
   }
 
   async getPluginByIdFromRegistry(id: number): Promise<Plugin> {
-    return await this.queryClient.wasm.queryContractSmart(this.addresses.pluginRegistryAddress, { get_plugin_by_id: { id } });
+    return await this.query.wasm.queryContractSmart(this.addresses.pluginRegistryAddress, { get_plugin_by_id: { id } });
   }
 
   async getActiveGuardianRequests(proxyAddr: string): Promise<any> {
-    return await this.queryClient.wasm.queryContractSmart(proxyAddr, { guardians_update_request: {} });
+    return await this.query.wasm.queryContractSmart(proxyAddr, { guardians_update_request: {} });
   }
 
   async getGuardianGroupByWalletAddr(addr: string): Promise<any> {}
@@ -88,38 +88,38 @@ export class VectisQueryService {
   }
 
   async getFees(): Promise<FactoryT.FeesResponse> {
-    return await this.queryClient.wasm.queryContractSmart(this.addresses.factoryAddress, { fees: {} });
+    return await this.query.wasm.queryContractSmart(this.addresses.factoryAddress, { fees: {} });
   }
 
   async getPlugins(proxyAddress: string): Promise<PluginListResponse> {
-    const plugins = await this.queryClient.wasm.queryContractSmart(proxyAddress, { plugins: {} });
+    const plugins = await this.query.wasm.queryContractSmart(proxyAddress, { plugins: {} });
     return plugins;
   }
 
   async getBalances(address: string): Promise<Coin[]> {
-    const balances = await this.queryClient.bank.allBalances(address);
+    const balances = await this.query.bank.allBalances(address);
     return balances;
   }
 
   async getBalance(address: string, denom: string): Promise<Coin> {
-    const balance = await this.queryClient.bank.balance(address, denom);
+    const balance = await this.query.bank.balance(address, denom);
     return balance;
   }
 
   async getProposalVoteList(multisigAddress: string, proposalId: number): Promise<VoteInfo[]> {
-    const { votes } = await this.queryClient.wasm.queryContractSmart(multisigAddress, { list_votes: { proposal_id: proposalId } });
+    const { votes } = await this.query.wasm.queryContractSmart(multisigAddress, { list_votes: { proposal_id: proposalId } });
     return votes;
   }
 
   async getProposals(multisigAddress: string): Promise<Proposal[]> {
     const queryProps = { reverse_proposals: { limit: 5 } };
-    const { proposals } = await this.queryClient.wasm.queryContractSmart(multisigAddress, queryProps);
+    const { proposals } = await this.query.wasm.queryContractSmart(multisigAddress, queryProps);
     return proposals;
   }
 
   async getThreshold(multisigAddress: string): Promise<{ absolute_count: { weight: number; total_weight: number } }> {
     const queryProps = { threshold: {} };
-    return await this.queryClient.wasm.queryContractSmart(multisigAddress, queryProps);
+    return await this.query.wasm.queryContractSmart(multisigAddress, queryProps);
   }
 
   async getTransactionHistory(address: string, page: number, limit: number): Promise<any> {
@@ -149,14 +149,14 @@ export class VectisQueryService {
   }
 
   async getTest(address: string) {
-    const resp = await this.queryClient.wasm.queryContractSmart(address, { plugins: {} });
+    const resp = await this.query.wasm.queryContractSmart(address, { plugins: {} });
     console.log(resp);
   }
 
   async getAllocation(proxyAddress: string, denom: string) {
-    const available = await this.queryClient.bank.balance(proxyAddress, denom);
-    const rewards = await this.queryClient.distribution.delegationTotalRewards(proxyAddress);
-    const bonded = await this.queryClient.staking.delegatorDelegations(proxyAddress);
+    const available = await this.query.bank.balance(proxyAddress, denom);
+    const rewards = await this.query.distribution.delegationTotalRewards(proxyAddress);
+    const bonded = await this.query.staking.delegatorDelegations(proxyAddress);
     const unbounded = 0;
 
     return { available: convertMicroDenomToDenom(available.amount), rewards: 0, bonded: 0, unbounded };
@@ -165,8 +165,8 @@ export class VectisQueryService {
 
 export class VectisService extends VectisQueryService {
   constructor(
-    readonly client: Tendermint34Client,
-    readonly signingClient: {
+    readonly tmClient: Tendermint34Client,
+    readonly tx: {
       execute(
         senderAddress: string,
         contractAddress: string,
@@ -188,7 +188,7 @@ export class VectisService extends VectisQueryService {
     readonly defaultFee: CoinInfo,
     readonly addresses: ContractAddresses
   ) {
-    super(client, endpoints, addresses);
+    super(tmClient, endpoints, addresses);
   }
   static async connectWithSigner(
     signer: OfflineDirectSigner,
@@ -215,7 +215,7 @@ export class VectisService extends VectisQueryService {
     initialFunds?: number,
     threshold?: number
   ): Promise<ExecuteResult> {
-    const { wallet_fee }: FactoryT.FeesResponse = await this.queryClient.wasm.queryContractSmart(this.addresses.factoryAddress, { fees: {} });
+    const { wallet_fee }: FactoryT.FeesResponse = await this.query.wasm.queryContractSmart(this.addresses.factoryAddress, { fees: {} });
 
     const proxy_initial_funds = initialFunds ? [coin(initialFunds, this.defaultFee.udenom)] : [];
     const m = multisig ? { guardians_multisig: { threshold_absolute_count: threshold || 1 } } : {};
@@ -235,14 +235,9 @@ export class VectisService extends VectisQueryService {
       .plus(BigNumber(Number(wallet_fee.amount)))
       .toString();
 
-    return await this.signingClient.execute(
-      this.userAddr,
-      this.addresses.factoryAddress,
-      { create_wallet: { create_wallet_msg } },
-      'auto',
-      undefined,
-      [coin(funds, this.defaultFee.udenom)]
-    );
+    return await this.tx.execute(this.userAddr, this.addresses.factoryAddress, { create_wallet: { create_wallet_msg } }, 'auto', undefined, [
+      coin(funds, this.defaultFee.udenom)
+    ]);
   }
 
   async sendTokens(
@@ -252,7 +247,7 @@ export class VectisService extends VectisQueryService {
     fee: 'auto' | number,
     memo?: string
   ): Promise<unknown> {
-    return await this.signingClient.sendTokens(senderAddress, recipientAddress, amount, fee, memo);
+    return await this.tx.sendTokens(senderAddress, recipientAddress, amount, fee, memo);
   }
 
   async instantiatePlugin(
@@ -273,7 +268,7 @@ export class VectisService extends VectisQueryService {
       }
     };
 
-    await this.signingClient.execute(this.userAddr, proxyAddr, installPluginMsg, 'auto', memo, funds);
+    await this.tx.execute(this.userAddr, proxyAddr, installPluginMsg, 'auto', memo, funds);
   }
 
   async instantiateIdentityPlugin(proxyAddr: string): Promise<void> {
@@ -298,20 +293,20 @@ export class VectisService extends VectisQueryService {
   }
 
   async proxyAcceptGuardianRequest(proxyAddr: string): Promise<ExecuteResult> {
-    return await this.signingClient.execute(this.userAddr, proxyAddr, { update_guardians: {} }, 'auto');
+    return await this.tx.execute(this.userAddr, proxyAddr, { update_guardians: {} }, 'auto');
   }
 
   async proxyRejectGuardianRequest(proxyAddr: string): Promise<ExecuteResult> {
-    return await this.signingClient.execute(this.userAddr, proxyAddr, { request_update_guardians: { request: null } }, 'auto');
+    return await this.tx.execute(this.userAddr, proxyAddr, { request_update_guardians: { request: null } }, 'auto');
   }
 
   async proxyUpdateLabel(proxyAddr: string, newLabel: string): Promise<ExecuteResult> {
     const msg = { update_label: { new_label: newLabel } } as ProxyT.ExecuteMsg;
-    return await this.signingClient.execute(this.userAddr, proxyAddr, msg, 'auto');
+    return await this.tx.execute(this.userAddr, proxyAddr, msg, 'auto');
   }
 
   async voteProposal(multisigAddress: string, proposalId: number, vote: 'yes' | 'no'): Promise<ExecuteResult> {
-    return await this.signingClient.execute(this.userAddr, multisigAddress, { vote: { proposal_id: proposalId, vote } }, 'auto');
+    return await this.tx.execute(this.userAddr, multisigAddress, { vote: { proposal_id: proposalId, vote } }, 'auto');
   }
 
   async executeProposal(multisigAddress: string, proposalId: number): Promise<ExecuteResult> {
@@ -320,18 +315,18 @@ export class VectisService extends VectisQueryService {
         proposal_id: proposalId
       }
     };
-    return await this.signingClient.execute(this.userAddr, multisigAddress, execute, 'auto');
+    return await this.tx.execute(this.userAddr, multisigAddress, execute, 'auto');
   }
 
   async proxyExecute(proxyAddr: string, msgs: ProxyT.CosmosMsgForEmpty[], memo?: string): Promise<ExecuteResult> {
     const msg = { execute: { msgs } } as ProxyT.ExecuteMsg;
-    return await this.signingClient.execute(this.userAddr, proxyAddr, msg, 'auto', memo);
+    return await this.tx.execute(this.userAddr, proxyAddr, msg, 'auto', memo);
   }
 
   async proxyRequestUpdateGuardians(proxyAddr: string, newGuardians: string[], threshold?: number): Promise<ExecuteResult> {
     const multisig = threshold ? { guardians_multisig: { threshold_absolute_count: threshold, multisig_initial_funds: [] } } : {};
 
-    return await this.signingClient.execute(
+    return await this.tx.execute(
       this.userAddr,
       proxyAddr,
       {
@@ -366,7 +361,7 @@ export class VectisService extends VectisQueryService {
   }
 
   async updateFreezeStatus(proxyWalletAddress: string): Promise<ExecuteResult> {
-    return this.signingClient.execute(
+    return this.tx.execute(
       this.userAddr,
       proxyWalletAddress,
       {
@@ -377,7 +372,7 @@ export class VectisService extends VectisQueryService {
   }
 
   async updateControllerAddr(proxyWalletAddress: string, newControllerAddress: string): Promise<ExecuteResult> {
-    return await this.signingClient.execute(
+    return await this.tx.execute(
       this.userAddr,
       proxyWalletAddress,
       {
@@ -390,16 +385,11 @@ export class VectisService extends VectisQueryService {
   }
 
   async proxyAddRelayer(proxyWalletAddress: string, newRelayerAddress: string): Promise<ExecuteResult> {
-    return await this.signingClient.execute(
-      this.userAddr,
-      proxyWalletAddress,
-      { add_relayer: { new_relayer_address: newRelayerAddress } },
-      'auto'
-    );
+    return await this.tx.execute(this.userAddr, proxyWalletAddress, { add_relayer: { new_relayer_address: newRelayerAddress } }, 'auto');
   }
 
   async proxyRemoveRelayer(proxyWalletAddress: string, relayerAddress: string): Promise<ExecuteResult> {
-    return await this.signingClient.execute(this.userAddr, proxyWalletAddress, { remove_relayer: { relayer_address: relayerAddress } }, 'auto');
+    return await this.tx.execute(this.userAddr, proxyWalletAddress, { remove_relayer: { relayer_address: relayerAddress } }, 'auto');
   }
 
   async proxyDelegate(proxyWalletAddress: string, validatorAddress: string, amount: number): Promise<ExecuteResult> {
@@ -468,7 +458,7 @@ export class VectisService extends VectisQueryService {
         latest: null
       }
     };
-    return await this.signingClient.execute(this.userAddr, multisigAddr, proposal, 'auto');
+    return await this.tx.execute(this.userAddr, multisigAddr, proposal, 'auto');
   }
 
   async proxyProposeRotateOperation(proxyAddr: string, multisigAddr: string, controllerAddr: string): Promise<ExecuteResult> {
@@ -497,6 +487,6 @@ export class VectisService extends VectisQueryService {
         latest: null
       }
     };
-    return await this.signingClient.execute(this.userAddr, multisigAddr, proposal, 'auto');
+    return await this.tx.execute(this.userAddr, multisigAddr, proposal, 'auto');
   }
 }

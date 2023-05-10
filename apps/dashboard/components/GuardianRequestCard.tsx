@@ -1,28 +1,28 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
 
-import { IntlTimeAgo } from "~/services/browser";
-import { useVectis } from "~/providers";
-import { useToast } from "~/hooks";
-import { fromNanoSecondsToSeconds } from "~/utils/conversion";
+import { IntlTimeAgo } from '~/services/browser';
+import { useVectis } from '~/providers';
+import { useToast } from '~/hooks';
+import { fromNanoSecondsToSeconds } from '~/utils/conversion';
 
-import { Button } from "./Buttons";
-import NotFound from "./NotFound";
-import ShowGuardian from "./ShowGuardian";
+import { Button } from './Buttons';
+import NotFound from './NotFound';
+import ShowGuardian from './ShowGuardian';
 
-import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
-import { GuardiansUpdateRequest } from "@vectis/types/Proxy.types";
+import { GuardiansUpdateRequest } from '@vectis/types/Proxy.types';
 
 const GuardianRequestCard: React.FC = () => {
   const { query } = useRouter();
-  const { signingClient } = useVectis();
+  const { vectis } = useVectis();
   const { toast } = useToast();
   const [activeProposal, setActiveProposal] = useState<any | null>(null);
 
   useEffect(() => {
     const fetchActiveRequest = async () => {
-      const activeRequest = await signingClient.getActiveGuardianRequests(query.address as string);
+      const activeRequest = await vectis.getActiveGuardianRequests(query.address as string);
       setActiveProposal(activeRequest);
     };
     fetchActiveRequest();
@@ -30,22 +30,25 @@ const GuardianRequestCard: React.FC = () => {
 
   const acceptRequest = useCallback(async () => {
     try {
-      const promise = signingClient.proxyAcceptGuardianRequest(query.address as string);
+      const promise = vectis.proxyAcceptGuardianRequest(query.address as string);
       await toast.promise(promise);
       setActiveProposal(null);
-    } catch (e) { }
+    } catch (e) {}
   }, [query]);
 
   const rejectRequest = useCallback(async () => {
     try {
-      const promise = signingClient.proxyRejectGuardianRequest(query.address as string);
+      const promise = vectis.proxyRejectGuardianRequest(query.address as string);
       await toast.promise(promise);
       setActiveProposal(null);
-    } catch (e) { }
+    } catch (e) {}
   }, [query]);
 
   const multisig = useMemo(() => activeProposal?.guardians?.guardians_multisig?.threshold_absolute_count, [activeProposal]);
-  const activateAt = useMemo(() => +new Date(fromNanoSecondsToSeconds((activeProposal?.activate_at as { at_time: string })?.at_time)), [activeProposal])
+  const activateAt = useMemo(
+    () => +new Date(fromNanoSecondsToSeconds((activeProposal?.activate_at as { at_time: string })?.at_time)),
+    [activeProposal]
+  );
 
   if (!activeProposal) {
     return (
@@ -69,19 +72,16 @@ const GuardianRequestCard: React.FC = () => {
           <dl className="divide-y divide-gray-200">
             <div className="grid grid-cols-2 gap-4 py-4 px-6">
               <p className="text-sm font-medium text-gray-900">
-                Activate At:{" "}
-                <span className="col-span-1 mt-0 text-sm text-gray-500">
-                  {IntlTimeAgo(activateAt)}
-                </span>
+                Activate At: <span className="col-span-1 mt-0 text-sm text-gray-500">{IntlTimeAgo(activateAt)}</span>
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4 py-4 px-6">
               <p className="text-sm font-medium text-gray-900">
-                Multisig: <span className="col-span-1 mt-0 text-sm text-gray-500">{multisig ? "Yes" : "No"}</span>
+                Multisig: <span className="col-span-1 mt-0 text-sm text-gray-500">{multisig ? 'Yes' : 'No'}</span>
               </p>
               {multisig && (
                 <p className="text-sm font-medium text-gray-900">
-                  Threshold:{" "}
+                  Threshold:{' '}
                   <span className="col-span-1 mt-0 text-sm text-gray-500">
                     {activeProposal.guardians.guardians_multisig?.threshold_absolute_count}
                   </span>
@@ -101,11 +101,13 @@ const GuardianRequestCard: React.FC = () => {
         <Button variant="white" className="px-8" onClick={rejectRequest}>
           Reject
         </Button>
-        {activateAt < Date.now() ? (<Button className="px-6" onClick={acceptRequest}>
-          Confirm
-        </Button>) : null}
+        {activateAt < Date.now() ? (
+          <Button className="px-6" onClick={acceptRequest}>
+            Confirm
+          </Button>
+        ) : null}
       </div>
-    </div >
+    </div>
   );
 };
 

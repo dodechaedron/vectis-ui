@@ -17,7 +17,7 @@ const ChargeModal: React.FC = () => {
   const [amount, setAmount] = useState('0');
 
   const { toast, isLoading } = useToast();
-  const { account, signingClient, defaultFee, userAddr } = useVectis();
+  const { account, vectis, defaultFee, userAddr } = useVectis();
 
   const tokens = [
     {
@@ -27,7 +27,7 @@ const ChargeModal: React.FC = () => {
   ];
 
   const onSubmit = async () => {
-    const promise = signingClient.sendTokens(
+    const promise = vectis.sendTokens(
       userAddr,
       account.address,
       [coin(convertDenomToMicroDenom(amount, defaultFee.exponent), defaultFee.udenom)],

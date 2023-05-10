@@ -21,7 +21,7 @@ import { Proposal } from '@dao-dao/types/contracts/CwProposalSingle.v1';
 import { VoteInfo } from '@dao-dao/types/contracts/DaoProposalSingle.common';
 
 const GuardianPage: NextPage = () => {
-  const { queryClient, signingClient, userAddr, chainName } = useVectis();
+  const { vectis, vectis, userAddr, chainName } = useVectis();
   const { query, push: goToPage } = useRouter();
   const { toast, isLoading } = useToast();
   const [accountInfo, setAccountInfo] = useState<VectisAccount | null>(null);
@@ -30,7 +30,7 @@ const GuardianPage: NextPage = () => {
   const [proposals, setProposals] = useState<{ votes: VoteInfo[]; proposal: Proposal; isAlreadyVoted: boolean }[]>([]);
 
   const fetchGuardian = async () => {
-    const account = await queryClient.getAccountInfo(query.address as string, chainName);
+    const account = await vectis.getAccountInfo(query.address as string, chainName);
 
     if (!account.guardians.includes(userAddr)) {
       goToPage('/');
@@ -46,12 +46,12 @@ const GuardianPage: NextPage = () => {
   };
 
   const fetchProposals = async (address: string) => {
-    const proposals = await signingClient.getProposals(address);
+    const proposals = await vectis.getProposals(address);
     const openProposals = proposals.filter((proposal) => ['open', 'passed'].includes(proposal.status));
     if (proposals.length) {
       const proposalsInfo = await Promise.all(
         openProposals.map(async (proposal) => {
-          const votes = await signingClient.getProposalVoteList(address, proposal.id as number);
+          const votes = await vectis.getProposalVoteList(address, proposal.id as number);
           return { votes, proposal, isAlreadyVoted: votes.some((vote) => vote.voter === userAddr) };
         })
       );
@@ -67,11 +67,11 @@ const GuardianPage: NextPage = () => {
   const rotate = async () => {
     if (!accountInfo) return;
     if (accountInfo.multisigAddress) {
-      const promise = signingClient.proxyProposeRotateOperation(accountInfo.address, accountInfo.multisigAddress, accountInfo.controllerAddr);
+      const promise = vectis.proxyProposeRotateOperation(accountInfo.address, accountInfo.multisigAddress, accountInfo.controllerAddr);
       await toast.promise(promise, 3000);
       await fetchGuardian();
     } else {
-      const promise = signingClient.updateControllerAddr(accountInfo.address, accountInfo.controllerAddr);
+      const promise = vectis.updateControllerAddr(accountInfo.address, accountInfo.controllerAddr);
       await toast.promise(promise, 3000);
       await fetchGuardian();
     }
@@ -80,11 +80,11 @@ const GuardianPage: NextPage = () => {
   const freeze = async () => {
     if (!accountInfo) return;
     if (accountInfo.multisigAddress) {
-      const promise = signingClient.proxyProposeFreezeOperation(accountInfo.address, accountInfo.multisigAddress, accountInfo.frozen);
+      const promise = vectis.proxyProposeFreezeOperation(accountInfo.address, accountInfo.multisigAddress, accountInfo.frozen);
       await toast.promise(promise);
       await fetchGuardian();
     } else {
-      const promise = signingClient.updateFreezeStatus(accountInfo.address);
+      const promise = vectis.updateFreezeStatus(accountInfo.address);
       await toast.promise(promise);
       await fetchGuardian();
     }
@@ -92,14 +92,14 @@ const GuardianPage: NextPage = () => {
 
   const vote = async (proposalId: number, vote: 'yes' | 'no') => {
     if (!accountInfo?.multisigAddress) return;
-    const promise = signingClient.voteProposal(accountInfo.multisigAddress, proposalId, vote);
+    const promise = vectis.voteProposal(accountInfo.multisigAddress, proposalId, vote);
     await toast.promise(promise);
     await fetchProposals(accountInfo.multisigAddress);
   };
 
   const executeProposal = async (proposalId: number) => {
     if (!accountInfo?.multisigAddress) return;
-    const promise = signingClient.executeProposal(accountInfo.multisigAddress, proposalId);
+    const promise = vectis.executeProposal(accountInfo.multisigAddress, proposalId);
     await toast.promise(promise, 5000);
     await fetchGuardian();
   };

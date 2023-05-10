@@ -31,7 +31,7 @@ export const chartOptions = {
 };
 
 const TokenAllocation: React.FC = () => {
-  const { signingClient, account, defaultFee } = useVectis();
+  const { vectis, account, defaultFee } = useVectis();
   const [allocation, setAllocation] = useState<number[]>([]);
   const data = {
     labels: ['Bonded', 'Rewards', 'Available', 'Unbonding'],
@@ -45,7 +45,7 @@ const TokenAllocation: React.FC = () => {
 
   useEffect(() => {
     const getAllocation = async () => {
-      const { available, bonded, unbounded, rewards } = await signingClient.getAllocation(account.address, defaultFee.udenom);
+      const { available, bonded, unbounded, rewards } = await vectis.getAllocation(account.address, defaultFee.udenom);
       setAllocation([bonded, rewards, +available, unbounded]);
     };
     getAllocation();

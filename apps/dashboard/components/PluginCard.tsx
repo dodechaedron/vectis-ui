@@ -14,14 +14,14 @@ interface Props {
 }
 
 const PluginCard: React.FC<Props> = ({ plugin }) => {
-  const { account, signingClient } = useVectis();
+  const { account, vectis } = useVectis();
   const { toast } = useToast();
-  const { data, isLoading, refetch } = useQuery(['user_plugins', account], () => signingClient.getPlugins(account.address));
+  const { data, isLoading, refetch } = useQuery(['user_plugins', account], () => vectis.getPlugins(account.address));
 
   const instantiatePlugin = async () => {
     await toast.promise(
       (async () => {
-        await signingClient.instantiateIdentityPlugin(account.address);
+        await vectis.instantiateIdentityPlugin(account.address);
         await refetch();
       })()
     );

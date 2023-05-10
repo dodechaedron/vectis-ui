@@ -7,7 +7,7 @@ import { useToast } from '~/hooks';
 import { Button } from '../Buttons';
 
 const StepConfirmation: React.FC = () => {
-  const { signingClient } = useVectis();
+  const { vectis } = useVectis();
   const { toast } = useToast();
   const { push: goToPage } = useRouter();
 

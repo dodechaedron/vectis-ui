@@ -20,12 +20,12 @@ interface Props {
 const SettingsAccount: React.FC<Props> = ({ walletInfo }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState('');
-  const { signingClient } = useVectis();
+  const { vectis } = useVectis();
   const { toast } = useToast();
   const { query } = useRouter();
 
   const updateName = async () => {
-    const promise = signingClient.proxyUpdateLabel(query.address as string, newName);
+    const promise = vectis.proxyUpdateLabel(query.address as string, newName);
     await toast.promise(promise);
     setIsEditing(false);
   };

@@ -27,7 +27,7 @@ interface Props {
 
 const SettingsGuardians: React.FC<Props> = ({ walletInfo }) => {
   const { query } = useRouter();
-  const { signingClient } = useVectis();
+  const { vectis } = useVectis();
   const { toast } = useToast();
   const { control, setValue, watch, handleSubmit } = useForm<FormValues>({ defaultValues: { guardians: [{}], threshold: 1 } });
 
@@ -35,7 +35,7 @@ const SettingsGuardians: React.FC<Props> = ({ walletInfo }) => {
   const threshold = watch('threshold');
 
   const onSubmit = async (data) => {
-    const promise = signingClient.proxyRequestUpdateGuardians(
+    const promise = vectis.proxyRequestUpdateGuardians(
       query.address as string,
       data.guardians.map((g) => g.value),
       data.multisig ? data.threshold : 0

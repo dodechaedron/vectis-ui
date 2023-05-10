@@ -30,26 +30,6 @@ const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
           chains={chains}
           walletModal={(props) => <ModalWallet {...props} />}
           wallets={[...keplrWallet, ...vectisWallet]}
-          endpointOptions={{
-            endpoints: {
-              junotestnet: {
-                rest: ['https://rest.testcosmos.directory/junotestnet'],
-                rpc: ['https://rpc.testcosmos.directory/junotestnet']
-              },
-              injectivetestnet: {
-                rest: ['https://rest.testcosmos.directory/injectivetestnet'],
-                rpc: ['https://rpc.testcosmos.directory/injectivetestnet']
-              },
-              neutrontestnet: {
-                rest: ['https://rest.testcosmos.directory/neutrontestnet'],
-                rpc: ['https://rpc.testcosmos.directory/neutrontestnet']
-              },
-              archwaytestnet: {
-                rest: ['https://rest.testcosmos.directory/archwaytestnet'],
-                rpc: ['https://rpc.testcosmos.directory/archwaytestnet']
-              }
-            }
-          }}
         >
           <SidebarProvider>
             <ModalProvider>

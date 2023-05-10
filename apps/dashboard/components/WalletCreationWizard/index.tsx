@@ -53,14 +53,14 @@ const WalletCreationWizard: React.FC = () => {
   const { handleSubmit } = methods;
 
   const { toast } = useToast();
-  const { signingClient } = useVectis();
+  const { vectis } = useVectis();
 
   const onSubmit = async (data: FormValues) => {
     const guardians = data.guardians.map((g) => g.value);
     const relayers = [];
     const promise = async () => {
       const initialFunds = convertDenomToMicroDenom(data.initialFunds, defaultFee.exponent);
-      await signingClient.createProxyWallet(data.label, guardians, relayers, data.multisig, Number(initialFunds), data.threshold);
+      await vectis.createProxyWallet(data.label, guardians, relayers, data.multisig, Number(initialFunds), data.threshold);
       await sleep(5000);
     };
     await toast.promise(promise());

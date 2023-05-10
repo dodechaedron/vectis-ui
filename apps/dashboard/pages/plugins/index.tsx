@@ -8,9 +8,9 @@ import PluginCard from '~/components/PluginCard';
 import type { NextPage } from 'next';
 
 const Plugins: NextPage = () => {
-  const { queryClient } = useVectis();
+  const { vectis } = useVectis();
 
-  const { data: plugins } = useQuery(['plugins', queryClient], () => queryClient.getPluginsFromRegistry());
+  const { data: plugins } = useQuery(['plugins', vectis], () => vectis.getPluginsFromRegistry());
 
   return (
     <>

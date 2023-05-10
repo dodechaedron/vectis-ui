@@ -1,7 +1,6 @@
 import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
-import { useLocalStorage } from 'react-use';
 
 import { useChain } from '@cosmos-kit/react-lite';
 
@@ -20,8 +19,7 @@ export interface VectisState {
   chainName: string;
   userAddresses: string[];
   setChain: (chainName: string) => void;
-  queryClient: VectisQueryService;
-  signingClient: VectisService;
+  vectis: VectisService;
   account: VectisAccount;
   isWalletConnected: boolean;
   connect: () => void;
@@ -31,8 +29,7 @@ export interface VectisState {
 const VectisContext = createContext<VectisState | null>(null);
 
 export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
-  const [signingClient, setSigningClient] = useState<VectisService | null>(null);
-  const [queryClient, setQueryClient] = useState<VectisQueryService | null>(null);
+  const [vectisService, setVectisService] = useState<VectisService | null>(null);
   const [userAddresses, setUserAddresses] = useState<string[]>([]);
   const [chainName, setChain] = useState<string>(chainNames[0]);
   const {
@@ -52,14 +49,14 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
     console.log(chainName);
     const signer = await getOfflineSignerDirect();
     const txService = await VectisService.connectWithSigner(signer, { endpoints, defaultFee, addresses });
-    setSigningClient(txService);
+    setVectisService(txService);
   };
 
   const { data: account } = useQuery<VectisAccount>(
     ['vectis_account', query.vectis],
-    () => queryClient!.getAccountInfo(query.vectis as string, chainName as string),
+    () => vectisService!.getAccountInfo(query.vectis as string, chainName as string),
     {
-      enabled: Boolean(queryClient) && Boolean(chainName) && Boolean(query.vectis)
+      enabled: Boolean(vectisService) && Boolean(chainName) && Boolean(query.vectis)
     }
   );
 
@@ -84,7 +81,6 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
 
   useEffect(() => {
     const addresses = getContractAddresses(chainName as string);
-    VectisQueryService.connect(endpoints, addresses).then(setQueryClient);
     if (isWalletConnected) buildTxService();
   }, [chainName]);
 
@@ -124,12 +120,11 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
           defaultFee,
           isWalletConnected,
           chainInfo,
+          vectis: vectisService,
           chainName,
           setChain,
           userAddresses,
           supportedChains: chainNames,
-          queryClient,
-          signingClient,
           account,
           connect,
           disconnect

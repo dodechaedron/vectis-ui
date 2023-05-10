@@ -20,7 +20,7 @@ interface Inputs {
 const SendModal: React.FC = () => {
   const { hideModal, isModalVisible } = useModal();
   const { toast, isLoading } = useToast();
-  const { account, signingClient, defaultFee } = useVectis();
+  const { account, vectis, defaultFee } = useVectis();
   const { register, handleSubmit, watch, setValue } = useForm<Inputs>();
 
   const tokens = [
@@ -31,7 +31,7 @@ const SendModal: React.FC = () => {
   ];
 
   const onSubmit = async ({ recipient, amount, memo }) => {
-    const promise = signingClient.proxyTransfer(account.address, recipient, amount, memo);
+    const promise = vectis.proxyTransfer(account.address, recipient, amount, memo);
     await toast.promise(promise);
     hideModal();
   };

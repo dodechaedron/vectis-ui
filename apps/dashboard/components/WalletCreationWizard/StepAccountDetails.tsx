@@ -16,7 +16,7 @@ interface Props {
 }
 
 const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
-  const { queryClient, defaultFee, userAddr } = useVectis();
+  const { vectis, defaultFee, userAddr } = useVectis();
   const [walletFee, setWalletFee] = useState<Coin>();
   const { register, watch, setValue } = useFormContext();
   const [balance, setBalance] = useState<Coin>({ amount: '0', denom: defaultFee.udenom });
@@ -29,8 +29,8 @@ const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
   );
 
   useEffect(() => {
-    queryClient.getFees().then(({ wallet_fee }) => setWalletFee(wallet_fee));
-    queryClient.getBalance(userAddr, defaultFee.udenom).then((balance) => setBalance(balance));
+    vectis.getFees().then(({ wallet_fee }) => setWalletFee(wallet_fee));
+    vectis.getBalance(userAddr, defaultFee.udenom).then((balance) => setBalance(balance));
   }, [defaultFee]);
 
   return (
