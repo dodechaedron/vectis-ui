@@ -1,39 +1,59 @@
-import React, { PropsWithChildren } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import React, { createContext, PropsWithChildren, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useQuery } from 'react-query';
 
-import { ChainProvider } from '@cosmos-kit/react-lite';
-
-import assets from '~/configs/assets';
 import { chains } from '~/configs/chains';
-import { desktopWallets } from '~/configs/wallets';
-import { ModalProvider, TranslationsProvider, VectisProvider } from '~/providers';
+import { useVectis, VectisContextState } from '~/providers';
 
-import ModalWallet from '~/components/Modals/WalletModal';
+import { VectisAccount } from '~/interfaces';
 
-import { SidebarProvider } from './SidebarProvider';
+export interface AppContextState extends VectisContextState {
+  account: VectisAccount;
+}
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false
+const AppContext = createContext<AppContextState | null>(null);
+
+export const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const { query } = useRouter();
+  const vectisContext = useVectis();
+
+  const { chainName, vectis, setChain } = vectisContext;
+
+  const { data: account } = useQuery<VectisAccount>(
+    ['vectis_account', query.vectis],
+    () => vectis.getAccountInfo(query.vectis as string, chainName),
+    {
+      enabled: Boolean(query.vectis)
     }
-  }
-});
+  );
 
-const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  useEffect(() => {
+    if (!query.vectis) return;
+    const [bech32Prefix] = (query.vectis as string).split('1');
+    const chain = chains.find((c) => c.bech32_prefix === bech32Prefix);
+    // TODO: Throw an error and control it
+    if (!chain) return;
+    setChain(chain.chain_name);
+  }, [query.vectis]);
+
   return (
-    <TranslationsProvider>
-      <QueryClientProvider client={queryClient}>
-        <ChainProvider assetLists={assets} chains={chains} walletModal={(props) => <ModalWallet {...props} />} wallets={desktopWallets}>
-          <SidebarProvider>
-            <ModalProvider>
-              <VectisProvider>{children}</VectisProvider>
-            </ModalProvider>
-          </SidebarProvider>
-        </ChainProvider>
-      </QueryClientProvider>
-    </TranslationsProvider>
+    <AppContext.Provider
+      value={
+        {
+          ...vectisContext,
+          account
+        } as AppContextState
+      }
+    >
+      {children}
+    </AppContext.Provider>
   );
 };
 
-export default AppProvider;
+export const useApp = (): AppContextState => {
+  const context = React.useContext(AppContext);
+  if (context === null) {
+    throw new Error('useApp must be used within a AppProvider');
+  }
+  return context;
+};

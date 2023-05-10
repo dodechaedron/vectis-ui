@@ -4,7 +4,7 @@ import { coin, convertMicroDenomToDenom, toCosmosMsg } from 'utils/conversion';
 
 import { ExecuteResult, setupWasmExtension, SigningCosmWasmClient, WasmExtension } from '@cosmjs/cosmwasm-stargate';
 import { toBase64, toUtf8 } from '@cosmjs/encoding';
-import { Coin, OfflineDirectSigner } from '@cosmjs/proto-signing';
+import { Coin, OfflineDirectSigner, OfflineSigner } from '@cosmjs/proto-signing';
 import {
   BankExtension,
   DistributionExtension,
@@ -191,14 +191,14 @@ export class VectisService extends VectisQueryService {
     super(tmClient, endpoints, addresses);
   }
   static async connectWithSigner(
-    signer: OfflineDirectSigner,
+    signer: OfflineSigner,
     { endpoints, defaultFee, addresses }: { endpoints: Endpoints; defaultFee: CoinInfo; addresses: ContractAddresses }
   ): Promise<VectisService> {
     const tmClient = await this.getTmClient(endpoints.rpcUrl);
     const [{ address }] = await signer.getAccounts();
     let client;
     if (endpoints.restUrl.includes('injective')) {
-      client = new InjectiveClient(signer, endpoints);
+      client = new InjectiveClient(signer as OfflineDirectSigner, endpoints);
     } else {
       client = await SigningCosmWasmClient.connectWithSigner(endpoints.rpcUrl, signer, {
         gasPrice: GasPrice.fromString(`${defaultFee.averageGasPrice}${defaultFee.udenom}`)

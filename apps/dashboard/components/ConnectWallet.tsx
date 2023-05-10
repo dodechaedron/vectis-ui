@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 
-import { useVectis } from '~/providers';
+import { useApp } from '~/providers';
 
 import Spinner from '~/components/Spinner';
 
 import Image from 'next/image';
 
 const ConnectWallet: React.FC = () => {
-  const { connect: connectWallet } = useVectis();
+  const { connect: connectWallet } = useApp();
   const [isConnecting, setIsConnecting] = useState(false);
 
   const connect = async () => {

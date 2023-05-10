@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useVectis } from 'providers';
+import { useApp } from 'providers';
 
 import { copyToClipboard } from '~/services/browser';
 
@@ -14,7 +14,7 @@ import Tooltip from './Tooltip';
 import Transactions from './Transactions';
 
 const Dashboard: React.FC = () => {
-  const { account } = useVectis();
+  const { account } = useApp();
   const [toolTipVisible, setToolTipVisible] = useState(false);
 
   const handlerCopy = () => {

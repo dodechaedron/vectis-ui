@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { toBase64, toUtf8 } from '@cosmjs/encoding';
 import Editor, { OnMount } from '@monaco-editor/react';
 
-import { useVectis } from '~/providers';
+import { useApp } from '~/providers';
 import { useToast } from '~/hooks';
 
 import { Button } from './Buttons';
@@ -12,7 +12,7 @@ import { Input } from './Inputs';
 const SettingsBuilderMsg: React.FC = () => {
   const [code, setCode] = React.useState<string | undefined>('');
   const [contractAddress, setContractAddress] = React.useState<string>('');
-  const { vectis, account } = useVectis();
+  const { vectis, account } = useApp();
   const { toast, isLoading } = useToast();
   const editorRef = useRef<any>(null);
 

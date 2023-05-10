@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useVectis } from 'providers';
+import { useApp } from 'providers';
 import { useFormContext } from 'react-hook-form';
 
 import { Button } from '../Buttons';
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const StepPreview: React.FC<Props> = ({ goBack, goNext }) => {
-  const { defaultFee } = useVectis();
+  const { defaultFee } = useApp();
   const { getValues, formState } = useFormContext();
   const { push: goToPage } = useRouter();
   const { isSubmitting, isSubmitSuccessful } = formState;

@@ -2,12 +2,10 @@ import { useEffect } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import Link from 'next/link';
 
-import { useTranslations, useVectis } from '~/providers';
+import { useApp, useTranslations } from '~/providers';
 
 import SmartAccountCard from '~/components/SmartAccountCard';
 import Spinner from '~/components/Spinner';
-
-import { Button } from './Buttons';
 
 import { IoAddCircleOutline } from 'react-icons/io5';
 
@@ -19,9 +17,9 @@ const AccountList: React.FC<Props> = ({ showCreateAccount }) => {
   const { t } = useTranslations();
   const queryClient = useQueryClient();
 
-  const { vectis, userAddresses } = useVectis();
-  const { data: accounts, isLoading } = useQuery(['vectis_accounts', ...userAddresses], () => vectis.getAccounts(userAddresses), {
-    enabled: Boolean(userAddresses.length) && Boolean(vectis),
+  const { vectis, userAccounts } = useApp();
+  const { data: accounts, isLoading } = useQuery(['vectis_accounts', ...userAccounts], () => vectis.getAccounts(userAccounts), {
+    enabled: Boolean(userAccounts.length) && Boolean(vectis),
     onSuccess: (accounts) => accounts.forEach((account) => queryClient.setQueryData(['vectis_account', account.address], account))
   });
 

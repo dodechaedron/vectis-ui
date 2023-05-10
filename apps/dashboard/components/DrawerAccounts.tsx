@@ -1,11 +1,11 @@
-import { useVectis } from '~/providers';
+import { useApp } from '~/providers';
 
 import LockIcon from './Icons/Lock';
 import AccountList from './AccountList';
 import { Button } from './Buttons';
 
 const DrawerAccounts: React.FC = () => {
-  const { connect, isWalletConnected } = useVectis();
+  const { connect, isWalletConnected } = useApp();
 
   return (
     <div className="flex h-full flex-col">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useVectis } from 'providers';
+import { useApp } from 'providers';
 import Link from 'next/link';
 
 import { VectisLogo } from '@vectis/components';
@@ -16,7 +16,7 @@ interface Props {
 }
 
 const Heading: React.FC<Props> = ({ isSidebarOpen, sideBarToggle }) => {
-  const { userAddr, disconnect } = useVectis();
+  const { userAddr, disconnect } = useApp();
 
   return (
     <div className="sticky top-0 z-50 flex h-[4.5rem] w-full items-center justify-between border-b border-gray-200 bg-white px-4 ">

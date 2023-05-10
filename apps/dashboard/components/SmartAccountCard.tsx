@@ -5,7 +5,6 @@ import { format } from 'date-fns';
 import Snowfall from 'react-snowfall';
 
 import { IntlAddress } from '~/services/browser';
-import { useVectis } from '~/providers/VectisProvider';
 
 import CardInfo from './CardInfo';
 

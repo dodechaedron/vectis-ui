@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { Dialog } from '@headlessui/react';
 
-import { useModal, useVectis } from '~/providers';
+import { useModal, useApp } from '~/providers';
 import { useToast } from '~/hooks';
 import { coin, convertDenomToMicroDenom } from '~/utils/conversion';
 
@@ -17,7 +17,7 @@ const ChargeModal: React.FC = () => {
   const [amount, setAmount] = useState('0');
 
   const { toast, isLoading } = useToast();
-  const { account, vectis, defaultFee, userAddr } = useVectis();
+  const { account, vectis, defaultFee, userAddr } = useApp();
 
   const tokens = [
     {

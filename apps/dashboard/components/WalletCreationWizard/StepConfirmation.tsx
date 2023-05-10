@@ -1,14 +1,9 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 
-import { useVectis } from '~/providers';
-import { useToast } from '~/hooks';
-
 import { Button } from '../Buttons';
 
 const StepConfirmation: React.FC = () => {
-  const { vectis } = useVectis();
-  const { toast } = useToast();
   const { push: goToPage } = useRouter();
 
   const handleMint = async () => {

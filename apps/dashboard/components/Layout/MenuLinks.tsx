@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import { useVectis } from 'providers';
+import { useApp } from 'providers';
 import { generalMenu, toolsMenu } from 'utils/links';
 import Link from 'next/link';
 
@@ -11,7 +11,7 @@ interface Props {
 
 const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
   const { pathname } = useRouter();
-  const { account, userAddr } = useVectis();
+  const { account, userAddr } = useApp();
   const links = useMemo(
     () =>
       generalMenu.filter((l) => {

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/router';
 
-import { useModal, useVectis } from '~/providers';
+import { useModal, useApp } from '~/providers';
 
 import { GiReceiveMoney } from 'react-icons/gi';
 import { IoIosSettings } from 'react-icons/io';
@@ -9,7 +9,7 @@ import { MdSendAndArchive, MdStackedBarChart } from 'react-icons/md';
 
 const CardOptions: React.FC = () => {
   const { push: goToPage } = useRouter();
-  const { account } = useVectis();
+  const { account } = useApp();
   const { showModal } = useModal();
 
   const buttons = useMemo(

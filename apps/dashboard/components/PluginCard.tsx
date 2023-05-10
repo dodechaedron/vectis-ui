@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 
-import { useVectis } from '~/providers';
+import { useApp } from '~/providers';
 import { useToast } from '~/hooks';
 
 import { Button } from './Buttons';
@@ -14,7 +14,7 @@ interface Props {
 }
 
 const PluginCard: React.FC<Props> = ({ plugin }) => {
-  const { account, vectis } = useVectis();
+  const { account, vectis } = useApp();
   const { toast } = useToast();
   const { data, isLoading, refetch } = useQuery(['user_plugins', account], () => vectis.getPlugins(account.address));
 

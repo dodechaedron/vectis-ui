@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-import { useVectis } from '~/providers';
+import { useApp } from '~/providers';
 import { useToast } from '~/hooks';
 
 import { Input } from './Inputs';
@@ -20,7 +20,7 @@ interface Props {
 const SettingsAccount: React.FC<Props> = ({ walletInfo }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState('');
-  const { vectis } = useVectis();
+  const { vectis } = useApp();
   const { toast } = useToast();
   const { query } = useRouter();
 

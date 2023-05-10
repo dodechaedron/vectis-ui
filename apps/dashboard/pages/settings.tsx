@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
-import { useVectis } from '~/providers';
+import { useApp } from '~/providers';
 
 import HeadingTabs from '~/components/HeadingTabs';
 import SettingsAccount from '~/components/SettingsAccount';
@@ -13,7 +13,7 @@ import SettingsGuardians from '~/components/SettingsGuardians';
 import type { NextPage } from 'next';
 
 const SettingsPage: NextPage = () => {
-  const { userAddr, account } = useVectis();
+  const { userAddr, account } = useApp();
   const { push: goToPage } = useRouter();
 
   const tabs = useMemo(

@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast';
 
 import { Anek_Latin } from '@next/font/google';
 
-import { useVectis } from '~/providers';
+import { useApp } from '~/providers';
 
 import Heading from '~/components/Heading';
 
@@ -23,7 +23,7 @@ const font = Anek_Latin({
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
-  const { account } = useVectis();
+  const { account } = useApp();
   const { pathname } = useRouter();
 
   const shouldShowSidebar = useMemo(() => '/' !== pathname, [pathname]);

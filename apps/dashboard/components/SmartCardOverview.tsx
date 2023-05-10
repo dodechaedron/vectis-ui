@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { format } from 'date-fns';
-import { useVectis } from 'providers';
+import { useApp } from 'providers';
 import Snowfall from 'react-snowfall';
 
 import { IntlAddress } from '~/services/browser';
@@ -11,7 +11,7 @@ import { FaKey, FaUserShield } from 'react-icons/fa';
 import { GoShield } from 'react-icons/go';
 
 const SmartCardOverview: React.FC = () => {
-  const { account } = useVectis();
+  const { account } = useApp();
   if (!account) return null;
   return (
     <div

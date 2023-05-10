@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useMemo } from 'react';
 import { Input } from 'components/Inputs';
 import InputPrice from 'components/Inputs/InputPrice';
-import { useVectis } from 'providers';
+import { useApp } from 'providers';
 import { useFormContext } from 'react-hook-form';
 import { convertDenomToMicroDenom, convertMicroDenomToDenom } from 'utils/conversion';
 
@@ -16,7 +16,7 @@ interface Props {
 }
 
 const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
-  const { vectis, defaultFee, userAddr } = useVectis();
+  const { vectis, defaultFee, userAddr } = useApp();
   const [walletFee, setWalletFee] = useState<Coin>();
   const { register, watch, setValue } = useFormContext();
   const [balance, setBalance] = useState<Coin>({ amount: '0', denom: defaultFee.udenom });

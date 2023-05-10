@@ -4,7 +4,7 @@ import { Doughnut } from 'react-chartjs-2';
 
 Chart.register(ArcElement, Legend, Tooltip);
 
-import { useVectis } from '~/providers';
+import { useApp } from '~/providers';
 
 export const chartOptions = {
   responsive: true,
@@ -31,7 +31,7 @@ export const chartOptions = {
 };
 
 const TokenAllocation: React.FC = () => {
-  const { vectis, account, defaultFee } = useVectis();
+  const { vectis, account, defaultFee } = useApp();
   const [allocation, setAllocation] = useState<number[]>([]);
   const data = {
     labels: ['Bonded', 'Rewards', 'Available', 'Unbonding'],

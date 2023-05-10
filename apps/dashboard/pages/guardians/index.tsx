@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query';
 import Head from 'next/head';
 
-import { useVectis } from '~/providers';
+import { useApp } from '~/providers';
 
 import AccountListByGuardian from '~/components/GuardianWalletList';
 import NotFound from '~/components/NotFound';
@@ -12,7 +12,7 @@ import { UserGroupIcon } from '@heroicons/react/24/solid';
 import type { NextPage } from 'next';
 
 const Guardian: NextPage = () => {
-  const { vectis, userAddr, chainName } = useVectis();
+  const { vectis, userAddr, chainName } = useApp();
   const { isLoading, data: accounts } = useQuery(['accounts_by_guardians', chainName, userAddr], () =>
     vectis.getAccountsByGuardianAddr(chainName, userAddr)
   );

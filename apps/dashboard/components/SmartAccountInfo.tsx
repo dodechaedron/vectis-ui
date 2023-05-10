@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { useVectis } from '~/providers';
+import { useApp } from '~/providers';
 
 import { BsSnow2 } from 'react-icons/bs';
 import { FaKey, FaUserShield } from 'react-icons/fa';
 import { GoShield } from 'react-icons/go';
 
 const SmartAccountInfo: React.FC = () => {
-  const { account } = useVectis();
+  const { account } = useApp();
   return (
     <div className="flex items-center justify-center">
       <div className="flex justify-between gap-4 xl:gap-8 ">

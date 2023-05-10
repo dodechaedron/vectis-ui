@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import Head from 'next/head';
 
-import AppProvider from '~/providers/AppProvider';
+import Providers from '~/providers/Providers';
 
 import Layout from '~/components/Layout';
 import Spinner from '~/components/Spinner';
@@ -18,11 +18,11 @@ function VectisApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico?v=3" />
       </Head>
       <Suspense fallback={<Spinner size="md" wrapper />}>
-        <AppProvider>
+        <Providers>
           <Layout>
             <Component {...pageProps} />
           </Layout>
-        </AppProvider>
+        </Providers>
       </Suspense>
     </>
   );

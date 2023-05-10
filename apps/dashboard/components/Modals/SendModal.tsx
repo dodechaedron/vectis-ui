@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import { useModal, useVectis } from '~/providers';
+import { useApp, useModal } from '~/providers';
 import { useToast } from '~/hooks';
 
 import { Button } from '../Buttons';
@@ -20,7 +20,7 @@ interface Inputs {
 const SendModal: React.FC = () => {
   const { hideModal, isModalVisible } = useModal();
   const { toast, isLoading } = useToast();
-  const { account, vectis, defaultFee } = useVectis();
+  const { account, vectis, defaultFee } = useApp();
   const { register, handleSubmit, watch, setValue } = useForm<Inputs>();
 
   const tokens = [

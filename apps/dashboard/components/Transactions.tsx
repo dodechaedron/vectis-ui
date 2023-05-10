@@ -3,7 +3,7 @@ import { useState } from 'react';
 import clsx from 'clsx';
 
 import { IntlAddress, IntlTimeAgo } from '~/services/browser';
-import { useVectis } from '~/providers';
+import { useApp } from '~/providers';
 import { usePagination } from '~/hooks';
 import { convertMicroDenomToDenom } from '~/utils/conversion';
 
@@ -23,7 +23,7 @@ interface Props {
 }
 
 const TransactionsTable: React.FC<Props> = ({ filter, pagination, defaultLimit = 10 }) => {
-  const { chainName, vectis, account, defaultFee } = useVectis();
+  const { chainName, vectis, account, defaultFee } = useApp();
   const [txs, setTxs] = useState<Transaction[]>([]);
   const methods = usePagination({ limit: defaultLimit });
   const { setTotal, page } = methods;

@@ -4,10 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { useSidebar } from '~/providers/SidebarProvider';
 
-import ChainSidebar from './ChainSidebar';
-
 const sidebars = {
-  chains: ChainSidebar
+  chains: () => <p></p>
 };
 
 const GlobalSidebar: React.FC = () => {

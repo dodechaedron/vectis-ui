@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useVectis } from 'providers';
+import { useApp } from 'providers';
 import { convertMicroDenomToDenom } from 'utils/conversion';
 
 import { Coin } from '@cosmjs/amino';
 
 const BalanceCard: React.FC = () => {
-  const { defaultFee, account } = useVectis();
+  const { defaultFee, account } = useApp();
   const [balance, setBalance] = useState<Coin>({ amount: '0', denom: defaultFee.symbol });
 
   return (
