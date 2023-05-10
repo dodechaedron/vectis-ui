@@ -15,7 +15,7 @@ const SmartCardOverview: React.FC = () => {
   if (!account) return null;
   return (
     <div
-      className="flex-2 relative h-[20rem] w-full rounded-lg bg-white bg-cover bg-center bg-no-repeat "
+      className="relative h-[20rem] w-[55%] rounded-lg bg-white bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url('/visa-bg-3.jpg')` }}
     >
       <div
