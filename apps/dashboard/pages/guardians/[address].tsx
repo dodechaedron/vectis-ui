@@ -111,7 +111,7 @@ const GuardianPage: NextPage = () => {
       </Head>
 
       {accountInfo ? (
-        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-[repeat(auto-fit,_minmax(500px,_1fr))]">
+        <div className="grid w-full grid-cols-1 gap-4 p-4 md:grid-cols-[repeat(auto-fit,_minmax(500px,_1fr))]">
           <div className="flex max-h-[22rem] flex-col rounded-md bg-white shadow-sm">
             <div className="border-b border-gray-200 bg-gray-50/30 px-4 py-5 sm:px-6">
               <h3 className="text-lg font-medium leading-6 text-gray-900">Smart Account</h3>

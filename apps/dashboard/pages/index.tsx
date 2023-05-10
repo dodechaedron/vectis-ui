@@ -1,35 +1,39 @@
 import Head from 'next/head';
 
-import { useVectis } from '~/providers';
-
+import AccountList from '~/components/AccountList';
 import { Button } from '~/components/Buttons';
-import ConnectWallet from '~/components/ConnectWallet';
-
-import ListWallets from './accounts';
 
 import type { NextPage } from 'next';
 
 const WelcomePage: NextPage = () => {
-  const { userAddr } = useVectis();
   return (
     <>
       <Head>
         <title>Vectis | Welcome</title>
       </Head>
-      <div className="grid h-full w-full grid-cols-4 gap-4">
-        <div className="col-span-1 flex h-full w-full flex-1 flex-col gap-4 rounded-md bg-white p-4">
-          {userAddr ? <ListWallets /> : <ConnectWallet />}
+      <div className="flex w-full flex-col items-center gap-4 p-4 lg:h-[calc(100vh-72px)] lg:flex-row">
+        <div className="relative flex h-full w-full flex-1 flex-col gap-4 rounded-md bg-white lg:max-w-[25rem]">
+          <AccountList />
         </div>
-        <div className="col-span-3 flex h-full w-full flex-1 flex-col items-start justify-center rounded-md bg-gradient-to-br from-kashmir-blue-100 via-kashmir-blue-500/50 to-kashmir-blue-500 p-10">
-          <h2 className="text-4xl font-semibold  text-white">Welcome to Vectis</h2>
-          <p className="text-lg text-white">Vectis is a smart account management tool for Solana.</p>
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-2">
-            <div className="flex w-full flex-col items-start justify-center gap-4 rounded-md bg-white p-8">
-              <div className="flex flex-col gap-1">
-                <h3 className="text-2xl font-semibold">Create Vectis Account</h3>
-                <p className="text-sm text-gray-500">Create a smart account to manage your tokens.</p>
+        <div className="relative h-full w-full flex-1 rounded-md bg-[url('/blue-bg.jpg')]">
+          <div className="flex h-full w-full flex-col items-start justify-center rounded-md bg-kashmir-blue-700/30 p-10">
+            <h2 className="text-4xl font-semibold  text-white">Welcome to Vectis</h2>
+            <p className="text-lg text-white">Vectis is a smart account management tool for Cosmos.</p>
+            <div className="mt-8 flex w-full flex-col justify-evenly gap-4 lg:flex-row xl:justify-start xl:gap-16">
+              <div className="flex w-full max-w-[27.5rem] flex-col items-start justify-center gap-4 rounded-md bg-white p-8">
+                <div className="flex flex-col gap-1">
+                  <h3 className="text-2xl font-semibold">Vectis Account</h3>
+                  <p className="text-sm text-gray-500">Create a smart account account account to manage your tokens.</p>
+                </div>
+                <Button>Create Account</Button>
               </div>
-              <Button>Create Account</Button>
+              <div className="flex w-full max-w-[27.5rem] flex-col items-start justify-center gap-4 rounded-md bg-white p-8">
+                <div className="flex flex-col gap-1">
+                  <h3 className="text-2xl font-semibold">Guardian Explorer</h3>
+                  <p className="text-sm text-gray-500">See accounts where you are guardian of and do guardian actions.</p>
+                </div>
+                <Button>Explore Accounts</Button>
+              </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
-import React from "react";
-import clsx from "clsx";
+import React from 'react';
+import clsx from 'clsx';
 
 interface Props {
   isOpen: boolean;
@@ -9,12 +9,23 @@ interface Props {
 const Hamburguer: React.FC<Props> = ({ isOpen, toggle }) => {
   return (
     <div
-      className="flex flex-col h-[24px] w-[24px] justify-center items-center gap-[0.4rem] hover:cursor-pointer transition-all md:hidden"
+      className={clsx(
+        'group flex h-[20px] w-[20px] origin-center transform cursor-pointer flex-col justify-between transition-all duration-300',
+        { '-rotate-[45deg]': isOpen }
+      )}
       onClick={toggle}
     >
-      <span className={clsx("w-[24px] h-[2px] bg-gray-900 transition-all", isOpen ? "rotate-[45deg] translate-y-[10px]" : "")} />
-      <span className={clsx("w-[24px] h-[2px] bg-gray-900 transition-all", isOpen ? "opacity-0" : "opacity-100")} />
-      <span className={clsx("w-[24px] h-[2px] bg-gray-900 transition-all", isOpen ? "rotate-[-45deg] translate-y-[-5px]" : "")} />
+      <div
+        className={clsx('h-[3px] w-1/2 origin-right transform rounded-lg bg-black transition-all delay-75 duration-300', {
+          '!h-[2px] -translate-y-[1px] -rotate-90': isOpen
+        })}
+      />
+      <div className={clsx('h-[2px] rounded-lg bg-black', isOpen ? 'h-[1px]' : '')} />
+      <div
+        className={clsx('group h-[3px] w-1/2 origin-left transform self-end rounded-lg bg-black transition-all delay-75 duration-300', {
+          '!h-[2px] translate-y-[1px] -rotate-90': isOpen
+        })}
+      ></div>
     </div>
   );
 };

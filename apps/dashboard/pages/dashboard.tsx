@@ -1,8 +1,8 @@
-import Head from "next/head";
+import Head from 'next/head';
 
-import Dashboard from "~/components/Dashboard";
+import Dashboard from '~/components/Dashboard';
 
-import type { NextPage } from "next";
+import type { NextPage } from 'next';
 
 const DashboardPage: NextPage = () => {
   return (
@@ -10,7 +10,7 @@ const DashboardPage: NextPage = () => {
       <Head>
         <title>Vectis | Dashboard</title>
       </Head>
-      <div className="flex flex-1 flex-col gap-4 h-full">
+      <div className="flex h-full flex-1 flex-col gap-4">
         <Dashboard />
       </div>
     </>

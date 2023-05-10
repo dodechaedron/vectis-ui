@@ -18,13 +18,10 @@ interface Props {
 }
 
 const SmartAccountCard: React.FC<Props> = ({ smartAccount }) => {
-  const { changeAccount } = useVectis();
   const { push: goToPage } = useRouter();
 
   const selectWallet = useCallback(async () => {
-    if (!smartAccount) return;
-    changeAccount(smartAccount);
-    goToPage('/');
+    goToPage('/dashboard?vectis=' + smartAccount.address);
   }, [smartAccount]);
 
   return (

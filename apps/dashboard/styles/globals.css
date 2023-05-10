@@ -25,3 +25,7 @@
 body {
   background: theme("colors.gray.100");
 }
+
+.right-sidebar {
+    direction: rtl;
+  }

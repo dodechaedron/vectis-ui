@@ -1,12 +1,14 @@
 import React, { PropsWithChildren, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import Heading from 'components/Heading';
-import { useVectis } from 'providers';
+import { Toaster } from 'react-hot-toast';
 
 import { Anek_Latin } from '@next/font/google';
 
-import ConnectWallet from '../ConnectWallet';
+import { useVectis } from '~/providers';
+
+import Heading from '~/components/Heading';
+
 import Loading from '../Loading';
 import GlobalModal from '../Modals/GlobalModal';
 import GlobalSidebar from '../Sidebars/GlobalSidebar';
@@ -28,18 +30,18 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const sideBarToggle = useCallback(() => setIsSidebarOpen((prev) => !prev), []);
 
   if (!queryClient) return <Loading />;
-  if (!account && pathname !== '/accounts') return <Loading />;
-  const Component = userAddr ? children : <ConnectWallet />;
+  if (pathname !== '/' && !account) return <Loading />;
 
   return (
-    <div className={clsx('flex h-screen w-full flex-1 flex-col bg-gray-100 text-gray-900', font.className)}>
+    <div className={clsx('bg-gray-100 text-gray-900', font.className)}>
       <Heading isSidebarOpen={isSidebarOpen} sideBarToggle={sideBarToggle} />
-      <GlobalSidebar />
-      <main className="max-w-screen flex h-full w-full flex-1">
+      <main className="max-w-screen flex flex-1">
         {shouldShowSidebar ? <Sidebar visible={isSidebarOpen} setVisible={sideBarToggle} /> : null}
-        <div className="flex min-h-full w-full flex-1 gap-4 p-4">{Component}</div>
+        <div className="flex w-full flex-1 gap-4">{children}</div>
       </main>
+      <GlobalSidebar />
       <GlobalModal />
+      <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };

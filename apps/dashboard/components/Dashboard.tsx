@@ -24,11 +24,11 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-1 flex-col lg:flex-row gap-4 h-full">
-      <div className="flex flex-1 items-center flex-col h-full gap-6">
-        <div className="flex gap-4 xl:gap-8 rounded-md w-full flex-col lg:flex-row">
-          <div className="hidden lg:flex flex-col items-center flex-star gap-4">
-            <QRCode className="mx-auto rounded-lg !w-30 !h-30 border" />
+    <div className="flex h-full flex-1 flex-col gap-4 p-4 lg:flex-row">
+      <div className="flex h-full flex-1 flex-col items-center gap-6">
+        <div className="flex w-full flex-col gap-4 rounded-md lg:flex-row xl:gap-8">
+          <div className="flex-star hidden flex-col items-center gap-4 lg:flex">
+            <QRCode className="!w-30 !h-30 mx-auto rounded-lg border" />
             <Tooltip anchorId="copy-address" visible={toolTipVisible} />
             <Button id="copy-address" data-tooltip-content="copied" className="w-full" onClick={handlerCopy}>
               Copy Address
@@ -38,7 +38,7 @@ const Dashboard: React.FC = () => {
         </div>
         <Transactions defaultLimit={8} />
       </div>
-      <div className="flex flex-col gap-4 lg:w-[30%] h-full">
+      <div className="flex h-full flex-col gap-4 lg:w-[30%]">
         <CardOptions />
         <BalanceCard />
         <TokenAllocation />

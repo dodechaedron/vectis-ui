@@ -17,7 +17,7 @@ const CardOptions: React.FC = () => {
       {
         text: 'Manage',
         icon: IoIosSettings,
-        onClick: () => goToPage(`/accounts/${account?.address}`)
+        onClick: () => goToPage(`settings?vectis=${account?.address}`)
       },
       {
         text: 'Transfer',

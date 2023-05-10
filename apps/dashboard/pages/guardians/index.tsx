@@ -24,11 +24,11 @@ const Guardian: NextPage = () => {
       </Head>
 
       {accounts?.length ? (
-        <div className="h-full rounded-md bg-white shadow-sm">
+        <div className="h-full rounded-md bg-white p-4 shadow-sm">
           <AccountListByGuardian accountList={accounts} />
         </div>
       ) : (
-        <div className="flex flex-1 flex-col gap-4">
+        <div className="flex flex-1 flex-col gap-4 p-4">
           <div className="flex h-full items-center justify-center rounded-md bg-white shadow xl:px-8 xl:py-14 ">
             {isLoading ? <Spinner size="lg" /> : <NotFound icon={UserGroupIcon} text="You don't guardian other smart accounts" />}
           </div>

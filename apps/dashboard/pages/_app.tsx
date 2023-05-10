@@ -1,5 +1,4 @@
-import { Suspense, useEffect } from 'react';
-import { Toaster } from 'react-hot-toast';
+import { Suspense } from 'react';
 import Head from 'next/head';
 
 import AppProvider from '~/providers/AppProvider';
@@ -23,7 +22,6 @@ function VectisApp({ Component, pageProps }: AppProps) {
           <Layout>
             <Component {...pageProps} />
           </Layout>
-          <Toaster position="bottom-center" reverseOrder={false} />
         </AppProvider>
       </Suspense>
     </>

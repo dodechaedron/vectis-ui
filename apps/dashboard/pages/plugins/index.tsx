@@ -18,7 +18,7 @@ const Plugins: NextPage = () => {
         <title>Vectis | Guardian</title>
       </Head>
 
-      <div className="flex flex-1 flex-col gap-4 px-16">
+      <div className="flex flex-1 flex-col gap-4 p-4 px-16">
         <h1 className="text-2xl font-bold">Plugins ({plugins?.total})</h1>
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
           {plugins?.plugins.map((p) => (
