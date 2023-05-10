@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { Dialog } from '@headlessui/react';
 
-import { useModal, useApp } from '~/providers';
+import { useApp,useModal } from '~/providers';
 import { useToast } from '~/hooks';
 import { coin, convertDenomToMicroDenom } from '~/utils/conversion';
 

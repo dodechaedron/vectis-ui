@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/router';
 
-import { useModal, useApp } from '~/providers';
+import { useApp,useModal } from '~/providers';
 
 import { GiReceiveMoney } from 'react-icons/gi';
 import { IoIosSettings } from 'react-icons/io';
