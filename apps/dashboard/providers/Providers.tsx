@@ -1,9 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 
-import { ChainProvider, ModalProvider, TranslationsProvider, VectisProvider } from '~/providers';
-
-import AppProvider from './AppProvider';
-import QueryProvider from './QueryProvider';
+import { AppProvider, ChainProvider, ModalProvider, QueryProvider, TranslationsProvider, VectisProvider } from '~/providers';
 
 const Providers: React.FC<PropsWithChildren> = ({ children }) => {
   return (

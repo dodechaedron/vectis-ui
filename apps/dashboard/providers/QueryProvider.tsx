@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { useVectis } from './VectisProvider';
 
-const QueryProvider: React.FC<PropsWithChildren> = ({ children }) => {
+export const QueryProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { vectis } = useVectis();
 
   const queryClient = new QueryClient({
@@ -17,5 +17,3 @@ const QueryProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };
-
-export default QueryProvider;

@@ -1,5 +1,4 @@
 import React, { createContext, PropsWithChildren, useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/router';
 
 import { OfflineSigner } from '@cosmjs/proto-signing';
 import { wallets as keplrWallet } from '@cosmos-kit/keplr-extension';

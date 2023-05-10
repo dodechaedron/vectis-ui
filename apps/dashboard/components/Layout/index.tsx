@@ -11,7 +11,6 @@ import Heading from '~/components/Heading';
 
 import Loading from '../Loading';
 import GlobalModal from '../Modals/GlobalModal';
-import GlobalSidebar from '../Sidebars/GlobalSidebar';
 
 import Sidebar from './Sidebar';
 
@@ -37,7 +36,6 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         {shouldShowSidebar ? <Sidebar visible={isSidebarOpen} setVisible={sideBarToggle} /> : null}
         <div className="flex w-full flex-1 gap-4">{children}</div>
       </main>
-      <GlobalSidebar />
       <GlobalModal />
       <Toaster position="bottom-center" reverseOrder={false} />
     </div>

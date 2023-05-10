@@ -1,6 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 
+import { useChain } from '@cosmos-kit/react-lite';
+
 import { desktopWallets } from '~/configs/wallets';
 
 import VectisIcon from '~/components/Icons/VectisIcon';
@@ -26,7 +28,18 @@ const browserIcon = (browser: string | undefined): IconType => {
   }
 };
 
-const AvailableWallet: React.FC = () => {
+interface Props {
+  walletRepo: {
+    connect: (walletName: string, sync?: boolean) => Promise<void>;
+    chainRecord: { name: string };
+  };
+}
+
+const AvailableWallet: React.FC<Props> = ({ walletRepo }) => {
+  const { isWalletDisconnected } = useChain(walletRepo.chainRecord.name);
+
+  if (!isWalletDisconnected) return null;
+
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -37,6 +50,7 @@ const AvailableWallet: React.FC = () => {
               <div
                 key={`${walletInfo.prettyName}-wallet-${i}`}
                 className="group flex cursor-pointer items-center justify-between gap-4 rounded-lg bg-gray-200 p-2 hover:bg-kashmir-blue-200"
+                onClick={() => walletRepo.connect(walletInfo.name)}
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className=" flex h-12 w-12 items-center justify-center rounded-full bg-white p-2">

@@ -2,6 +2,8 @@ import React, { Dispatch, ReactElement, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 
+import { useChain } from '@cosmos-kit/react-lite';
+
 import { desktopWallets } from '~/configs/wallets';
 
 import { Button } from '../Buttons';
@@ -12,26 +14,18 @@ import ConectingWallet from './ConnectWalletModal/ConectingWallet';
 import SuccessConnect from './ConnectWalletModal/SuccessConnected';
 import { modalDropIn } from './Modal';
 
-import { BiRightArrow } from 'react-icons/bi';
-import { FaChrome, FaEdge, FaFirefoxBrowser, FaLaptop, FaOpera, FaSafari } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
-import { IconType } from 'react-icons/lib';
 
 interface WalletModalProps {
   isOpen: boolean;
   setOpen: Dispatch<boolean>;
   walletRepo?: {
-    connect: (walletName?: string, sync?: boolean) => Promise<void>;
+    connect: (walletName: string, sync?: boolean) => Promise<void>;
+    chainRecord: { name: string };
   };
 }
 
 const ModalWallet: React.FC<WalletModalProps> = ({ walletRepo, setOpen, isOpen }) => {
-  const handleConnect = async (walletName?: string) => {
-    if (!walletRepo) return;
-    await walletRepo.connect(walletName);
-    setOpen(false);
-  };
-
   if (!isOpen) return <AnimatePresence initial={false} mode="wait" onExitComplete={() => null} />;
 
   return (
@@ -55,9 +49,13 @@ const ModalWallet: React.FC<WalletModalProps> = ({ walletRepo, setOpen, isOpen }
             <IoClose className="h-6 w-6 fill-gray-500 group-hover:fill-gray-700" />
           </button>
           <div className="flex flex-col gap-8">
-            {/* <AvailableWallet /> */}
-            {/* <ConectingWallet selectedWallet={desktopWallets[0]} /> */}
-            <SuccessConnect />
+            {walletRepo ? (
+              <>
+                <AvailableWallet walletRepo={walletRepo} />
+                <ConectingWallet chainName={walletRepo.chainRecord.name} />
+                <SuccessConnect chainName={walletRepo.chainRecord.name} />
+              </>
+            ) : null}
           </div>
         </motion.div>
       </motion.div>

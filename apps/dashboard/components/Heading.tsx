@@ -16,7 +16,7 @@ interface Props {
 }
 
 const Heading: React.FC<Props> = ({ isSidebarOpen, sideBarToggle }) => {
-  const { userAddr, disconnect } = useApp();
+  const { username, disconnect } = useApp();
 
   return (
     <div className="sticky top-0 z-50 flex h-[4.5rem] w-full items-center justify-between border-b border-gray-200 bg-white px-4 ">
@@ -24,12 +24,12 @@ const Heading: React.FC<Props> = ({ isSidebarOpen, sideBarToggle }) => {
         <VectisLogo className="h-[24px] w-[100px] fill-kashmir-blue-500" />
       </Link>
       <div className="hidden gap-4 md:flex">
-        {userAddr ? (
+        {username ? (
           <div className="flex cursor-pointer items-center justify-center gap-2" onClick={disconnect}>
             <AiOutlineLogout className="h-6 w-6 text-kashmir-blue-500" />
             <div className="flex flex-col">
               <p className="mb-[-4px] text-[8px] text-gray-400">connected</p>
-              <p className="text-sm">{IntlAddress(userAddr, 8)}</p>
+              <p className="text-sm capitalize">{username}</p>
             </div>
           </div>
         ) : (
