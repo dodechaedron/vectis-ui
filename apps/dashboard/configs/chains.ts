@@ -1,6 +1,8 @@
 import { isTestnet } from './network';
 
-const junotestnet = {
+import type { Chain, Chains } from '@chain-registry/types';
+
+const junotestnet: Chain = {
   $schema: '../../chain.schema.json',
   chain_name: 'junotestnet',
   status: 'live',
@@ -144,7 +146,7 @@ const junotestnet = {
     }
   ]
 };
-const injectivetestnet = {
+const injectivetestnet: Chain = {
   $schema: '../chain.schema.json',
   chain_name: 'injectivetestnet',
   status: 'live',
@@ -274,7 +276,7 @@ const injectivetestnet = {
   ]
 };
 
-const archwaytestnet = {
+const archwaytestnet: Chain = {
   $schema: '../chain.schema.json',
   chain_name: 'archwaytestnet',
   chain_id: 'constantine-2',
@@ -327,7 +329,7 @@ const archwaytestnet = {
   ]
 };
 
-const neutrontestnet = {
+const neutrontestnet: Chain = {
   $schema: '../../chain.schema.json',
   chain_name: 'neutrontestnet',
   status: 'live',
@@ -461,7 +463,7 @@ const neutrontestnet = {
   ]
 };
 
-const juno = {
+const juno: Chain = {
   $schema: '../chain.schema.json',
   chain_name: 'juno',
   status: 'live',
@@ -852,6 +854,6 @@ const mainnetChains = [juno];
 
 const testnetChains = [junotestnet, injectivetestnet, archwaytestnet, neutrontestnet];
 
-export const chains = isTestnet ? testnetChains : mainnetChains;
+export const chains: Chains = isTestnet ? testnetChains : mainnetChains;
 export const chainIds = chains.map((chain) => chain.chain_id);
 export const chainNames = chains.map((chain) => chain.chain_name);

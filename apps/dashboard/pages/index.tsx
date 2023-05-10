@@ -1,7 +1,7 @@
 import Head from 'next/head';
 
-import AccountList from '~/components/AccountList';
 import { Button } from '~/components/Buttons';
+import DrawerAccounts from '~/components/DrawerAccounts';
 
 import type { NextPage } from 'next';
 
@@ -13,7 +13,7 @@ const WelcomePage: NextPage = () => {
       </Head>
       <div className="flex w-full flex-col items-center gap-4 p-4 lg:h-[calc(100vh-72px)] lg:flex-row">
         <div className="relative flex h-full w-full flex-1 flex-col gap-4 rounded-md bg-white lg:max-w-[25rem]">
-          <AccountList />
+          <DrawerAccounts />
         </div>
         <div className="relative h-full w-full flex-1 rounded-md bg-[url('/blue-bg.jpg')]">
           <div className="flex h-full w-full flex-col items-start justify-center rounded-md bg-kashmir-blue-700/30 p-10">
