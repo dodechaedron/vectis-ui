@@ -1,12 +1,11 @@
 import React, { PropsWithChildren } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { wallets as keplrWallet } from '@cosmos-kit/keplr-extension';
 import { ChainProvider } from '@cosmos-kit/react-lite';
-import { wallets as vectisWallet } from '@cosmos-kit/vectis-extension';
 
 import assets from '~/configs/assets';
 import { chains } from '~/configs/chains';
+import { desktopWallets } from '~/configs/wallets';
 import { ModalProvider, TranslationsProvider, VectisProvider } from '~/providers';
 
 import ModalWallet from '~/components/Modals/WalletModal';
@@ -25,12 +24,7 @@ const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <TranslationsProvider>
       <QueryClientProvider client={queryClient}>
-        <ChainProvider
-          assetLists={assets}
-          chains={chains}
-          walletModal={(props) => <ModalWallet {...props} />}
-          wallets={[...keplrWallet, ...vectisWallet]}
-        >
+        <ChainProvider assetLists={assets} chains={chains} walletModal={(props) => <ModalWallet {...props} />} wallets={desktopWallets}>
           <SidebarProvider>
             <ModalProvider>
               <VectisProvider>{children}</VectisProvider>
