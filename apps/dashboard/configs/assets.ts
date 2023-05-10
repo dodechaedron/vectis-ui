@@ -1,3 +1,5 @@
+import { isTestnet } from './network';
+
 import { AssetList } from '@chain-registry/types';
 
 export const juno_testnet_assets: AssetList = {
@@ -1336,6 +1338,9 @@ const juno_assets = {
   ]
 };
 
-const assets = [juno_testnet_assets, injective_testnet_assets, archway_testnet_assets, neutron_testnet_assets, juno_assets];
+const mainnetAssets = [juno_assets];
+const testnetAssets = [juno_testnet_assets, injective_testnet_assets, archway_testnet_assets, neutron_testnet_assets];
+
+const assets = isTestnet ? testnetAssets : mainnetAssets;
 
 export default assets;

@@ -1,3 +1,5 @@
+import { isTestnet } from './network';
+
 const junotestnet = {
   $schema: '../../chain.schema.json',
   chain_name: 'junotestnet',
@@ -148,7 +150,7 @@ const injectivetestnet = {
   status: 'live',
   network_type: 'testnet',
   website: 'https://injective.com',
-  pretty_name: 'Injective',
+  pretty_name: 'Injective Testnet',
   chain_id: 'injective-888',
   bech32_prefix: 'inj',
   extra_codecs: ['injective'],
@@ -846,7 +848,10 @@ const juno = {
   ]
 };
 
-const chains = [junotestnet, injectivetestnet, archwaytestnet, neutrontestnet, juno];
-export const supportedChains = ['junotestnet', 'injectivetestnet', 'archwaytestnet', 'neutrontestnet'];
+const mainnetChains = [juno];
 
-export default chains;
+const testnetChains = [junotestnet, injectivetestnet, archwaytestnet, neutrontestnet];
+
+export const chains = isTestnet ? testnetChains : mainnetChains;
+export const chainIds = chains.map((chain) => chain.chain_id);
+export const chainNames = chains.map((chain) => chain.chain_name);

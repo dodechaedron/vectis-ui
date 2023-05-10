@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import Link from 'next/link';
 
@@ -14,9 +15,9 @@ const AccountList: React.FC = () => {
   const { t } = useTranslations();
   const queryClient = useQueryClient();
 
-  const { signingClient, userAddr, connect } = useVectis();
-  const { data: accounts, isLoading } = useQuery(['vectis_accounts', userAddr], () => signingClient.getAccounts([userAddr]), {
-    enabled: !!signingClient,
+  const { signingClient, userAddresses, connect } = useVectis();
+  const { data: accounts, isLoading } = useQuery(['vectis_accounts', ...userAddresses], () => signingClient.getAccounts(userAddresses), {
+    enabled: Boolean(userAddresses.length),
     onSuccess: (accounts) => accounts.forEach((account) => queryClient.setQueryData(['vectis_account', account.address], account))
   });
 
@@ -27,7 +28,7 @@ const AccountList: React.FC = () => {
         <p className="mt-1 max-w-2xl text-sm text-gray-500">Preview of your accounts</p>
       </div>
       <div className="right-sidebar h-full overflow-y-auto py-4 px-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-kashmir-blue-300 scrollbar-thumb-rounded-full hover:scrollbar-thumb-kashmir-blue-400">
-        {userAddr ? (
+        {userAddresses.length ? (
           <div className="flex flex-col flex-wrap gap-4 md:flex-row">
             {accounts?.map((smartAccount, i) => (
               <SmartAccountCard key={`card-${smartAccount.address}`} smartAccount={smartAccount} />

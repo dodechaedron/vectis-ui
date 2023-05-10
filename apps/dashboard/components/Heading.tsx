@@ -7,7 +7,6 @@ import { VectisLogo } from '@vectis/components';
 import { IntlAddress } from '~/services/browser';
 
 import Hamburguer from './Layout/Hamburguer';
-import ChainSelector from './ChainSelector';
 
 import { AiOutlineLogout } from 'react-icons/ai';
 
@@ -40,7 +39,6 @@ const Heading: React.FC<Props> = ({ isSidebarOpen, sideBarToggle }) => {
           </button> */}
           </>
         )}
-        <ChainSelector />
         <p className="mt-2 max-w-4xl text-xs text-gray-500"></p>
       </div>
 

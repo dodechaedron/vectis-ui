@@ -1,10 +1,11 @@
-import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
 import { useLocalStorage } from 'react-use';
 
 import { useChain } from '@cosmos-kit/react-lite';
 
+import { chainIds, chainNames, chains } from '~/configs/chains';
 import { getContractAddresses } from '~/configs/contracts';
 import { getEndpoints } from '~/configs/endpoints';
 import { VectisQueryService, VectisService } from '~/services/vectis';
@@ -17,6 +18,7 @@ export interface VectisState {
   defaultFee: CoinInfo;
   chainInfo: Chain;
   chainName: string;
+  userAddresses: string[];
   setChain: (chainName: string) => void;
   supportedChains: string[];
   queryClient: VectisQueryService;
@@ -26,15 +28,25 @@ export interface VectisState {
   disconnect: () => void;
 }
 
-const supportedChains = ['junotestnet', 'injectivetestnet', 'archwaytestnet', 'neutrontestnet'];
+const supportedChains = ['junotestnet', 'injectivetestnet', 'archwaytestnet', 'neutrontestnet', 'injective-888'];
 
 const VectisContext = createContext<VectisState | null>(null);
 
 export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [signingClient, setSigningClient] = useState<VectisService | null>(null);
   const [queryClient, setQueryClient] = useState<VectisQueryService | null>(null);
-  const [chainName, setChain] = useLocalStorage<string>('vectis@v1:selectedNetwork', 'junotestnet');
-  const { address, chain: chainInfo, assets, disconnect, getOfflineSignerDirect, connect, isWalletConnected } = useChain(chainName as string);
+  const [userAddresses, setUserAddresses] = useState<string[]>([]);
+  const [chainName, setChain] = useLocalStorage<string>('vectis@v1:selectedNetwork', chainNames[0]);
+  const {
+    address,
+    chain: chainInfo,
+    assets,
+    disconnect,
+    getOfflineSignerDirect,
+    connect,
+    isWalletConnected,
+    chainWallet
+  } = useChain(chainName as string);
   const { query } = useRouter();
 
   const { data: account } = useQuery<VectisAccount>(
@@ -64,17 +76,38 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
     };
   }, [chainInfo, assets]);
 
+  const getUserAddresses = useCallback(async () => {
+    if (!chainWallet?.client) return;
+    return Promise.all(
+      chainIds.map(async (chain) => {
+        const account = await chainWallet.client.getAccount?.(chain);
+        return account?.address;
+      })
+    );
+  }, [chainWallet]);
+
   useEffect(() => {
     const addresses = getContractAddresses(chainName as string);
     VectisQueryService.connect(endpoints, addresses).then(setQueryClient);
   }, [chainName]);
 
   useEffect(() => {
-    if (!isWalletConnected) return;
+    if (!isWalletConnected || !chainWallet?.client) return;
     setTimeout(async () => {
+      for (const chain of chains) {
+        await chainWallet.client.addChain?.({ chain, name: chain.chain_name });
+      }
+      await chainWallet.client.enable?.(chainIds);
+      const userAddresses = await Promise.all(
+        chainIds.map(async (chain) => {
+          const account = await chainWallet.client.getAccount?.(chain);
+          return account?.address as string;
+        })
+      );
       const addresses = getContractAddresses(chainName as string);
       const signer = await getOfflineSignerDirect();
       const txService = await VectisService.connectWithSigner(signer, { endpoints, defaultFee, addresses });
+      setUserAddresses(userAddresses);
       setSigningClient(txService);
     }, 100);
   }, [chainInfo, address, isWalletConnected]);
@@ -88,6 +121,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
           chainInfo,
           chainName,
           setChain,
+          userAddresses,
           supportedChains,
           queryClient,
           signingClient,
