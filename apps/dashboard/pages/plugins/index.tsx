@@ -1,14 +1,14 @@
 import { useQuery } from 'react-query';
 import Head from 'next/head';
 
-import { useApp } from '~/providers';
+import { useVectis } from '~/providers';
 
 import PluginCard from '~/components/PluginCard';
 
 import type { NextPage } from 'next';
 
 const Plugins: NextPage = () => {
-  const { vectis } = useApp();
+  const { vectis } = useVectis();
 
   const { data: plugins } = useQuery(['plugins', vectis], () => vectis.getPluginsFromRegistry());
 

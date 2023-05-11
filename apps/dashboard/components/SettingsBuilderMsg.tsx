@@ -3,8 +3,9 @@ import React, { useEffect, useRef } from 'react';
 import { toBase64, toUtf8 } from '@cosmjs/encoding';
 import Editor, { OnMount } from '@monaco-editor/react';
 
-import { useApp } from '~/providers';
+import { useVectis } from '~/providers';
 import { useToast } from '~/hooks';
+import { useAccount } from '~/hooks/useAccount';
 
 import { Button } from './Buttons';
 import { Input } from './Inputs';
@@ -12,7 +13,8 @@ import { Input } from './Inputs';
 const SettingsBuilderMsg: React.FC = () => {
   const [code, setCode] = React.useState<string | undefined>('');
   const [contractAddress, setContractAddress] = React.useState<string>('');
-  const { vectis, account } = useApp();
+  const { vectis } = useVectis();
+  const { account } = useAccount();
   const { toast, isLoading } = useToast();
   const editorRef = useRef<any>(null);
 
@@ -27,7 +29,7 @@ const SettingsBuilderMsg: React.FC = () => {
         }
       }
     };
-    const promise = vectis.proxyExecute(account.address, [msg]);
+    const promise = vectis.proxyExecute(account!.address, [msg]);
     await toast.promise(promise);
   };
 

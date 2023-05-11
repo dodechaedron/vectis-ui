@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import Head from 'next/head';
 
 import { IntlTimeAgo } from '~/services/browser';
-import { useApp } from '~/providers';
+import { useVectis } from '~/providers';
 import { useToast } from '~/hooks';
 
 import Address from '~/components/Address';
@@ -21,7 +21,7 @@ import { Proposal } from '@dao-dao/types/contracts/CwProposalSingle.v1';
 import { VoteInfo } from '@dao-dao/types/contracts/DaoProposalSingle.common';
 
 const GuardianPage: NextPage = () => {
-  const { vectis, userAddr, chainName } = useApp();
+  const { vectis, userAddr, chainName } = useVectis();
   const { query, push: goToPage } = useRouter();
   const { toast, isLoading } = useToast();
   const [accountInfo, setAccountInfo] = useState<VectisAccount | null>(null);

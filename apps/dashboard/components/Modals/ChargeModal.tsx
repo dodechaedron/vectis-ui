@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
-import { useApp, useModal } from '~/providers';
+import { useModal, useVectis } from '~/providers';
 import { useToast } from '~/hooks';
+import { useAccount } from '~/hooks/useAccount';
 import { coin, convertDenomToMicroDenom } from '~/utils/conversion';
 
 import { Button } from '../Buttons';
@@ -15,7 +16,8 @@ const ChargeModal: React.FC = () => {
   const [amount, setAmount] = useState('0');
 
   const { toast, isLoading } = useToast();
-  const { account, vectis, defaultFee, userAddr } = useApp();
+  const { vectis, defaultFee, userAddr } = useVectis();
+  const { account } = useAccount();
 
   const tokens = [
     {
@@ -27,7 +29,7 @@ const ChargeModal: React.FC = () => {
   const onSubmit = async () => {
     const promise = vectis.sendTokens(
       userAddr,
-      account.address,
+      account!.address,
       [coin(convertDenomToMicroDenom(amount, defaultFee.exponent), defaultFee.udenom)],
       'auto'
     );
@@ -42,7 +44,7 @@ const ChargeModal: React.FC = () => {
           <p className="text-sm text-gray-500">Amount will be added to your smart account balance and will be available for you to use.</p>
 
           <form className="mt-2 flex w-full  flex-wrap justify-start gap-2">
-            <Input label="Account" className="w-full" disabled value={account.address} />
+            <Input label="Account" className="w-full" disabled value={account?.address} />
             <InputSelector label="Token" className="w-full" value={tokens[0]} options={tokens} />
             <Input label="Amount" value={amount} onChange={(e) => setAmount(e.target.value)} />
           </form>

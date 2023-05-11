@@ -3,8 +3,9 @@ import { useState } from 'react';
 import clsx from 'clsx';
 
 import { IntlAddress, IntlTimeAgo } from '~/services/browser';
-import { useApp } from '~/providers';
+import { useVectis } from '~/providers';
 import { usePagination } from '~/hooks';
+import { useAccount } from '~/hooks/useAccount';
 import { convertMicroDenomToDenom } from '~/utils/conversion';
 
 import Address from './Address';
@@ -23,19 +24,21 @@ interface Props {
 }
 
 const TransactionsTable: React.FC<Props> = ({ filter, pagination, defaultLimit = 10 }) => {
-  const { vectis, account, defaultFee, endpoints } = useApp();
+  const { vectis, defaultFee, endpoints } = useVectis();
   const [txs, setTxs] = useState<Transaction[]>([]);
   const methods = usePagination({ limit: defaultLimit });
   const { setTotal, page } = methods;
+  const { account } = useAccount();
 
   useEffect(() => {
+    if (!account) return;
     const getTxs = async () => {
-      const { txs, pagination } = await vectis.getTransactionHistory(account.address, page, defaultLimit);
+      const { txs, pagination } = await vectis.getTransactionHistory(account!.address, page, defaultLimit);
       setTxs(txs);
       setTotal(pagination.total);
     };
     getTxs();
-  }, [page]);
+  }, [page, account]);
 
   return (
     <div className="flex w-full flex-1 flex-col rounded-md">

@@ -1,12 +1,14 @@
 import React from 'react';
-import { useApp } from 'providers';
+import { useVectis } from 'providers';
 
 import { IntlAddress } from '~/services/browser';
+import { useAccount } from '~/hooks/useAccount';
 
 import { MdAccountBalanceWallet } from 'react-icons/md';
 
 const SmartAccountMiniCard: React.FC = () => {
-  const { userAddr, account } = useApp();
+  const { userAddr } = useVectis();
+  const { account } = useAccount();
 
   if (!userAddr || !account) return null;
   return (

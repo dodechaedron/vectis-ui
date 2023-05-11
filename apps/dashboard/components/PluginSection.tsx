@@ -3,7 +3,8 @@ import clsx from 'clsx';
 import { useQuery } from 'react-query';
 import Link from 'next/link';
 
-import { useApp } from '~/providers';
+import { useVectis } from '~/providers';
+import { useAccount } from '~/hooks/useAccount';
 
 import { Button } from './Buttons';
 import Spinner from './Spinner';
@@ -11,8 +12,9 @@ import Spinner from './Spinner';
 import { PlusIcon } from '@heroicons/react/24/solid';
 
 const PluginSection: React.FC = () => {
-  const { account, vectis } = useApp();
-  const { data, isLoading } = useQuery(['user_plugins', account], () => vectis.getPlugins(account.address));
+  const { vectis } = useVectis();
+  const { account } = useAccount();
+  const { data, isLoading } = useQuery(['user_plugins', account], () => vectis.getPlugins(account!.address));
 
   const plugins = useMemo(() => [...(data?.exec_plugins || []), ...(data?.pre_tx_plugins || []), ...(data?.query_plugins || [])], [data]);
 

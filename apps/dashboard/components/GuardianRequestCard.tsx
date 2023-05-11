@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { IntlTimeAgo } from '~/services/browser';
-import { useApp } from '~/providers';
+import { useVectis } from '~/providers';
 import { useToast } from '~/hooks';
 import { fromNanoSecondsToSeconds } from '~/utils/conversion';
 
@@ -16,7 +16,7 @@ import { GuardiansUpdateRequest } from '@vectis/types/Proxy.types';
 
 const GuardianRequestCard: React.FC = () => {
   const { query } = useRouter();
-  const { vectis } = useApp();
+  const { vectis } = useVectis();
   const { toast } = useToast();
   const [activeProposal, setActiveProposal] = useState<any | null>(null);
 

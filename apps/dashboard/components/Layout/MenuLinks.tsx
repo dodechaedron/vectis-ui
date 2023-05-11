@@ -1,9 +1,13 @@
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import { useApp } from 'providers';
+import { useVectis } from 'providers';
 import { generalMenu, toolsMenu } from 'utils/links';
 import Link from 'next/link';
+
+import { useAccount } from '~/hooks/useAccount';
+
+import { VectisAccount } from '~/interfaces';
 
 interface Props {
   closeMenu: () => void;
@@ -11,7 +15,8 @@ interface Props {
 
 const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
   const { pathname } = useRouter();
-  const { account, userAddr } = useApp();
+  const { userAddr } = useVectis();
+  const { account } = useAccount();
   const links = useMemo(
     () =>
       generalMenu.filter((l) => {

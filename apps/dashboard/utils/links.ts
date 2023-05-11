@@ -21,6 +21,6 @@ export const generalMenu = [
   { text: 'Governance', href: '#', Icon: FiExternalLink }
 ];
 
-export const protectedRoutes = ['/dashboard', '/transactions', '/plugins'];
+export const protectedRoutes = ['/dashboard', '/transactions', '/plugins', '/settings'];
 
 export const toolsMenu = [{ text: 'Help & Support', href: 'https://discord.gg/xp3vFSAMgS', Icon: IoMdHelpCircle }];

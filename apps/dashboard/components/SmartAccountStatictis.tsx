@@ -1,5 +1,5 @@
 import React from 'react';
-import { useApp } from 'providers';
+import { useVectis } from 'providers';
 import { convertMicroDenomToDenom } from 'utils/conversion';
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 }
 
 const SmartAccountStatictis: React.FC<Props> = ({ numberOfAccounts, totalBalance }) => {
-  const { defaultFee } = useApp();
+  const { defaultFee } = useVectis();
   return (
     <>
       <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">

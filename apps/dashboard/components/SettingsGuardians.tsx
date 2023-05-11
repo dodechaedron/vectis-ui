@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 
-import { useApp } from '~/providers';
+import { useVectis } from '~/providers';
 import { useToast } from '~/hooks';
 
 import InputArray from './Inputs/InputArray';
@@ -27,7 +27,7 @@ interface Props {
 
 const SettingsGuardians: React.FC<Props> = ({ walletInfo }) => {
   const { query } = useRouter();
-  const { vectis } = useApp();
+  const { vectis } = useVectis();
   const { toast } = useToast();
   const { control, setValue, watch, handleSubmit } = useForm<FormValues>({ defaultValues: { guardians: [{}], threshold: 1 } });
 

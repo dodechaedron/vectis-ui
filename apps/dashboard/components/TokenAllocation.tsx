@@ -4,7 +4,8 @@ import { Doughnut } from 'react-chartjs-2';
 
 Chart.register(ArcElement, Legend, Tooltip);
 
-import { useApp } from '~/providers';
+import { useVectis } from '~/providers';
+import { useAccount } from '~/hooks/useAccount';
 
 export const chartOptions = {
   responsive: true,
@@ -31,7 +32,8 @@ export const chartOptions = {
 };
 
 const TokenAllocation: React.FC = () => {
-  const { vectis, account, defaultFee } = useApp();
+  const { vectis, defaultFee } = useVectis();
+  const { account } = useAccount();
   const [allocation, setAllocation] = useState<number[]>([]);
   const data = {
     labels: ['Bonded', 'Rewards', 'Available', 'Unbonding'],
@@ -44,12 +46,13 @@ const TokenAllocation: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!account) return;
     const getAllocation = async () => {
       const { available, bonded, unbounded, rewards } = await vectis.getAllocation(account.address, defaultFee.udenom);
       setAllocation([bonded, rewards, +available, unbounded]);
     };
     getAllocation();
-  }, []);
+  }, [account]);
 
   return (
     <div className="flex flex-col gap-1">

@@ -2,7 +2,8 @@ import React from 'react';
 import { useRouter } from 'next/router';
 
 import { copyToClipboard, IntlAddress } from '~/services/browser';
-import { useApp, useModal } from '~/providers';
+import { useModal, useVectis } from '~/providers';
+import { useAccount } from '~/hooks/useAccount';
 
 import { HiOutlineExternalLink } from 'react-icons/hi';
 import { HiOutlineWallet } from 'react-icons/hi2';
@@ -14,18 +15,21 @@ interface Props {
 }
 
 const AccountDisplay: React.FC<Props> = ({ seeAccounts }) => {
-  const { account, endpoints } = useApp();
+  const { endpoints } = useVectis();
+  const { account } = useAccount();
   const { push: goToPage } = useRouter();
   const { showModal } = useModal();
   const [copyIcon, setCopyIcon] = React.useState(<MdFileCopy className="h-5 w-5 fill-white lg:h-4 lg:w-4" />);
 
   const handleCopy = () => {
-    copyToClipboard(account.address);
+    copyToClipboard(account!.address);
     setCopyIcon(<IoMdCheckmark className="h-5 w-5 fill-white lg:h-4 lg:w-4" />);
     setTimeout(() => {
       return setCopyIcon(<MdFileCopy className="h-5 w-5 fill-white lg:h-4 lg:w-4" />);
     }, 1000);
   };
+
+  if (!account) return null;
   return (
     <>
       <div className="group relative flex items-center justify-start gap-2 overflow-hidden bg-kashmir-blue-200 p-4">

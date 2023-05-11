@@ -32,6 +32,14 @@ interface Props {
   walletRepo: {
     connect: (walletName: string, sync?: boolean) => Promise<void>;
     chainRecord: { name: string };
+    wallets: {
+      walletInfo: {
+        logo: string;
+        prettyName: string;
+        name: string;
+      };
+      client: unknown;
+    }[];
   };
 }
 
@@ -45,7 +53,8 @@ const AvailableWallet: React.FC<Props> = ({ walletRepo }) => {
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-bold">Available wallets:</h2>
         <div className="flex flex-col gap-2">
-          {desktopWallets.map(({ walletInfo }, i) => {
+          {walletRepo.wallets.map(({ walletInfo, client }, i) => {
+            if (!client) return null;
             return (
               <div
                 key={`${walletInfo.prettyName}-wallet-${i}`}

@@ -1,13 +1,5 @@
 import React, { Dispatch, ReactElement, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import Link from 'next/link';
-
-import { useChain } from '@cosmos-kit/react-lite';
-
-import { desktopWallets } from '~/configs/wallets';
-
-import { Button } from '../Buttons';
-import VectisIcon from '../Icons/VectisIcon';
 
 import AvailableWallet from './ConnectWalletModal/AvailableWallet';
 import ConectingWallet from './ConnectWalletModal/ConectingWallet';
@@ -20,6 +12,7 @@ interface WalletModalProps {
   isOpen: boolean;
   setOpen: Dispatch<boolean>;
   walletRepo?: {
+    wallets: any[];
     connect: (walletName: string, sync?: boolean) => Promise<void>;
     chainRecord: { name: string };
   };

@@ -4,12 +4,12 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { useVectis } from './VectisProvider';
 
 export const QueryProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const { vectis } = useVectis();
+  const { isReady } = useVectis();
 
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        enabled: Boolean(vectis),
+        enabled: isReady,
         refetchOnWindowFocus: false
       }
     }

@@ -1,4 +1,4 @@
-import { useApp } from '~/providers';
+import { useVectis } from '~/providers';
 
 import LockIcon from './Icons/Lock';
 import AccountList from './AccountList';
@@ -9,7 +9,7 @@ interface Props {
 }
 
 const DrawerAccounts: React.FC<Props> = ({ showCreateAccount }) => {
-  const { connect, isWalletConnected } = useApp();
+  const { connect, isWalletConnected } = useVectis();
 
   return (
     <div className="flex h-full flex-col">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useApp } from 'providers';
+import { useVectis } from 'providers';
 
 import { copyToClipboard } from '~/services/browser';
 

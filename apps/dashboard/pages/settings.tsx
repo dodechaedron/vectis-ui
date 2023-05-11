@@ -1,20 +1,18 @@
-import { useEffect } from 'react';
 import { useMemo } from 'react';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
 
-import { useApp } from '~/providers';
+import { useAccount } from '~/hooks/useAccount';
 
 import HeadingTabs from '~/components/HeadingTabs';
 import SettingsAccount from '~/components/SettingsAccount';
 import SettingsBuilderMsg from '~/components/SettingsBuilderMsg';
 import SettingsGuardians from '~/components/SettingsGuardians';
+import Spinner from '~/components/Spinner';
 
 import type { NextPage } from 'next';
 
 const SettingsPage: NextPage = () => {
-  const { userAddr, account } = useApp();
-  const { push: goToPage } = useRouter();
+  const { account, isLoading } = useAccount();
 
   const tabs = useMemo(
     () => [
@@ -29,19 +27,13 @@ const SettingsPage: NextPage = () => {
     [account]
   );
 
-  useEffect(() => {
-    if (account) {
-      account.controllerAddr != userAddr && goToPage('/accounts');
-    }
-  }, [account]);
-
   return (
     <>
       <Head>
         <title>Vectis | Manage Wallet</title>
       </Head>
 
-      <HeadingTabs tabs={tabs} defaultTab="Account" />
+      {isLoading ? <Spinner /> : <HeadingTabs tabs={tabs} defaultTab="Account" />}
     </>
   );
 };

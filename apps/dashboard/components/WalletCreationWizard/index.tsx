@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import ProgressWizard from 'components/Forms/ProgressWizard';
 import { useToast } from 'hooks';
-import { useApp } from 'providers';
+import { useVectis } from 'providers';
 import { FormProvider, useForm } from 'react-hook-form';
 import { sleep } from 'utils/misc';
 import * as yup from 'yup';
@@ -47,13 +47,13 @@ const resolver = () =>
   );
 
 const WalletCreationWizard: React.FC = () => {
-  const { defaultFee } = useApp();
+  const { defaultFee } = useVectis();
   const [step, setStep] = React.useState(1);
   const methods = useForm<FormValues>({ defaultValues: { guardians: [{ value: '' }] }, resolver: resolver() });
   const { handleSubmit } = methods;
 
   const { toast } = useToast();
-  const { vectis } = useApp();
+  const { vectis } = useVectis();
 
   const onSubmit = async (data: FormValues) => {
     const guardians = data.guardians.map((g) => g.value);
