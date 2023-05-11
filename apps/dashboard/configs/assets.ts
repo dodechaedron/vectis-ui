@@ -1,3 +1,4 @@
+import { Chain } from './chains';
 import { isTestnet } from './network';
 
 import { AssetList } from '@chain-registry/types';
@@ -1342,3 +1343,20 @@ const testnetAssets = [juno_testnet_assets, injective_testnet_assets, archway_te
 const assets = isTestnet ? testnetAssets : mainnetAssets;
 
 export default assets;
+
+export const getDefaultFee = (chain: Chain) => {
+  const { average_gas_price, denom } = chain.fees!.fee_tokens[0];
+  const assetInfo = chain.assets.assets.find((asset) => asset.base === denom);
+  if (!assetInfo) throw new Error('Fee asset info not found');
+  const denomUnit = assetInfo.denom_units.find((u) => u.denom === assetInfo.display);
+  if (!denomUnit) throw new Error('Fee denom unit not found');
+
+  return {
+    exponent: denomUnit.exponent as number,
+    averageGasPrice: average_gas_price as number,
+    udenom: assetInfo.base,
+    symbol: assetInfo.symbol,
+    img: assetInfo.logo_URIs?.svg || assetInfo.logo_URIs?.png || assetInfo.logo_URIs?.jpeg,
+    coingeckoId: assetInfo.coingecko_id
+  };
+};

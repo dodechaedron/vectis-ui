@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import Link from 'next/link';
 
-import { useVectis, useTranslations } from '~/providers';
+import { useTranslations, useVectis } from '~/providers';
 
 import SmartAccountCard from '~/components/SmartAccountCard';
 import Spinner from '~/components/Spinner';

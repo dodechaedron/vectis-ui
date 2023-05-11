@@ -21,7 +21,7 @@ const AccountSidebar: React.FC<Props> = ({ isOpen, close }) => {
         exit={{ opacity: 0 }}
       ></motion.div>
       <motion.div
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => [e.stopPropagation(), close()]}
         className={clsx('fixed z-[60] flex h-[calc(100vh-72px)] w-[90vw] flex-col bg-white transition-all md:max-w-[30rem] lg:rounded-r-lg')}
         initial={{ left: '-100vw', top: '72px' }}
         animate={{ left: '0', top: '72px' }}

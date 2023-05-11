@@ -186,13 +186,19 @@ export class VectisService extends VectisQueryService {
     readonly userAddr: string,
     readonly endpoints: Endpoints,
     readonly defaultFee: CoinInfo,
-    readonly addresses: ContractAddresses
+    readonly addresses: ContractAddresses,
+    readonly chainName: string
   ) {
     super(tmClient, endpoints, addresses);
   }
   static async connectWithSigner(
     signer: OfflineSigner,
-    { endpoints, defaultFee, addresses }: { endpoints: Endpoints; defaultFee: CoinInfo; addresses: ContractAddresses }
+    {
+      endpoints,
+      defaultFee,
+      addresses,
+      chainName
+    }: { endpoints: Endpoints; defaultFee: CoinInfo; addresses: ContractAddresses; chainName: string }
   ): Promise<VectisService> {
     const tmClient = await this.getTmClient(endpoints.rpcUrl);
     const [{ address }] = await signer.getAccounts();
@@ -204,7 +210,7 @@ export class VectisService extends VectisQueryService {
         gasPrice: GasPrice.fromString(`${defaultFee.averageGasPrice}${defaultFee.udenom}`)
       });
     }
-    return new VectisService(tmClient, client, address, endpoints, defaultFee, addresses);
+    return new VectisService(tmClient, client, address, endpoints, defaultFee, addresses, chainName);
   }
 
   async createProxyWallet(
