@@ -1,5 +1,6 @@
 import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useQuery } from 'react-query';
 
 import { useChain } from '@cosmos-kit/react-lite';
 
@@ -7,14 +8,17 @@ import { chainIds, chainNames, chains } from '~/configs/chains';
 import { getContractAddresses } from '~/configs/contracts';
 import { getEndpoints } from '~/configs/endpoints';
 import { VectisService } from '~/services/vectis';
+import { protectedRoutes } from '~/utils/links';
 
-import { CoinInfo, Endpoints } from '~/interfaces';
+import Spinner from '~/components/Spinner';
+
+import { CoinInfo, Endpoints, VectisAccount } from '~/interfaces';
 import { Chain } from '@chain-registry/types';
 
 export interface VectisState {
-  isReady: boolean;
   userAddr: string;
   username: string;
+  account: VectisAccount;
   userAccounts: string[];
   endpoints: Endpoints;
   defaultFee: CoinInfo;
@@ -39,7 +43,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
   const { address, username, chain, assets, disconnect, getOfflineSignerDirect, connect, isWalletConnected, chainWallet } = useChain(
     chainName as string
   );
-  const { query } = useRouter();
+  const { isReady: isRouterReady, query, pathname } = useRouter();
 
   const endpoints = useMemo(() => getEndpoints(chainName as string), [chainName]);
 
@@ -59,6 +63,14 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
       coingeckoId: assetInfo.coingecko_id
     };
   }, [chain, assets]);
+
+  const { isFetched, data: account } = useQuery(
+    ['vectis_account', query.vectis],
+    () => vectisService?.getAccountInfo(query.vectis as string, chainName),
+    {
+      enabled: isRouterReady && isReady && Boolean(query.vectis)
+    }
+  );
 
   useEffect(() => {
     if (!query.vectis) return;
@@ -96,12 +108,17 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
     }, 200);
   }, [isWalletConnected, chainWallet]);
 
+  if (protectedRoutes.includes(pathname) && !isFetched) return <Spinner wrapper size="md" />;
+  if (protectedRoutes.includes(pathname) && isFetched && !userAccounts.includes(account?.controllerAddr as string)) {
+    return <p>Not your account</p>;
+  }
+
   return (
     <VectisContext.Provider
       value={{
-        isReady,
         userAddr: address as string,
         username: username as string,
+        account: account as VectisAccount,
         userAccounts,
         endpoints,
         defaultFee,

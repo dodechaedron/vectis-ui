@@ -5,15 +5,14 @@ import { useVectis } from 'providers';
 import Snowfall from 'react-snowfall';
 
 import { IntlAddress } from '~/services/browser';
-import { useAccount } from '~/hooks/useAccount';
 
 import { BsSnow2 } from 'react-icons/bs';
 import { FaKey, FaUserShield } from 'react-icons/fa';
 import { GoShield } from 'react-icons/go';
 
 const SmartCardOverview: React.FC = () => {
-  const { account } = useAccount();
-  if (!account) return null;
+  const { account } = useVectis();
+
   return (
     <div
       className="relative h-[20rem] w-full rounded-lg bg-white bg-cover bg-center bg-no-repeat "

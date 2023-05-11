@@ -5,13 +5,9 @@ import { Toaster } from 'react-hot-toast';
 
 import { Anek_Latin } from '@next/font/google';
 
-import { useVectis } from '~/providers';
-import { protectedRoutes } from '~/utils/links';
-
 import Heading from '~/components/Heading';
 
 import GlobalModal from '../Modals/GlobalModal';
-import Spinner from '../Spinner';
 
 import AccountSidebar from './AccountsSidebar';
 import Sidebar from './Sidebar';
@@ -24,7 +20,6 @@ const font = Anek_Latin({
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const [drawerAccountsOpen, setDrawerAccountsOpen] = React.useState(false);
-  const { isReady } = useVectis();
 
   const { pathname } = useRouter();
 
@@ -32,8 +27,6 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const sideBarToggle = useCallback(() => {
     drawerAccountsOpen ? setDrawerAccountsOpen(false) : setIsSidebarOpen((prev) => !prev);
   }, []);
-
-  if (protectedRoutes.includes(pathname) && !isReady) return <Spinner wrapper size="md" />;
 
   return (
     <div className={clsx('bg-gray-100 text-gray-900', font.className)}>

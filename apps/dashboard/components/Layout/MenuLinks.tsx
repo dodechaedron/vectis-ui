@@ -5,8 +5,6 @@ import { useVectis } from 'providers';
 import { generalMenu, toolsMenu } from 'utils/links';
 import Link from 'next/link';
 
-import { useAccount } from '~/hooks/useAccount';
-
 import { VectisAccount } from '~/interfaces';
 
 interface Props {
@@ -15,14 +13,13 @@ interface Props {
 
 const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
   const { pathname } = useRouter();
-  const { userAddr } = useVectis();
-  const { account } = useAccount();
+  const { userAddr, account } = useVectis();
   const links = useMemo(
     () =>
       generalMenu.filter((l) => {
         const dashboard = l.href === '/';
         if (!dashboard) return true;
-        return account?.controllerAddr === userAddr;
+        return account.controllerAddr === userAddr;
       }),
     [userAddr, account]
   );

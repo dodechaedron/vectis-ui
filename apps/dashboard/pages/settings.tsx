@@ -1,18 +1,17 @@
 import { useMemo } from 'react';
 import Head from 'next/head';
 
-import { useAccount } from '~/hooks/useAccount';
+import { useVectis } from '~/providers';
 
 import HeadingTabs from '~/components/HeadingTabs';
 import SettingsAccount from '~/components/SettingsAccount';
 import SettingsBuilderMsg from '~/components/SettingsBuilderMsg';
 import SettingsGuardians from '~/components/SettingsGuardians';
-import Spinner from '~/components/Spinner';
 
 import type { NextPage } from 'next';
 
 const SettingsPage: NextPage = () => {
-  const { account, isLoading } = useAccount();
+  const { account } = useVectis();
 
   const tabs = useMemo(
     () => [
@@ -33,7 +32,7 @@ const SettingsPage: NextPage = () => {
         <title>Vectis | Manage Wallet</title>
       </Head>
 
-      {isLoading ? <Spinner /> : <HeadingTabs tabs={tabs} defaultTab="Account" />}
+      <HeadingTabs tabs={tabs} defaultTab="Account" />
     </>
   );
 };
