@@ -23,7 +23,7 @@ interface Props {
 }
 
 const TransactionsTable: React.FC<Props> = ({ filter, pagination, defaultLimit = 10 }) => {
-  const { chainName, vectis, account, defaultFee } = useApp();
+  const { vectis, account, defaultFee, endpoints } = useApp();
   const [txs, setTxs] = useState<Transaction[]>([]);
   const methods = usePagination({ limit: defaultLimit });
   const { setTotal, page } = methods;
@@ -62,10 +62,7 @@ const TransactionsTable: React.FC<Props> = ({ filter, pagination, defaultLimit =
                 </div>
                 <div className="hidden overflow-auto py-4 px-2 text-xs xl:flex">
                   <a
-                    href={`https://${chainName.includes('testnet') ? 'testnet' : 'www'}.mintscan.io/${chainName.replace(
-                      'testnet',
-                      '-testnet'
-                    )}/txs/${tx.txHash}`}
+                    href={`${endpoints.explorer}/txs/${tx.txHash}`}
                     target="_blank"
                     className="flex h-full w-full items-center justify-start text-kashmir-blue-600 hover:text-kashmir-blue-900"
                     rel="noreferrer"

@@ -36,7 +36,7 @@ const SendModal: React.FC = () => {
     hideModal();
   };
   return (
-    <Modal isModalVisible={isModalVisible} closeModal={hideModal}>
+    <Modal isModalVisible={isModalVisible} closeModal={hideModal} title="Transfer Funds">
       <div>
         <div className="mt-3 text-center sm:mt-5">
           <form className="mt-2 flex w-full  flex-wrap justify-start gap-4" onSubmit={handleSubmit(onSubmit)}>

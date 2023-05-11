@@ -24,7 +24,7 @@ const AccountList: React.FC<Props> = ({ showCreateAccount }) => {
   });
 
   return (
-    <div className="flex h-full flex-col flex-wrap items-center justify-center gap-4 md:flex-row">
+    <div className="flex flex-col flex-wrap items-center justify-center gap-4 md:flex-row">
       {isLoading ? <Spinner className="mx-auto" /> : null}
       {accounts?.map((smartAccount, i) => (
         <SmartAccountCard key={`card-${smartAccount.address}`} smartAccount={smartAccount} />

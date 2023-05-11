@@ -23,8 +23,14 @@ export const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   const { chainName, vectis, setChain, userAccounts } = vectisContext;
 
-  const { data: account, isLoading } = useQuery<VectisAccount>(['vectis_account', query.vectis], () =>
-    vectis?.getAccountInfo(query.vectis as string, chainName)
+  console.log(query.vectis);
+
+  const { data: account, isLoading } = useQuery<VectisAccount>(
+    ['vectis_account', query.vectis],
+    () => vectis?.getAccountInfo(query.vectis as string, chainName),
+    {
+      enabled: !!query.vectis
+    }
   );
 
   const isAuthorized = useMemo(() => {

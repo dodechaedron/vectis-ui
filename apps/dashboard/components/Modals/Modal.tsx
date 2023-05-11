@@ -43,22 +43,24 @@ const Modal: React.FC<PropsWithChildren<Props>> = ({ children, isModalVisible, t
       >
         <motion.div
           onClick={(e) => e.stopPropagation()}
-          className="flex w-full max-w-5xl flex-col gap-8 rounded-lg bg-white p-4 md:p-8"
+          className="flex w-[25%] max-w-5xl flex-col gap-8 rounded-lg bg-white p-4 shadow-sm md:p-8"
           variants={modalDropIn}
           initial={modalDropIn.hidden}
           animate={modalDropIn.visible}
           exit={modalDropIn.exit}
         >
-          <div className="relative w-full transform rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-            {title && <h3 className="text-center text-lg font-medium leading-6 text-gray-700 sm:text-left">{title}</h3>}
-            <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
-              <button type="button" className="rounded-md bg-white text-gray-400 focus:outline-none hover:text-gray-500" onClick={closeModal}>
-                <span className="sr-only">Close</span>
-                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-              </button>
-            </div>
-            {children}
+          <div className="absolute top-0 left-0 flex w-full justify-between p-4">
+            <h3 className="text-xl font-bold leading-6">{title}</h3>
+            <button
+              type="button"
+              className="hidden rounded-md bg-white text-gray-400 focus:outline-none hover:text-gray-500 sm:block"
+              onClick={closeModal}
+            >
+              <span className="sr-only">Close</span>
+              <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+            </button>
           </div>
+          {children}
         </motion.div>
       </motion.div>
     </AnimatePresence>

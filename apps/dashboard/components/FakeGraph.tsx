@@ -6,7 +6,7 @@ Chart.register(CategoryScale, LinearScale, BarElement, Legend, Tooltip);
 
 const FakeGraph: React.FC = () => {
   return (
-    <div className="relative flex h-full flex-1 flex-col items-center justify-center gap-2 rounded-md bg-white px-2 py-4 shadow-sm">
+    <div className="relative flex h-full w-full flex-1 flex-col items-center justify-center gap-2 rounded-md bg-white px-2 py-4 shadow-sm">
       <div className="absolute top-0 right-0 z-10 flex h-full w-full items-center justify-center backdrop-blur-sm">
         <p className="text-xl font-bold">Coming Soon</p>
       </div>

@@ -13,9 +13,14 @@ export const getEndpoints = (chainName: string): Endpoints => {
   if (chainName === 'injectivetestnet') return injective_testnet;
 
   const domain = chainName.includes('testnet') ? 'testcosmos.directory' : 'cosmos.directory';
+  const explorerDomain = chainName.includes('testnet')
+    ? `https://testnet.mintscan.io/${chainName.replace('testnet', '-testnet')}`
+    : `https://mintscan.io/${chainName}`;
+
   return {
     rpcUrl: `https://rpc.${domain}/${chainName}`,
     restUrl: `https://rest.${domain}/${chainName}`,
+    explorer: explorerDomain,
     grpcUrl: ''
   };
 };

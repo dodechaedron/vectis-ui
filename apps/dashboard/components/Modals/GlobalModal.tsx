@@ -1,13 +1,16 @@
-import React, { useCallback, useMemo,useState } from "react";
+import React, { useCallback, useMemo, useState } from 'react';
 
-import { useModal } from "~/providers";
+import { useModal } from '~/providers';
 
-import ChargeModal from "~/components/Modals/ChargeModal";
-import SendModal from "~/components/Modals/SendModal";
+import ChargeModal from '~/components/Modals/ChargeModal';
+import SendModal from '~/components/Modals/SendModal';
+
+import QRModal from './QRModal';
 
 const modals = {
   send: SendModal,
   charge: ChargeModal,
+  qr: QRModal
 };
 
 const GlobalModal: React.FC = () => {

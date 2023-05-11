@@ -3,6 +3,7 @@ import React, { useState, useCallback, PropsWithChildren } from "react";
 export enum ModalTypes {
   Stake = "stake",
   Unstake = "unstake",
+  QR = "qr",
 }
 
 interface ModalStatus {
