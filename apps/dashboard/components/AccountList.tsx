@@ -1,5 +1,6 @@
-import { useQuery, useQueryClient } from 'react-query';
 import Link from 'next/link';
+
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useTranslations, useVectis } from '~/providers';
 

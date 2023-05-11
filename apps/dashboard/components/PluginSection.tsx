@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
-import { useQuery } from 'react-query';
 import Link from 'next/link';
+
+import { useQuery } from '@tanstack/react-query';
 
 import { useVectis } from '~/providers';
 

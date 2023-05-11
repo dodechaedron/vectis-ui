@@ -1,5 +1,6 @@
-import { useQuery } from 'react-query';
 import Head from 'next/head';
+
+import { useQuery } from '@tanstack/react-query';
 
 import { useVectis } from '~/providers';
 

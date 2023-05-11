@@ -5,6 +5,8 @@ import { Toaster } from 'react-hot-toast';
 
 import { Anek_Latin } from '@next/font/google';
 
+import { protectedRoutes } from '~/utils/links';
+
 import Heading from '~/components/Heading';
 
 import GlobalModal from '../Modals/GlobalModal';
@@ -23,7 +25,7 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
 
   const { pathname } = useRouter();
 
-  const shouldShowSidebar = useMemo(() => '/' !== pathname, [pathname]);
+  const shouldShowSidebar = useMemo(() => protectedRoutes.includes(pathname), [pathname]);
   const sideBarToggle = useCallback(() => {
     drawerAccountsOpen ? setDrawerAccountsOpen(false) : setIsSidebarOpen((prev) => !prev);
   }, []);
@@ -33,9 +35,11 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
       <Heading isSidebarOpen={isSidebarOpen} sideBarToggle={sideBarToggle} />
       <main className="max-w-screen flex flex-1">
         {shouldShowSidebar ? (
-          <Sidebar visible={isSidebarOpen} setVisible={sideBarToggle} seeAccounts={() => setDrawerAccountsOpen(true)} />
+          <>
+            <Sidebar visible={isSidebarOpen} setVisible={sideBarToggle} seeAccounts={() => setDrawerAccountsOpen(true)} />
+            <AccountSidebar isOpen={drawerAccountsOpen} close={() => setDrawerAccountsOpen(false)} />
+          </>
         ) : null}
-        {<AccountSidebar isOpen={drawerAccountsOpen} close={() => setDrawerAccountsOpen(false)} />}
         <div className="flex w-full flex-1 gap-4">{children}</div>
       </main>
       <GlobalModal />

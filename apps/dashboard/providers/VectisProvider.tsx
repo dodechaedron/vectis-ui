@@ -1,9 +1,9 @@
 import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
 
 import { OfflineSigner } from '@cosmjs/proto-signing';
 import { useChain } from '@cosmos-kit/react-lite';
+import { useQuery } from '@tanstack/react-query';
 
 import { getDefaultFee } from '~/configs/assets';
 import { Chain, chainIds, chains } from '~/configs/chains';
@@ -70,9 +70,10 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
         chainInfo = chain;
       }
 
-      if (vectisService?.chainName === chainInfo.chain_name) return;
-
       const signer = await chainWallet?.client.getOfflineSigner?.(chainInfo.chain_id);
+      const [{ address }] = await signer!.getAccounts();
+      if (vectisService?.chainName === chainInfo.chain_name && vectisService.userAddr === address) return;
+
       const vectis = await VectisService.connectWithSigner(signer as OfflineSigner, {
         addresses: getContractAddresses(chainInfo.chain_name),
         endpoints: getEndpoints(chainInfo.chain_name),

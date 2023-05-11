@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { ChainProvider } from '@cosmos-kit/react-lite';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import assets from '~/configs/assets';
 import { chains } from '~/configs/chains';
@@ -21,7 +21,15 @@ const queryClient = new QueryClient({
 const Providers: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <TranslationsProvider>
-      <ChainProvider assetLists={assets} chains={chains} walletModal={(props) => <ModalWallet {...props} />} wallets={desktopWallets}>
+      <ChainProvider
+        assetLists={assets}
+        chains={chains}
+        walletModal={(props) => <ModalWallet {...props} />}
+        wallets={desktopWallets}
+        sessionOptions={{
+          duration: 1000 * 60 * 60 * 24 * 7
+        }}
+      >
         <QueryClientProvider client={queryClient}>
           <VectisProvider>
             <ModalProvider>{children}</ModalProvider>
