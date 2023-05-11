@@ -22,12 +22,11 @@ const font = Anek_Latin({
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
-  const { account } = useApp();
+  const { isAuthorized } = useApp();
   const { pathname } = useRouter();
 
   const shouldShowSidebar = useMemo(() => '/' !== pathname, [pathname]);
   const sideBarToggle = useCallback(() => setIsSidebarOpen((prev) => !prev), []);
-  if (pathname !== '/' && !account) return <Loading />;
 
   return (
     <div className={clsx('bg-gray-100 text-gray-900', font.className)}>

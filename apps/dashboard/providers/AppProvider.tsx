@@ -1,31 +1,36 @@
-import React, { createContext, PropsWithChildren, useEffect } from 'react';
+import React, { createContext, PropsWithChildren, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
 
 import { chains } from '~/configs/chains';
 import { useVectis, VectisContextState } from '~/providers';
+import { protectedRoutes } from '~/utils/links';
+
+import Spinner from '~/components/Spinner';
 
 import { VectisAccount } from '~/interfaces';
 
 export interface AppContextState extends VectisContextState {
   account: VectisAccount;
+  isAuthorized: boolean;
 }
 
 const AppContext = createContext<AppContextState | null>(null);
 
 export const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const { query } = useRouter();
+  const { query, pathname } = useRouter();
   const vectisContext = useVectis();
 
-  const { chainName, vectis, setChain } = vectisContext;
+  const { chainName, vectis, setChain, userAccounts } = vectisContext;
 
-  const { data: account } = useQuery<VectisAccount>(
-    ['vectis_account', query.vectis],
-    () => vectis.getAccountInfo(query.vectis as string, chainName),
-    {
-      enabled: Boolean(query.vectis)
-    }
+  const { data: account, isLoading } = useQuery<VectisAccount>(['vectis_account', query.vectis], () =>
+    vectis?.getAccountInfo(query.vectis as string, chainName)
   );
+
+  const isAuthorized = useMemo(() => {
+    if (!protectedRoutes.includes(pathname)) return true;
+    return userAccounts.includes(account?.controllerAddr as string);
+  }, [pathname, account]);
 
   useEffect(() => {
     if (!query.vectis) return;
@@ -36,12 +41,15 @@ export const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
     setChain(chain.chain_name);
   }, [query.vectis]);
 
+  if (isLoading) return <Spinner wrapper size="md" />;
+
   return (
     <AppContext.Provider
       value={
         {
           ...vectisContext,
-          account
+          account,
+          isAuthorized
         } as AppContextState
       }
     >

@@ -67,7 +67,7 @@ const WrapperChainProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     if (!isWalletConnected || !chainWallet?.client) return;
-    setTimeout(async () => {
+    (async () => {
       for (const chain of chains) {
         await chainWallet.client.addChain?.({ chain, name: chain.chain_name, assetList: chain.assets });
       }
@@ -79,8 +79,8 @@ const WrapperChainProvider: React.FC<PropsWithChildren> = ({ children }) => {
         })
       );
       setUserAccounts(accounts);
-    }, 200);
-  }, [isWalletConnected]);
+    })();
+  }, [isWalletConnected, chainWallet]);
 
   return (
     <ChainContext.Provider

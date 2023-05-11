@@ -19,13 +19,12 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
 
   useEffect(() => {
     if (!isWalletConnected) return;
-    const buildVectisService = async () => {
+    setTimeout(async () => {
       const addresses = getContractAddresses(chainName as string);
       const signer = await getOfflineSigner();
       const vectisService = await VectisService.connectWithSigner(signer, { endpoints, defaultFee, addresses });
       setVectisService(vectisService);
-    };
-    buildVectisService();
+    }, 100);
   }, [chainName, isWalletConnected]);
 
   return (
