@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
-import SmartAccountMiniCard from 'components/SmartAccountMiniCard';
 
 import AccountDisplay from '../AccountDisplay';
 
