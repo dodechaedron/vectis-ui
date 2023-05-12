@@ -10,14 +10,6 @@ import { ModalProvider, TranslationsProvider, VectisProvider } from '~/providers
 
 import ModalWallet from '~/components/Modals/WalletModal';
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false
-    }
-  }
-});
-
 const Providers: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <TranslationsProvider>
@@ -30,7 +22,7 @@ const Providers: React.FC<PropsWithChildren> = ({ children }) => {
           duration: 1000 * 60 * 60 * 24 * 7
         }}
       >
-        <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={new QueryClient()}>
           <VectisProvider>
             <ModalProvider>{children}</ModalProvider>
           </VectisProvider>

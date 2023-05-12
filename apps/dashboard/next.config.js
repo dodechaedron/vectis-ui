@@ -5,7 +5,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  transpilePackages: ['@vectis/components'],
+  transpilePackages: ['@vectis/components', '@vectis/types'],
 };
 
 module.exports = withBundleAnalyzer({

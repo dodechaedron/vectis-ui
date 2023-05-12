@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 
 import { copyToClipboard, IntlAddress } from '~/services/browser';
 import { useModal, useVectis } from '~/providers';
+import { useQueryBalance } from '~/hooks';
 
 import { HiOutlineExternalLink } from 'react-icons/hi';
 import { HiOutlineWallet } from 'react-icons/hi2';
@@ -17,6 +18,7 @@ const AccountDisplay: React.FC<Props> = ({ seeAccounts }) => {
   const { endpoints, account } = useVectis();
   const { push: goToPage } = useRouter();
   const { showModal } = useModal();
+  const { data } = useQueryBalance();
   const [copyIcon, setCopyIcon] = React.useState(<MdFileCopy className="h-5 w-5 fill-white lg:h-4 lg:w-4" />);
 
   const handleCopy = () => {
@@ -36,7 +38,7 @@ const AccountDisplay: React.FC<Props> = ({ seeAccounts }) => {
         <div className="flex flex-col">
           <p className="font-bold capitalize">{account.label}</p>
           <p className="text-xs text-gray-500">{IntlAddress(account.address, 15)}</p>
-          <p className="text-xs text-kashmir-blue-500">0,00 USD</p>
+          <p className="text-xs text-kashmir-blue-500">{data?.totalBalance.usd} USD</p>
         </div>
         <div
           className="absolute top-0 bottom-0 right-[-1.5rem] m-auto flex h-12 w-14 items-center justify-start rounded-2xl bg-kashmir-blue-500 text-white

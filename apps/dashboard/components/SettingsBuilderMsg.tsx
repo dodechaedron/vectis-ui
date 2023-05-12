@@ -17,7 +17,6 @@ const SettingsBuilderMsg: React.FC = () => {
   const editorRef = useRef<any>(null);
 
   const execute = async () => {
-    console.log(contractAddress);
     const msg = {
       wasm: {
         execute: {

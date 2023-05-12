@@ -43,7 +43,7 @@ const Modal: React.FC<PropsWithChildren<Props>> = ({ children, isModalVisible, t
       >
         <motion.div
           onClick={(e) => e.stopPropagation()}
-          className="flex w-[25%] max-w-5xl flex-col gap-8 rounded-lg bg-white p-4 shadow-sm md:p-8"
+          className="flex min-w-[450px] max-w-5xl flex-col gap-8 rounded-lg bg-white p-4 shadow-sm md:p-8"
           variants={modalDropIn}
           initial={modalDropIn.hidden}
           animate={modalDropIn.visible}
