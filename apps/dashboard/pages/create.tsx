@@ -1,15 +1,25 @@
-import WalletCreationWizard from "components/WalletCreationWizard";
-import Head from "next/head";
+import WalletCreationWizard from 'components/WalletCreationWizard';
+import Head from 'next/head';
 
-import type { NextPage } from "next";
+import { useVectis } from '~/providers';
+
+import type { NextPage } from 'next';
 
 const CreateWallet: NextPage = () => {
+  const { userAddr, connect } = useVectis();
   return (
     <>
       <Head>
         <title>Vectis | Create Wallet</title>
       </Head>
-      <WalletCreationWizard />
+      <div className="flex h-[calc(100vh-72px)] w-full flex-1 items-center">
+        {userAddr ? null : (
+          <div className="fixed top-0 left-0 z-20 flex h-full w-full items-center justify-center backdrop-blur-sm">
+            <p onClick={connect}>connect</p>
+          </div>
+        )}
+        <WalletCreationWizard />
+      </div>
     </>
   );
 };

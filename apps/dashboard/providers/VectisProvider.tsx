@@ -69,8 +69,8 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
         if (!chain) return;
         chainInfo = chain;
       }
+      const signer = await chainWallet?.client.getOfflineSigner?.(chainInfo.chain_id, 'direct');
 
-      const signer = await chainWallet?.client.getOfflineSigner?.(chainInfo.chain_id);
       const [{ address }] = await signer!.getAccounts();
       if (vectisService?.chainName === chainInfo.chain_name && vectisService.userAddr === address) return;
 
@@ -85,7 +85,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
       setChain(chainInfo);
       setIsReady(true);
     }, 200);
-  }, [isWalletConnected, isRouterReady, query.vectis]);
+  }, [isWalletConnected, isRouterReady, query.vectis, chain]);
 
   useEffect(() => {
     if (!isWalletConnected) return;
@@ -104,7 +104,6 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
   }, [isWalletConnected, chainWallet]);
 
   if (protectedRoutes.includes(pathname) && !isFetched) return <Spinner wrapper size="md" />;
-  // console.log(account, userAccounts, chainName, vectisService);
   if (protectedRoutes.includes(pathname) && isFetched && !userAccounts.includes(account?.controllerAddr as string)) {
     return <p>Not your account</p>;
   }

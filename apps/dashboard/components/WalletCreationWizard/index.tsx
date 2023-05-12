@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import ProgressWizard from 'components/Forms/ProgressWizard';
 import { useToast } from 'hooks';
 import { useVectis } from 'providers';
@@ -7,6 +7,7 @@ import { sleep } from 'utils/misc';
 import * as yup from 'yup';
 
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { convertDenomToMicroDenom } from '~/utils/conversion';
 
@@ -47,24 +48,32 @@ const resolver = () =>
   );
 
 const WalletCreationWizard: React.FC = () => {
-  const { defaultFee } = useVectis();
-  const [step, setStep] = React.useState(1);
-  const methods = useForm<FormValues>({ defaultValues: { guardians: [{ value: '' }] }, resolver: resolver() });
-  const { handleSubmit } = methods;
+  const [step, setStep] = useState(1);
 
   const { toast } = useToast();
-  const { vectis } = useVectis();
+  const { vectis, defaultFee } = useVectis();
 
-  const onSubmit = async (data: FormValues) => {
-    const guardians = data.guardians.map((g) => g.value);
-    const relayers = [];
-    const promise = async () => {
-      const initialFunds = convertDenomToMicroDenom(data.initialFunds, defaultFee.exponent);
-      await vectis.createProxyWallet(data.label, guardians, relayers, data.multisig, Number(initialFunds), data.threshold);
-      await sleep(5000);
-    };
-    await toast.promise(promise());
-  };
+  const queryClient = useQueryClient();
+  const { mutateAsync: onSubmit } = useMutation({
+    mutationFn: async (inputsValue: FormValues) => {
+      const guardians = inputsValue.guardians.map((g) => g.value);
+      const relayers = [];
+      const initialFunds = convertDenomToMicroDenom(inputsValue.initialFunds, defaultFee.exponent);
+      const promise = vectis.createProxyWallet(
+        inputsValue.label,
+        guardians,
+        relayers,
+        inputsValue.multisig,
+        Number(initialFunds),
+        inputsValue.threshold
+      );
+      return await toast.promise(promise);
+    },
+    onSuccess: async () => await queryClient.invalidateQueries({ queryKey: ['vectis_accounts'], type: 'all' })
+  });
+
+  const methods = useForm<FormValues>({ defaultValues: { guardians: [{ value: '' }], initialFunds: 0 }, resolver: resolver() });
+  const { handleSubmit } = methods;
 
   const { Component } = useMemo(
     () => steps.find((s) => s.id === step) as { Component: React.FC<{ goBack: () => void; goNext: () => void }> },
@@ -75,7 +84,7 @@ const WalletCreationWizard: React.FC = () => {
   const goBack = useCallback(() => setStep(step - 1), [step]);
 
   return (
-    <form className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8" onSubmit={handleSubmit(onSubmit)}>
+    <form className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8" onSubmit={handleSubmit((v) => onSubmit(v))}>
       <ProgressWizard steps={steps} currentStep={step - 1} changeStep={setStep} />
       <FormProvider {...methods}>{Component && <Component goBack={goBack} goNext={goNext} />}</FormProvider>
     </form>

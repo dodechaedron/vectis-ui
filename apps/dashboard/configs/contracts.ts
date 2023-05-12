@@ -18,8 +18,5 @@ const addresses = {
 };
 
 export const getContractAddresses = (chainName: string) => {
-  return {
-    factoryAddress: addresses[chainName],
-    pluginRegistryAddress: addresses[chainName]
-  };
+  return addresses[chainName];
 };

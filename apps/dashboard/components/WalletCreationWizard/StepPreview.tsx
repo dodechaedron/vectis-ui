@@ -15,19 +15,12 @@ interface Props {
 const StepPreview: React.FC<Props> = ({ goBack, goNext }) => {
   const { defaultFee } = useVectis();
   const { getValues, formState } = useFormContext();
-  const { push: goToPage } = useRouter();
   const { isSubmitting, isSubmitSuccessful } = formState;
   const { guardians, initialFunds, label, multisig, threshold } = getValues();
 
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      goToPage('/accounts');
-    }
-  }, [isSubmitSuccessful]);
-
   return (
     <>
-      <div className="mt-5 overflow-hidden bg-white shadow sm:rounded-lg">
+      <div className="mt-5  min-h-[35rem] overflow-hidden bg-white shadow sm:rounded-lg">
         <div className="py-5 px-6">
           <h3 className="text-lg font-medium leading-6 text-gray-900">Account Information</h3>
           <p className="mt-1 max-w-2xl text-sm text-gray-500">Preview of your information for next account</p>

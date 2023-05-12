@@ -1,18 +1,18 @@
-import React, { ComponentPropsWithoutRef } from "react";
-import clsx from "clsx";
-import { useController, UseControllerProps } from "react-hook-form";
+import React, { ComponentPropsWithoutRef } from 'react';
+import clsx from 'clsx';
+import { useController, UseControllerProps } from 'react-hook-form';
 
-import Input from "./Input";
+import Input from './Input';
 
-interface Props extends ComponentPropsWithoutRef<"input"> {
+interface Props extends ComponentPropsWithoutRef<'input'> {
   label?: string;
   options?: unknown[];
   currency?: string;
 }
 
-const InputPrice: React.FC<Partial<UseControllerProps> & Props> = ({ label, options, currency, ...props }) => {
+const InputPrice: React.FC<Partial<UseControllerProps> & Props> = ({ label, options, currency, className, ...props }) => {
   return (
-    <div>
+    <div className={clsx(className)}>
       {label && (
         <label htmlFor="price" className="block text-sm font-medium text-gray-700">
           {label}
@@ -35,7 +35,7 @@ const InputPrice: React.FC<Partial<UseControllerProps> & Props> = ({ label, opti
             <select
               id="currency"
               name="currency"
-              className="h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 outline-none focus:ring-0 border-none text-gray-500 sm:text-sm"
+              className="h-full rounded-md border-none border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-500 outline-none focus:ring-0 sm:text-sm"
               onChange={(e) => console.log(e.target.value)}
             >
               <option>JUNOX</option>

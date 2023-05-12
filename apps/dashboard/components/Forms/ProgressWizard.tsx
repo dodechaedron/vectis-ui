@@ -1,7 +1,7 @@
-import React from "react";
-import clsx from "clsx";
+import React from 'react';
+import clsx from 'clsx';
 
-import { CheckIcon } from "@heroicons/react/24/solid";
+import { CheckIcon } from '@heroicons/react/24/solid';
 
 interface Props {
   steps: { id: number; name: string }[];
@@ -11,14 +11,14 @@ interface Props {
 
 const ProgressWizard: React.FC<Props> = ({ steps, currentStep, changeStep }) => {
   return (
-    <ol role="list" className="overflow-hidden rounded-md lg:flex lg:border-l lg:border-r lg:border-gray-200">
+    <ol role="list" className="w-full max-w-7xl overflow-hidden rounded-md lg:flex lg:border-l lg:border-r lg:border-gray-200">
       {steps.map((step, stepIdx) => (
-        <li key={step.id} className="relative overflow-hidden lg:flex-1 bg-white">
+        <li key={step.id} className="relative overflow-hidden bg-white lg:flex-1">
           <div
             className={clsx(
-              stepIdx === 0 ? "border-b-0 rounded-t-md" : "",
-              stepIdx === steps.length - 1 ? "border-t-0 rounded-b-md" : "",
-              "border border-gray-200 overflow-hidden lg:border-0"
+              stepIdx === 0 ? 'rounded-t-md border-b-0' : '',
+              stepIdx === steps.length - 1 ? 'rounded-b-md border-t-0' : '',
+              'overflow-hidden border border-gray-200 lg:border-0'
             )}
           >
             {stepIdx < currentStep ? (
@@ -33,7 +33,7 @@ const ProgressWizard: React.FC<Props> = ({ steps, currentStep, changeStep }) => 
             ) : stepIdx === currentStep ? (
               <div className="flex items-center px-6 py-4 text-sm font-medium" aria-current="step">
                 <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-kashmir-blue-500">
-                  <span className="text-kashmir-blue-500">{"0" + step.id}</span>
+                  <span className="text-kashmir-blue-500">{'0' + step.id}</span>
                 </span>
                 <span className="ml-4 text-sm font-medium text-kashmir-blue-500">{step.name}</span>
               </div>
@@ -41,7 +41,7 @@ const ProgressWizard: React.FC<Props> = ({ steps, currentStep, changeStep }) => 
               <div className="group flex items-center">
                 <span className="flex items-center px-6 py-4 text-sm font-medium">
                   <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-gray-300 ">
-                    <span className="text-gray-500 ">{"0" + step.id}</span>
+                    <span className="text-gray-500 ">{'0' + step.id}</span>
                   </span>
                   <span className="ml-4 text-sm font-medium text-gray-500 ">{step.name}</span>
                 </span>
