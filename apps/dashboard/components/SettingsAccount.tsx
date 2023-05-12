@@ -11,31 +11,18 @@ import Spinner from './Spinner';
 import { CheckIcon, InformationCircleIcon, PencilIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { FiExternalLink } from 'react-icons/fi';
 
-import { WalletInfo } from '@vectis/types/Proxy.types';
-
-interface Props {
-  walletInfo: WalletInfo;
-}
-
-const SettingsAccount: React.FC<Props> = ({ walletInfo }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [newName, setNewName] = useState('');
-  const { vectis } = useVectis();
+const SettingsAccount: React.FC = () => {
   const { toast } = useToast();
-  const { query } = useRouter();
+  const { vectis, account } = useVectis();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState(account.label);
 
   const updateName = async () => {
-    const promise = vectis.proxyUpdateLabel(query.address as string, newName);
+    const promise = vectis.proxyUpdateLabel(account.address, newName);
     await toast.promise(promise);
     setIsEditing(false);
   };
-
-  useEffect(() => {
-    if (!walletInfo) return;
-    setNewName(walletInfo.label);
-  }, [walletInfo]);
-
-  if (!walletInfo) return <Spinner />;
 
   return (
     <>
@@ -48,17 +35,17 @@ const SettingsAccount: React.FC<Props> = ({ walletInfo }) => {
             </span>
           </h4>
           <p>
-            Current nonce: <span>{walletInfo.nonce}</span>
+            Current nonce: <span>{account.nonce}</span>
           </p>
         </div>
         <div className="flex w-full flex-col gap-2">
           <h4 className="text-lg font-semibold">Contract Version</h4>
           <Link
             target="_blank"
-            href={`https://github.com/nymlab/vectis/releases/tag/v${walletInfo.version.version}`}
+            href={`https://github.com/nymlab/vectis/releases/tag/v${account.version.version}`}
             className="group flex items-center gap-1 text-lg font-semibold text-kashmir-blue-500 hover:text-gray-500 "
           >
-            {walletInfo.version.version}
+            {account.version.version}
             <span>
               <FiExternalLink className="h-4 w-4 text-kashmir-blue-500 group-hover:text-gray-500" />
             </span>
@@ -81,7 +68,7 @@ const SettingsAccount: React.FC<Props> = ({ walletInfo }) => {
                 <CheckIcon className="h-7 w-7 cursor-pointer text-gray-500 hover:text-gray-900" onClick={updateName} />
                 <XMarkIcon
                   className="h-7 w-7 cursor-pointer text-gray-500 hover:text-gray-900"
-                  onClick={() => [setNewName(walletInfo.label), setIsEditing(!isEditing)]}
+                  onClick={() => [setNewName(account.label), setIsEditing(!isEditing)]}
                 />
               </>
             )}

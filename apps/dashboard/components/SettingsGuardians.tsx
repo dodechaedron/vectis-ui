@@ -13,21 +13,14 @@ import Divider from './Divider';
 import GuardianRequestCard from './GuardianRequestCard';
 import ShowGuardian from './ShowGuardian';
 
-import { WalletInfo } from '@vectis/types/Proxy.types';
-
 type FormValues = {
   guardians: { value: string }[];
   multisig: boolean;
   threshold: number;
 };
 
-interface Props {
-  walletInfo: WalletInfo;
-}
-
-const SettingsGuardians: React.FC<Props> = ({ walletInfo }) => {
-  const { query } = useRouter();
-  const { vectis } = useVectis();
+const SettingsGuardians: React.FC = () => {
+  const { vectis, account } = useVectis();
   const { toast } = useToast();
   const { control, setValue, watch, handleSubmit } = useForm<FormValues>({ defaultValues: { guardians: [{}], threshold: 1 } });
 
@@ -36,7 +29,7 @@ const SettingsGuardians: React.FC<Props> = ({ walletInfo }) => {
 
   const onSubmit = async (data) => {
     const promise = vectis.proxyRequestUpdateGuardians(
-      query.address as string,
+      account.address,
       data.guardians.map((g) => g.value),
       data.multisig ? data.threshold : 0
     );
@@ -49,7 +42,7 @@ const SettingsGuardians: React.FC<Props> = ({ walletInfo }) => {
         <div className="flex-2 flex min-h-[28rem] w-full flex-col rounded-md bg-white py-4 px-4 shadow-sm md:px-8">
           <h3 className="text-lg font-medium leading-6 text-gray-900">Guardian List</h3>
           <p className="mt-1 mb-4 text-sm text-gray-500">This is the list of the guardians who could recover your account.</p>
-          <ShowGuardian guardians={walletInfo.guardians} />
+          <ShowGuardian guardians={account.guardians} />
 
           <Divider label="Create Request" />
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2">

@@ -8,7 +8,7 @@ import { useToast } from '~/hooks';
 import { Button } from './Buttons';
 import Spinner from './Spinner';
 
-import { Plugin } from '@vectis/types/PluginRegistry.types';
+import { Plugin } from '@vectis/types/contracts/PluginRegistry.types';
 
 interface Props {
   plugin: Plugin;

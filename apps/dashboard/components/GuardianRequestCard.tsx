@@ -12,17 +12,14 @@ import ShowGuardian from './ShowGuardian';
 
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
-import { GuardiansUpdateRequest } from '@vectis/types/Proxy.types';
-
 const GuardianRequestCard: React.FC = () => {
-  const { query } = useRouter();
-  const { vectis } = useVectis();
+  const { vectis, account } = useVectis();
   const { toast } = useToast();
   const [activeProposal, setActiveProposal] = useState<any | null>(null);
 
   useEffect(() => {
     const fetchActiveRequest = async () => {
-      const activeRequest = await vectis.getActiveGuardianRequests(query.address as string);
+      const activeRequest = await vectis.getActiveGuardianRequests(account.address);
       setActiveProposal(activeRequest);
     };
     fetchActiveRequest();
@@ -30,19 +27,19 @@ const GuardianRequestCard: React.FC = () => {
 
   const acceptRequest = useCallback(async () => {
     try {
-      const promise = vectis.proxyAcceptGuardianRequest(query.address as string);
+      const promise = vectis.proxyAcceptGuardianRequest(account.address);
       await toast.promise(promise);
       setActiveProposal(null);
     } catch (e) {}
-  }, [query]);
+  }, []);
 
   const rejectRequest = useCallback(async () => {
     try {
-      const promise = vectis.proxyRejectGuardianRequest(query.address as string);
+      const promise = vectis.proxyRejectGuardianRequest(account.address);
       await toast.promise(promise);
       setActiveProposal(null);
     } catch (e) {}
-  }, [query]);
+  }, []);
 
   const multisig = useMemo(() => activeProposal?.guardians?.guardians_multisig?.threshold_absolute_count, [activeProposal]);
   const activateAt = useMemo(
