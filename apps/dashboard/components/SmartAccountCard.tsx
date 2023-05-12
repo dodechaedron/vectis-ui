@@ -42,7 +42,7 @@ const SmartAccountCard: React.FC<Props> = ({ smartAccount }) => {
           <div className="flex w-full items-center justify-between gap-4">
             <div className={clsx(smartAccount.frozen && 'flex items-center justify-center gap-2')}>
               <div>{smartAccount.frozen && <BsSnow2 className="h-6 w-6 text-white" />}</div>
-              <p className="text-right text-lg drop-shadow-md">{smartAccount.label}</p>
+              <p className="text-right text-lg capitalize drop-shadow-md">{smartAccount.label}</p>
             </div>
             <CardInfo
               guardians={smartAccount.guardians.length}

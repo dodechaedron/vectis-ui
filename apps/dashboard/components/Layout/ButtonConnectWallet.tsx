@@ -20,7 +20,7 @@ const ButtonConnectWallet: React.FC = () => {
           </div>
           <span
             className={clsx(
-              'absolute right-0 h-full w-9 rounded-full bg-kashmir-blue-500 p-2 transition-all group-hover:w-full group-hover:bg-red-800'
+              'absolute right-0 h-full w-9 rounded-full bg-kashmir-blue-500 p-2 transition-all group-hover:w-full group-hover:bg-kashmir-blue-300'
             )}
           ></span>
           <span className="relative block w-9">
