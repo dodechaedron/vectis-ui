@@ -349,7 +349,7 @@ export class VectisService extends VectisQueryService {
     );
   }
 
-  async proxyTransfer(proxyWalletAddress: string, toAddress: string, amount: number, memo?: string): Promise<ExecuteResult> {
+  async proxyTransfer(proxyWalletAddress: string, toAddress: string, coin: Coin, memo?: string): Promise<ExecuteResult> {
     return await this.proxyExecute(
       proxyWalletAddress,
       [
@@ -357,7 +357,7 @@ export class VectisService extends VectisQueryService {
           bank: {
             send: {
               to_address: toAddress,
-              amount: [coin(amount, this.defaultFee.udenom)]
+              amount: [{ denom: coin.denom, amount: coin.amount }]
             }
           }
         }

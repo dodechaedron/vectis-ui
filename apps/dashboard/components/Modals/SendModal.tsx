@@ -1,8 +1,11 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { useModal, useVectis } from '~/providers';
 import { useToast } from '~/hooks';
+import { convertDenomToMicroDenom } from '~/utils/conversion';
 
 import { Button } from '../Buttons';
 import { Input } from '../Inputs';
@@ -23,6 +26,24 @@ const SendModal: React.FC = () => {
   const { vectis, defaultFee, account } = useVectis();
   const { register, handleSubmit, watch, setValue } = useForm<Inputs>();
 
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: onSubmit } = useMutation({
+    mutationFn: async ({ recipient, amount, memo, token }: Inputs) =>
+      await toast.promise(
+        vectis.proxyTransfer(
+          account.address,
+          recipient,
+          { amount: convertDenomToMicroDenom(amount, defaultFee.exponent), denom: defaultFee.udenom },
+          'auto'
+        )
+      ),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['vectis_account_balances', account?.address], type: 'all' });
+      hideModal();
+    }
+  });
+
   const tokens = [
     {
       label: defaultFee.symbol,
@@ -30,16 +51,11 @@ const SendModal: React.FC = () => {
     }
   ];
 
-  const onSubmit = async ({ recipient, amount, memo }) => {
-    const promise = vectis.proxyTransfer(account.address, recipient, amount, memo);
-    await toast.promise(promise);
-    hideModal();
-  };
   return (
     <Modal isModalVisible={isModalVisible} closeModal={hideModal} title="Transfer Funds">
       <div>
         <div className="mt-3 text-center sm:mt-5">
-          <form className="mt-2 flex w-full  flex-wrap justify-start gap-4" onSubmit={handleSubmit(onSubmit)}>
+          <form className="mt-2 flex w-full  flex-wrap justify-start gap-4" onSubmit={handleSubmit((v) => onSubmit(v))}>
             <Input label="Recipient" {...register('recipient')} />
             <InputSelector
               label="Token"
