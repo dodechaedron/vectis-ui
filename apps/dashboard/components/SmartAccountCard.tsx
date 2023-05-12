@@ -6,6 +6,7 @@ import Snowfall from 'react-snowfall';
 
 import { IntlAddress } from '~/services/browser';
 
+import CardBg from './Icons/CardBg';
 import CardInfo from './CardInfo';
 
 import { BsAsterisk, BsSnow2 } from 'react-icons/bs';
@@ -27,15 +28,13 @@ const SmartAccountCard: React.FC<Props> = ({ smartAccount }) => {
     <div
       data-testid="card-wallet"
       onClick={selectWallet}
-      style={{ backgroundImage: `url('/visa-bg-${3 % 4}.jpg')` }}
-      className={`relative mx-auto flex h-[12rem] w-full max-w-[24rem] cursor-pointer flex-col justify-between overflow-hidden rounded-md bg-cover text-gray-100 shadow-md transition-all hover:brightness-110`}
+      className={`relative mx-auto flex h-[13.3rem] w-full max-w-[24rem] cursor-pointer flex-col justify-between overflow-hidden rounded-md bg-cover text-gray-100 shadow-md transition-all hover:brightness-110`}
     >
+      <CardBg />
       <div
         className={clsx(
-          'flex h-full w-full flex-col justify-between backdrop-blur-sm',
-          smartAccount.frozen
-            ? 'bg-gradient-to-tr from-[#2F80ED] to-[#B2FFDA]/50'
-            : 'bg-gradient-to-br from-white/30 via-kashmir-blue-500/50 to-white/50'
+          'absolute flex h-full w-full flex-col justify-between backdrop-blur-sm',
+          smartAccount.frozen ? 'bg-gradient-to-tr from-[#2F80ED]/40 to-[#B2FFDA]/40' : 'bg-white/10 backdrop-blur-sm'
         )}
       >
         {smartAccount.frozen && <Snowfall snowflakeCount={5} />}
@@ -52,6 +51,7 @@ const SmartAccountCard: React.FC<Props> = ({ smartAccount }) => {
             ></CardInfo>
           </div>
           <p className="text-md justify-star mt-2 flex items-center drop-shadow-md">
+            <p className="ml-2">{smartAccount.address.substring(smartAccount.address.length - 4)}</p>
             <BsAsterisk className="h-3 w-3" />
             <BsAsterisk className="h-3 w-3" />
             <BsAsterisk className="h-3 w-3" />
@@ -64,7 +64,6 @@ const SmartAccountCard: React.FC<Props> = ({ smartAccount }) => {
             <BsAsterisk className="h-3 w-3" />
             <BsAsterisk className="h-3 w-3" />
             <BsAsterisk className="mr-2 h-3 w-3" />
-            ... {smartAccount.address.substring(smartAccount.address.length - 4)}
           </p>
           <div className="flex justify-between drop-shadow-md">
             <div>

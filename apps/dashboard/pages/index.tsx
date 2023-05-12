@@ -16,7 +16,7 @@ const WelcomePage: NextPage = () => {
         <div className="relative flex h-full w-full flex-1 flex-col gap-4 lg:max-w-[25rem]">
           <DrawerAccounts canCollapse={true} />
         </div>
-        <div className="relative h-full w-full flex-1 rounded-md bg-[url('/blue-bg.jpg')]">
+        <div className="relative h-full w-full flex-1 rounded-md bg-gradient-to-tl from-kashmir-blue-100 via-[#7493d1] to-[#0e1d40]">
           <div className="flex h-full w-full flex-col items-start justify-center rounded-md bg-kashmir-blue-700/30 p-10">
             <h2 className="text-4xl font-semibold  text-white">Welcome to Vectis</h2>
             <p className="text-lg text-white">Vectis is a smart account management tool for Cosmos.</p>
