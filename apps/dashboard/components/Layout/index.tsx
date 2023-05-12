@@ -25,16 +25,16 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
 
   const { pathname } = useRouter();
 
-  const shouldShowSidebar = useMemo(() => protectedRoutes.includes(pathname), [pathname]);
+  const isProtected = useMemo(() => protectedRoutes.includes(pathname), [pathname]);
   const sideBarToggle = useCallback(() => {
     drawerAccountsOpen ? setDrawerAccountsOpen(false) : setIsSidebarOpen((prev) => !prev);
   }, []);
 
   return (
     <div className={clsx('bg-gray-100 text-gray-900', font.className)}>
-      <Heading isSidebarOpen={isSidebarOpen} sideBarToggle={sideBarToggle} />
+      <Heading isSidebarOpen={isSidebarOpen} sideBarToggle={sideBarToggle} isProtected={isProtected} />
       <main className="max-w-screen flex flex-1">
-        {shouldShowSidebar ? (
+        {isProtected ? (
           <>
             <Sidebar visible={isSidebarOpen} setVisible={sideBarToggle} seeAccounts={() => setDrawerAccountsOpen(true)} />
             <AccountSidebar isOpen={drawerAccountsOpen} close={() => setDrawerAccountsOpen(false)} />

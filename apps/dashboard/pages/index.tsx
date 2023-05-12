@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 
 import { Button } from '~/components/Buttons';
 import DrawerAccounts from '~/components/DrawerAccounts';
@@ -12,8 +13,8 @@ const WelcomePage: NextPage = () => {
         <title>Vectis | Welcome</title>
       </Head>
       <div className="flex w-full flex-col items-center gap-4 p-4 lg:h-[calc(100vh-72px)] lg:flex-row">
-        <div className="relative flex h-full w-full flex-1 flex-col gap-4 rounded-md bg-white lg:max-w-[25rem]">
-          <DrawerAccounts />
+        <div className="relative flex h-full w-full flex-1 flex-col gap-4 lg:max-w-[25rem]">
+          <DrawerAccounts canCollapse={true} />
         </div>
         <div className="relative h-full w-full flex-1 rounded-md bg-[url('/blue-bg.jpg')]">
           <div className="flex h-full w-full flex-col items-start justify-center rounded-md bg-kashmir-blue-700/30 p-10">
@@ -25,14 +26,18 @@ const WelcomePage: NextPage = () => {
                   <h3 className="text-2xl font-semibold">Vectis Account</h3>
                   <p className="text-sm text-gray-500">Create a smart account account account to manage your tokens.</p>
                 </div>
-                <Button>Create Account</Button>
+                <Button as={Link} href="/create">
+                  Create Account
+                </Button>
               </div>
               <div className="flex w-full max-w-[27.5rem] flex-col items-start justify-center gap-4 rounded-md bg-white p-8">
                 <div className="flex flex-col gap-1">
                   <h3 className="text-2xl font-semibold">Guardian Explorer</h3>
                   <p className="text-sm text-gray-500">See accounts where you are guardian of and do guardian actions.</p>
                 </div>
-                <Button>Explore Accounts</Button>
+                <Button as={Link} href="/guardians">
+                  Explore Accounts
+                </Button>
               </div>
             </div>
           </div>
