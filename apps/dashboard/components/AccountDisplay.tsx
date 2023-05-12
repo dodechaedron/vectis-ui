@@ -6,7 +6,7 @@ import { useModal, useVectis } from '~/providers';
 
 import { HiOutlineExternalLink } from 'react-icons/hi';
 import { HiOutlineWallet } from 'react-icons/hi2';
-import { IoMdCheckmark, IoMdCopy } from 'react-icons/io';
+import { IoMdCheckmark } from 'react-icons/io';
 import { MdFileCopy, MdOutlineKeyboardArrowRight, MdOutlineQrCode2, MdOutlineSettings } from 'react-icons/md';
 
 interface Props {

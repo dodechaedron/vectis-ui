@@ -1,7 +1,14 @@
 import { Chain } from './chains';
 import { isTestnet } from './network';
 
-import { AssetList } from '@chain-registry/types';
+import { Asset, AssetList } from '@chain-registry/types';
+
+export interface AssetInfo extends Asset {
+  amount: string;
+  img: string;
+  denom: string;
+  exponent: number;
+}
 
 export const juno_testnet_assets: AssetList = {
   chain_name: 'junotestnet',
@@ -1358,5 +1365,14 @@ export const getDefaultFee = (chain: Chain) => {
     symbol: assetInfo.symbol,
     img: assetInfo.logo_URIs?.svg || assetInfo.logo_URIs?.png || assetInfo.logo_URIs?.jpeg,
     coingeckoId: assetInfo.coingecko_id
+  };
+};
+
+export const getAssetInfo = (chain: Chain, denom: string) => {
+  const asset = chain.assets.assets.find((asset) => [asset.base, asset.display].includes(denom));
+  return {
+    ...asset,
+    img: asset?.logo_URIs?.svg || asset?.logo_URIs?.png || asset?.logo_URIs?.jpeg,
+    exponent: asset?.denom_units?.find((u) => u.denom === asset.display)?.exponent as number
   };
 };

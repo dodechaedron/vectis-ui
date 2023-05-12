@@ -5,7 +5,7 @@ import { OfflineSigner } from '@cosmjs/proto-signing';
 import { useChain } from '@cosmos-kit/react-lite';
 import { useQuery } from '@tanstack/react-query';
 
-import { getDefaultFee } from '~/configs/assets';
+import { AssetInfo, getAssetInfo, getDefaultFee } from '~/configs/assets';
 import { Chain, chainIds, chains } from '~/configs/chains';
 import { getContractAddresses } from '~/configs/contracts';
 import { getEndpoints } from '~/configs/endpoints';
@@ -20,6 +20,7 @@ export interface VectisState {
   userAddr: string;
   username: string;
   account: VectisAccount;
+  accountBalances: AssetInfo[];
   userAccounts: string[];
   endpoints: Endpoints;
   defaultFee: CoinInfo;
@@ -53,6 +54,16 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
     () => vectisService?.getAccountInfo(query.vectis as string, chain.chain_name),
     {
       enabled: isRouterReady && isReady && Boolean(query.vectis)
+    }
+  );
+
+  const { data: balances } = useQuery(
+    ['vectis_account_balances', account?.address],
+    () => vectisService?.getBalances(account?.address as string),
+    {
+      enabled: Boolean(account),
+      select: (coins) => coins?.map((c) => ({ amount: c.amount, denom: c.denom, ...getAssetInfo(chain, c.denom) })),
+      initialData: []
     }
   );
 
@@ -105,6 +116,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
 
   if (protectedRoutes.includes(pathname) && !isFetched) return <Spinner wrapper size="md" />;
   if (protectedRoutes.includes(pathname) && isFetched && !userAccounts.includes(account?.controllerAddr as string)) {
+    console.log(account, userAccounts);
     return <p>Not your account</p>;
   }
 
@@ -114,6 +126,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
         userAddr: address as string,
         username: username as string,
         account: account as VectisAccount,
+        accountBalances: balances as AssetInfo[],
         userAccounts,
         endpoints,
         defaultFee,

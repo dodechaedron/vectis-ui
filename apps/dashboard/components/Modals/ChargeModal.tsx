@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { useModal, useVectis } from '~/providers';
 import { useToast } from '~/hooks';
 import { coin, convertDenomToMicroDenom } from '~/utils/conversion';
@@ -11,11 +13,23 @@ import InputSelector from '../Inputs/InputSelector';
 import Modal from './Modal';
 
 const ChargeModal: React.FC = () => {
+  const { toast, isLoading } = useToast();
   const { hideModal, isModalVisible } = useModal();
+  const { vectis, defaultFee, userAddr, account } = useVectis();
+
   const [amount, setAmount] = useState('0');
 
-  const { toast, isLoading } = useToast();
-  const { vectis, defaultFee, userAddr, account } = useVectis();
+  const queryClient = useQueryClient();
+  const { mutateAsync: onSubmit } = useMutation({
+    mutationFn: async () =>
+      await toast.promise(
+        vectis.sendTokens(userAddr, account.address, [coin(convertDenomToMicroDenom(amount, defaultFee.exponent), defaultFee.udenom)], 'auto')
+      ),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['vectis_account_balances', account?.address], type: 'all' });
+      hideModal();
+    }
+  });
 
   const tokens = [
     {
@@ -23,17 +37,6 @@ const ChargeModal: React.FC = () => {
       value: defaultFee.udenom
     }
   ];
-
-  const onSubmit = async () => {
-    const promise = vectis.sendTokens(
-      userAddr,
-      account.address,
-      [coin(convertDenomToMicroDenom(amount, defaultFee.exponent), defaultFee.udenom)],
-      'auto'
-    );
-    await toast.promise(promise);
-    hideModal();
-  };
 
   return (
     <Modal isModalVisible={isModalVisible} closeModal={hideModal} title="Top up your smart account">
@@ -49,7 +52,7 @@ const ChargeModal: React.FC = () => {
         </div>
       </div>
       <div className="mt-5 sm:mt-6">
-        <Button disabled={isLoading} className="w-full" onClick={onSubmit}>
+        <Button disabled={isLoading} className="w-full" onClick={() => onSubmit()}>
           Top up
         </Button>
       </div>
