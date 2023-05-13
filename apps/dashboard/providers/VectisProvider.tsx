@@ -39,8 +39,9 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
   const [vectis, setVectis] = useState<VectisService | null>(null);
   const [userAccounts, setUserAccounts] = useState<string[]>([]);
   const [chain, setChain] = useState<Chain>(chains[0]);
+  const [walletName, setWalletName] = useState<string>();
 
-  const { address, username, disconnect: logout, connect, isWalletConnected, chainWallet } = useChain(chain.chain_name);
+  const { address, username, disconnect: logout, connect, isWalletConnected, chainWallet, walletRepo, wallet } = useChain(chain.chain_name);
   const { isReady: isRouterReady, query, pathname, push: goToPage } = useRouter();
 
   const disconnect = useCallback(() => [logout(), goToPage('/')], []);
@@ -57,6 +58,14 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
   );
 
   useEffect(() => {
+    if (!isWalletConnected && walletName) walletRepo.connect(walletName);
+  }, [isWalletConnected]);
+
+  useEffect(() => {
+    if (wallet) setWalletName(wallet.name);
+  }, [wallet]);
+
+  useEffect(() => {
     if (!isWalletConnected || !isRouterReady) return;
     if (isRouterReady && !isWalletConnected && protectedRoutes.includes(pathname)) {
       connect();
@@ -69,6 +78,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
         if (!chain) return;
         chainInfo = chain;
       }
+
       const signer = await chainWallet?.client.getOfflineSigner?.(chainInfo.chain_id, 'direct');
 
       const [{ address }] = await signer!.getAccounts();
