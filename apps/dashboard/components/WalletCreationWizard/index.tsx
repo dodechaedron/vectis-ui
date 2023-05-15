@@ -21,26 +21,29 @@ const steps = [
   { id: 3, name: 'Preview', Component: StepPreview }
 ];
 
-type FormValues = {
+export type WalletCreationForm = {
   initialFunds: number;
   label: string;
-  guardians: { value: string }[];
+  guardians: { address: string }[];
   multisig: boolean;
   threshold: number;
 };
 
-const resolver = () =>
+const resolver = (bech32Prefix: string) =>
   yupResolver(
     yup
       .object()
       .shape({
         label: yup.string().required('Account name is required'),
         initialFunds: yup.number(),
-        guardians: yup
-          .array()
-          .of(yup.object().shape({ value: yup.string().required() }))
-          .min(1, 'At least one guardian is required')
-          .required('Guardians are required'),
+        guardians: yup.array().of(
+          yup.object().shape({
+            address: yup
+              .string()
+              .matches(new RegExp(`^(${bech32Prefix})[0-9a-zA-Z]{39}`, 'g'), 'Guardian address does not seem to be valid')
+              .required()
+          })
+        ),
         threshold: yup.number(),
         multisig: yup.boolean()
       })
@@ -51,12 +54,12 @@ const WalletCreationWizard: React.FC = () => {
   const [step, setStep] = useState(1);
 
   const { toast } = useToast();
-  const { vectis, defaultFee } = useVectis();
+  const { vectis, defaultFee, chain } = useVectis();
 
   const queryClient = useQueryClient();
   const { mutateAsync: onSubmit } = useMutation({
-    mutationFn: async (inputsValue: FormValues) => {
-      const guardians = inputsValue.guardians.map((g) => g.value);
+    mutationFn: async (inputsValue: WalletCreationForm) => {
+      const guardians = inputsValue.guardians.map((g) => g.address).filter(Boolean);
       const relayers = [];
       const initialFunds = convertDenomToMicroDenom(inputsValue.initialFunds, defaultFee.exponent);
       const promise = vectis.createProxyWallet(
@@ -72,7 +75,11 @@ const WalletCreationWizard: React.FC = () => {
     onSuccess: async () => await queryClient.invalidateQueries({ queryKey: ['vectis_accounts'], type: 'all' })
   });
 
-  const methods = useForm<FormValues>({ defaultValues: { guardians: [{ value: '' }], initialFunds: 0 }, resolver: resolver() });
+  const methods = useForm<WalletCreationForm>({
+    defaultValues: { guardians: [{ address: '' }], initialFunds: 0 },
+    resolver: resolver(chain.bech32_prefix),
+    mode: 'onChange'
+  });
   const { handleSubmit } = methods;
 
   const { Component } = useMemo(

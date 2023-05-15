@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useMemo } from 'react';
 import { Input } from 'components/Inputs';
 import InputPrice from 'components/Inputs/InputPrice';
 import { useVectis } from 'providers';
 import { useFormContext } from 'react-hook-form';
-import { convertDenomToMicroDenom, convertMicroDenomToDenom } from 'utils/conversion';
+import { convertMicroDenomToDenom } from 'utils/conversion';
 
 import { Coin } from '@cosmjs/amino';
 import { useQuery } from '@tanstack/react-query';
@@ -27,6 +27,7 @@ const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
   const { data: fees } = useQuery(['walletFee', defaultFee.udenom], () => vectis.getFees());
 
   const initialFunds = watch('initialFunds');
+  const accountName = watch('label');
 
   const chainOptions = useMemo(() => chains.map((c) => ({ label: c.pretty_name, value: c.chain_name })), [chains]);
 
@@ -112,7 +113,7 @@ const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
         <Button onClick={goBack} className="mt-5">
           Back
         </Button>
-        <Button onClick={goNext} className="mt-5">
+        <Button onClick={goNext} className="mt-5" disabled={!accountName?.length}>
           Next
         </Button>
       </div>

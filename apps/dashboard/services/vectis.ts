@@ -211,9 +211,7 @@ export class VectisService {
       proxy_initial_funds
     };
 
-    const funds = BigNumber(Number(initialFunds || 0))
-      .plus(BigNumber(Number(wallet_fee.amount)))
-      .toString();
+    const funds = (BigInt(initialFunds || 0) + BigInt(wallet_fee.amount)).toString();
 
     return await this.client.execute(
       this.userAddr,
@@ -221,7 +219,7 @@ export class VectisService {
       { create_wallet: { create_wallet_msg } },
       'auto',
       undefined,
-      [coin(funds, this.defaultFee.udenom)]
+      funds !== '0' ? [coin(funds, this.defaultFee.udenom)] : []
     );
   }
 
