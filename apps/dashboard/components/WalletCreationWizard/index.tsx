@@ -16,8 +16,8 @@ import StepGuardianSelection from './StepGuardianSelection';
 import StepPreview from './StepPreview';
 
 const steps = [
-  { id: 1, name: 'Choose Guardians', Component: StepGuardianSelection },
-  { id: 2, name: 'Account Details', Component: StepAccountDetails },
+  { id: 1, name: 'Account Details', Component: StepAccountDetails },
+  { id: 2, name: 'Choose Guardians', Component: StepGuardianSelection },
   { id: 3, name: 'Preview', Component: StepPreview }
 ];
 

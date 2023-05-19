@@ -10,9 +10,10 @@ import { WalletCreationForm } from './index';
 
 interface Props {
   goNext: () => void;
+  goBack: () => void;
 }
 
-const StepGuardianSelection: React.FC<Props> = ({ goNext }) => {
+const StepGuardianSelection: React.FC<Props> = ({ goNext, goBack }) => {
   const { control, watch, formState, setValue } = useFormContext<WalletCreationForm>();
   const { errors } = formState;
 
@@ -98,7 +99,10 @@ const StepGuardianSelection: React.FC<Props> = ({ goNext }) => {
         </div>
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex justify-between">
+        <Button onClick={goBack} className="mt-5">
+          Back
+        </Button>
         <Button onClick={goNext} className="mt-5" disabled={!guardians?.[0].address?.length || !!errors?.guardians?.length}>
           Next
         </Button>

@@ -109,10 +109,7 @@ const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-between">
-        <Button onClick={goBack} className="mt-5">
-          Back
-        </Button>
+      <div className="flex justify-end">
         <Button onClick={goNext} className="mt-5" disabled={!accountName?.length}>
           Next
         </Button>
