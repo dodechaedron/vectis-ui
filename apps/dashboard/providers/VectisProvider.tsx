@@ -44,7 +44,7 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
   const { address, username, disconnect: logout, connect, isWalletConnected, chainWallet, walletRepo, wallet } = useChain(chain.chain_name);
   const { isReady: isRouterReady, query, pathname, push: goToPage } = useRouter();
 
-  const disconnect = useCallback(() => [logout(), goToPage('/')], []);
+  const disconnect = useCallback(() => [logout(), goToPage('/'), setWalletName(undefined)], []);
 
   const endpoints = useMemo(() => getEndpoints(chain.chain_name), [chain]);
   const defaultFee = useMemo(() => getDefaultFee(chain), [chain]);
