@@ -24,7 +24,7 @@ export const generalMenu = [
 export const protectedRoutes = ['/dashboard', '/transactions', '/plugins', '/settings'];
 
 export const toolsMenu = [
-  { text: 'Guardian Actions', href: '/guardians', Icon: RiSecurePaymentFill },
+  { text: 'Guardian Explorer', href: '/guardians', Icon: RiSecurePaymentFill },
   /* { text: 'Governance', href: '#', Icon: FiExternalLink }, */
   { text: 'Help & Support', href: 'https://discord.gg/xp3vFSAMgS', Icon: IoMdHelpCircle }
 ];

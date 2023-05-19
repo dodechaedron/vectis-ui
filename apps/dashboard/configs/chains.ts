@@ -286,55 +286,108 @@ const injectivetestnet: Chain = {
 };
 
 const archwaytestnet: Chain = {
-  $schema: '../chain.schema.json',
+  $schema: 'https://raw.githubusercontent.com/cosmos/chain-registry/master/chain.schema.json',
   chain_name: 'archwaytestnet',
-  chain_id: 'constantine-2',
-  pretty_name: 'Archway testnet',
   status: 'live',
   network_type: 'testnet',
-  website: 'https://archway.io',
-  bech32_prefix: 'archway',
+  assets: archway_testnet_assets,
+  website: 'https://archway.io/',
+  pretty_name: 'Archway Testnet',
+  chain_id: 'constantine-3',
+  bech32_prefix: 'const',
   daemon_name: 'archwayd',
   node_home: '$HOME/.archway',
   key_algos: ['secp256k1'],
   slip44: 118,
-  assets: archway_testnet_assets,
   fees: {
     fee_tokens: [
       {
-        denom: 'uconst',
-        low_gas_price: 0,
-        average_gas_price: 0.025,
-        high_gas_price: 0.05
+        denom: 'aconst'
+      }
+    ]
+  },
+  staking: {
+    staking_tokens: [
+      {
+        denom: 'aconst'
       }
     ]
   },
   codebase: {
-    git_repo: 'https://github.com/archway-network/archway'
+    git_repo: 'https://github.com/archway-network/archway',
+    recommended_version: 'v0.5.1',
+    compatible_versions: ['v0.5.0', 'v0.5.1'],
+    binaries: {
+      'linux/amd64': 'https://github.com/archway-network/archway/releases/download/v0.5.1/archwayd_linux_amd64',
+      'linux/arm64': 'https://github.com/archway-network/archway/releases/download/v0.5.1/archwayd_linux_arm64'
+    },
+    cosmos_sdk_version: 'v0.45.14',
+    cosmwasm_version: 'v0.29.2-archway',
+    cosmwasm_enabled: true,
+    ibc_go_version: 'v3.3.0',
+    genesis: {
+      genesis_url: 'https://github.com/archway-network/networks/raw/main/constantine-3/genesis.json'
+    },
+    versions: [
+      {
+        name: 'v0.5.1',
+        tag: 'v0.5.1',
+        height: 1
+      }
+    ]
   },
-  logo_URIs: {
-    png: 'https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/archwaytestnet/images/ArchwayBrandmark.png',
-    svg: 'https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/archwaytestnet/images/ArchwayBrandmark.svg'
+  peers: {
+    seeds: [
+      {
+        id: 'e8d60ff778f3c27f54382ff22c7ac071f2a81027',
+        address: '35.223.36.227:26656',
+        provider: 'Archway Foundation'
+      }
+    ],
+    persistent_peers: [
+      {
+        id: '7e31ab391f5b5756a75dc18b5275b609c81a34ee',
+        address: '34.122.164.239:26656',
+        provider: 'Archway Foundation'
+      },
+      {
+        id: '6b137e1df61936010ea30a354d8abd7010598e29',
+        address: '35.239.130.141:26656',
+        provider: 'Archway Foundation'
+      },
+      {
+        id: '7786f708c1851dd433a03f71ec3ff74d65895de7',
+        address: '34.31.130.235:26656',
+        provider: 'Archway Foundation'
+      }
+    ]
   },
   apis: {
     rpc: [
       {
-        address: 'https://rpc.constantine-2.archway.tech',
-        provider: 'Quickapi'
+        address: 'https://rpc.constantine.archway.tech',
+        provider: 'Archway Foundation'
       }
     ],
     rest: [
       {
-        address: 'https://api.constantine-2.archway.tech',
-        provider: 'Quickapi'
+        address: 'https://api.constantine.archway.tech',
+        provider: 'Archway Foundation'
+      }
+    ],
+    grpc: [
+      {
+        address: 'grpc.constantine.archway.tech:443',
+        provider: 'Archway Foundation'
       }
     ]
   },
   explorers: [
     {
-      kind: 'archwayscan',
-      url: 'https://explorer.constantine-2.archway.tech',
-      tx_page: 'https://explorer.constantine-2.archway.tech/transactions/${txHash}'
+      kind: 'Nodes Guru',
+      url: 'https://testnet.archway.explorers.guru/',
+      tx_page: 'https://testnet.archway.explorers.guru/transaction/${txHash}',
+      account_page: 'https://testnet.archway.explorers.guru/account/${accountAddress}'
     }
   ]
 };
