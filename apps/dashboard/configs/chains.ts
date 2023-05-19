@@ -294,7 +294,7 @@ const archwaytestnet: Chain = {
   website: 'https://archway.io/',
   pretty_name: 'Archway Testnet',
   chain_id: 'constantine-3',
-  bech32_prefix: 'const',
+  bech32_prefix: 'archway',
   daemon_name: 'archwayd',
   node_home: '$HOME/.archway',
   key_algos: ['secp256k1'],

@@ -78,7 +78,7 @@ export const archway_testnet_assets: AssetList = {
         },
         {
           denom: 'const',
-          exponent: 6
+          exponent: 18
         }
       ],
       base: 'aconst',
