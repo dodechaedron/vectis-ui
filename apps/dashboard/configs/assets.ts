@@ -73,7 +73,7 @@ export const archway_testnet_assets: AssetList = {
       description: 'The native token of Archway testnetwork',
       denom_units: [
         {
-          denom: 'uconst',
+          denom: 'aconst',
           exponent: 0
         },
         {
@@ -81,7 +81,7 @@ export const archway_testnet_assets: AssetList = {
           exponent: 6
         }
       ],
-      base: 'uconst',
+      base: 'aconst',
       name: 'Archway',
       display: 'const',
       symbol: 'CONST'

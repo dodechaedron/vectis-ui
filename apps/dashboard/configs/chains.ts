@@ -302,7 +302,10 @@ const archwaytestnet: Chain = {
   fees: {
     fee_tokens: [
       {
-        denom: 'aconst'
+        denom: 'aconst',
+        low_gas_price: 0,
+        average_gas_price: 0.025,
+        high_gas_price: 0.05
       }
     ]
   },
