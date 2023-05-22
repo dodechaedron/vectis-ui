@@ -12,9 +12,8 @@ Please see our [wiki] for details.
 
 | App                   | Summary                                                          |
 | --------------------- | ---------------------------------------------------------------- |
-| [`dashboard`](./apps/dashboard) | Vectis Dashboard at [https://dashboard.vectis.space](https://dashboard.vectis.space) |
+| [`dashboard`](./apps/dashboard) | Vectis Dashboard at [https://testnet-app.vectis.space](https://testnet-app.vectis.space) |
 | [`website`](./apps/website) | Vectis Landing at [https://vectis.space](https://vectis.space) |
-| [`dao`](./apps/dao) | VectisDao Page at [https://dao.vectis.space](https://dao.vectis.space) |
 
 #### `/packages`
 

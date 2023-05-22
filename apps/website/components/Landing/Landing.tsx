@@ -35,7 +35,7 @@ const Landing: React.FC = () => {
         <div className="flex items-center justify-between">
           <VectisLogo className="h-[24px] w-[100px]" fill="#566fa1" />
           <Link
-            href="https://testnet.app.vectis.space/"
+            href="https://testnet-app.vectis.space/"
             className={`flex items-center justify-center gap-2 rounded-md border border-transparent bg-kashmir-blue-500 px-4 py-2 font-medium text-white transition-all duration-150 ease-in hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-25`}
           >
             Launch App
