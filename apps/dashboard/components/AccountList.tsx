@@ -31,7 +31,7 @@ const AccountList: React.FC<Props> = ({ showCreateAccount }) => {
       ))}
       {showCreateAccount && !isLoading ? (
         <Link
-          href="/accounts/create"
+          href="/create"
           passHref={true}
           className="hover:bg-mirage-100/30 border-black-300 mx-auto flex h-[12rem] w-full max-w-[24rem] flex-col items-center justify-center rounded-md border-2 border-dashed py-2 px-3 text-gray-400 transition-all hover:text-gray-700"
           data-testid="create-wallet"

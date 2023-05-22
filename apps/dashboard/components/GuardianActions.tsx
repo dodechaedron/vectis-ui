@@ -30,8 +30,8 @@ const GuardianActions: React.FC<Props> = ({ accountInfo }) => {
     mutationFn: async () => {
       if (!accountInfo) return;
       const promise = accountInfo?.multisigAddress
-        ? vectis.proxyProposeRotateOperation(accountInfo.address, accountInfo.multisigAddress, accountInfo.controllerAddr)
-        : vectis.updateControllerAddr(accountInfo.address, accountInfo.controllerAddr);
+        ? vectis.proxyProposeRotateOperation(accountInfo.address, accountInfo.multisigAddress, controllerAddr)
+        : vectis.updateControllerAddr(accountInfo.address, controllerAddr);
       return await toast.promise(promise);
     },
     onSuccess: async () => {
