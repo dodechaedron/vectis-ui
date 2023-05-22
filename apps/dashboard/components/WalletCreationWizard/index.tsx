@@ -14,11 +14,15 @@ import { convertDenomToMicroDenom } from '~/utils/conversion';
 import StepAccountDetails from './StepAccountDetails';
 import StepGuardianSelection from './StepGuardianSelection';
 import StepPreview from './StepPreview';
+import StepSuccess from './StepSuccess';
+
+import { VectisAccount } from '~/interfaces';
 
 const steps = [
   { id: 1, name: 'Account Details', Component: StepAccountDetails },
   { id: 2, name: 'Choose Guardians', Component: StepGuardianSelection },
-  { id: 3, name: 'Preview', Component: StepPreview }
+  { id: 3, name: 'Preview', Component: StepPreview },
+  { id: 4, name: 'Success', Component: StepSuccess }
 ];
 
 export type WalletCreationForm = {
@@ -52,9 +56,10 @@ const resolver = (bech32Prefix: string) =>
 
 const WalletCreationWizard: React.FC = () => {
   const [step, setStep] = useState(1);
+  const [smartAccount, setSmartAccount] = useState<VectisAccount>();
 
   const { toast } = useToast();
-  const { vectis, defaultFee, chain } = useVectis();
+  const { vectis, defaultFee, chain, userAddr } = useVectis();
 
   const queryClient = useQueryClient();
   const { mutateAsync: onSubmit } = useMutation({
@@ -62,15 +67,20 @@ const WalletCreationWizard: React.FC = () => {
       const guardians = inputsValue.guardians.map((g) => g.address).filter(Boolean);
       const relayers = [];
       const initialFunds = convertDenomToMicroDenom(inputsValue.initialFunds, defaultFee.exponent);
-      const promise = vectis.createProxyWallet(
-        inputsValue.label,
-        guardians,
-        relayers,
-        inputsValue.multisig,
-        Number(initialFunds),
-        inputsValue.threshold
-      );
-      return await toast.promise(promise);
+      const promise = async () => {
+        await vectis.createProxyWallet(
+          inputsValue.label,
+          guardians,
+          relayers,
+          inputsValue.multisig,
+          Number(initialFunds),
+          inputsValue.threshold
+        );
+        const accounts = await vectis.getAccounts([userAddr]);
+        setSmartAccount(accounts[accounts.length - 1]);
+        goNext();
+      };
+      return await toast.promise(promise());
     },
     onSuccess: async () => await queryClient.invalidateQueries({ queryKey: ['vectis_accounts'], type: 'all' })
   });
@@ -83,7 +93,7 @@ const WalletCreationWizard: React.FC = () => {
   const { handleSubmit } = methods;
 
   const { Component } = useMemo(
-    () => steps.find((s) => s.id === step) as { Component: React.FC<{ goBack: () => void; goNext: () => void }> },
+    () => steps.find((s) => s.id === step) as { Component: React.FC<{ goBack: () => void; goNext: () => void; smartAccount?: VectisAccount }> },
     [step]
   );
 
@@ -93,7 +103,7 @@ const WalletCreationWizard: React.FC = () => {
   return (
     <form className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8" onSubmit={handleSubmit((v) => onSubmit(v))}>
       <ProgressWizard steps={steps} currentStep={step - 1} changeStep={setStep} />
-      <FormProvider {...methods}>{Component && <Component goBack={goBack} goNext={goNext} />}</FormProvider>
+      <FormProvider {...methods}>{Component && <Component goBack={goBack} goNext={goNext} smartAccount={smartAccount} />}</FormProvider>
     </form>
   );
 };
