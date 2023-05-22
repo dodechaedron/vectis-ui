@@ -18,7 +18,7 @@ export const generalMenu = [
   /*  { text: "Address Book", href: "/agenda", Icon: FaRegAddressBook }, */
   { text: 'Transactions', href: '/transactions', Icon: BiTransfer },
   { text: 'Plugins', href: '/plugins', Icon: PuzzlePieceIcon },
-  { text: 'Analytics', href: '/analytics', Icon: IoAnalytics }
+  { text: 'Analytics', href: '/', Icon: IoAnalytics }
 ];
 
 export const protectedRoutes = ['/dashboard', '/transactions', '/plugins', '/settings'];

@@ -40,19 +40,22 @@ const CardOptions: React.FC = () => {
 
   return (
     <div className="grid w-full grid-cols-2 gap-2 rounded-md lg:gap-4 2xl:grid-cols-4 ">
-      {buttons.map(({ text, icon: Icon, onClick }) => (
-        <div className="flex w-full items-center justify-center" key={`actions-buttons-${text}`}>
-          <div
-            className="flex w-full cursor-pointer flex-col items-center justify-center rounded-xl border bg-white p-2 hover:shadow-lg"
+      {buttons.map(({ text, icon: Icon, onClick }) => {
+        const isDisabled = text === 'Stake';
+        return (
+          <button
+            disabled={isDisabled}
+            className="group flex w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border bg-white p-2 disabled:cursor-not-allowed disabled:opacity-70 hover:shadow-md disabled:hover:shadow-none"
             onClick={onClick}
+            key={`actions-buttons-${text}`}
           >
-            <div className="rounded-full bg-kashmir-blue-100/20 p-4 text-kashmir-blue-600">
+            <span className="rounded-full bg-kashmir-blue-100/20 p-4 text-kashmir-blue-600 group-disabled:bg-gray-100 group-disabled:text-gray-900">
               <Icon className="h-6 w-6" />
-            </div>
-            <p className="text-xs">{text}</p>
-          </div>
-        </div>
-      ))}
+            </span>
+            <span className="text-xs">{text}</span>
+          </button>
+        );
+      })}
     </div>
   );
 };
