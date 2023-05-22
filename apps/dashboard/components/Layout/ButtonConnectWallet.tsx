@@ -8,10 +8,11 @@ import { HiOutlineWallet } from 'react-icons/hi2';
 import { TbPlugConnected } from 'react-icons/tb';
 
 const ButtonConnectWallet: React.FC = () => {
-  const { username, disconnect, connect } = useVectis();
+  const { username: user, disconnect, connect, isWalletConnected } = useVectis();
+  const username = user || 'Account';
   return (
     <>
-      {username ? (
+      {isWalletConnected ? (
         <button className="group relative flex items-center justify-center text-sm " onClick={disconnect}>
           <div className="relative z-20 min-w-[5.5rem] p-2 pl-1 group-hover:text-white">
             <span className="absolute inset-0 left-0 z-20 m-auto block truncate p-2 pr-0 group-hover:scale-0">{username}</span>

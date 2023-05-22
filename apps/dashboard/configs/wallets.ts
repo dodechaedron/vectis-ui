@@ -1,5 +1,6 @@
-import { wallets as cosmostationWallet } from '@cosmos-kit/cosmostation-extension';
-import { wallets as keplrWallet } from '@cosmos-kit/keplr-extension';
-import { wallets as vectisWallet } from '@cosmos-kit/vectis-extension';
+import { MainWalletBase } from '@cosmos-kit/core';
+import { wallets as cosmostationWallets } from '@cosmos-kit/cosmostation';
+import { wallets as keplrWallets } from '@cosmos-kit/keplr';
+import { wallets as vectisWallets } from '@cosmos-kit/vectis';
 
-export const desktopWallets = [...vectisWallet, ...keplrWallet, ...cosmostationWallet];
+export const wallets: MainWalletBase[] = [...vectisWallets, keplrWallets[0], cosmostationWallets[0]];

@@ -1,19 +1,17 @@
 import React from 'react';
 
-import { useChain } from '@cosmos-kit/react-lite';
-
 import { chains } from '~/configs/chains';
 
 import { HiOutlineWallet } from 'react-icons/hi2';
 
+import { ChainWalletBase } from '@cosmos-kit/core/types/bases/chain-wallet';
+
 interface Props {
-  chainName: string;
+  wallet?: ChainWalletBase;
 }
 
-const SuccessConnect: React.FC<Props> = ({ chainName }) => {
-  const { username, isWalletConnected } = useChain(chainName);
-
-  if (!isWalletConnected) return null;
+const SuccessConnect: React.FC<Props> = ({ wallet }) => {
+  if (!wallet?.isWalletConnected) return null;
 
   return (
     <>
@@ -24,7 +22,7 @@ const SuccessConnect: React.FC<Props> = ({ chainName }) => {
             <HiOutlineWallet className="h-6 w-6 stroke-kashmir-blue-500" />
           </div>
           <div className="flex flex-col gap-1">
-            <p className="capi font-bold capitalize">{username}</p>
+            <p className="capi font-bold capitalize">{wallet.username || 'Account'}</p>
             <p className="text-xs">{chains.map((c) => c.pretty_name).join(' | ')}</p>
           </div>
         </div>

@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import assets from '~/configs/assets';
 import { chains } from '~/configs/chains';
-import { desktopWallets } from '~/configs/wallets';
+import { wallets } from '~/configs/wallets';
 import { ModalProvider, TranslationsProvider, VectisProvider } from '~/providers';
 
 import ModalWallet from '~/components/Modals/WalletModal';
@@ -17,7 +17,7 @@ const Providers: React.FC<PropsWithChildren> = ({ children }) => {
         assetLists={assets}
         chains={chains}
         walletModal={(props) => <ModalWallet {...props} />}
-        wallets={desktopWallets}
+        wallets={wallets}
         sessionOptions={{
           duration: 1000 * 60 * 60 * 24 * 7
         }}

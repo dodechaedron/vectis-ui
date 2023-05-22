@@ -1,4 +1,4 @@
-import React, { Dispatch, ReactElement, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import AvailableWallet from './ConnectWalletModal/AvailableWallet';
@@ -8,17 +8,19 @@ import { modalDropIn } from './Modal';
 
 import { IoClose } from 'react-icons/io5';
 
-interface WalletModalProps {
-  isOpen: boolean;
-  setOpen: Dispatch<boolean>;
-  walletRepo?: {
-    wallets: any[];
-    connect: (walletName: string, sync?: boolean) => Promise<void>;
-    chainRecord: { name: string };
-  };
-}
+import { ChainWalletBase } from '@cosmos-kit/core/types/bases/chain-wallet';
+import { WalletModalProps } from '@cosmos-kit/core/types/types/view';
 
 const ModalWallet: React.FC<WalletModalProps> = ({ walletRepo, setOpen, isOpen }) => {
+  const [wallet, setWallet] = useState<ChainWalletBase>();
+
+  useEffect(() => {
+    if (!isOpen && wallet?.isWalletConnecting) {
+      wallet.disconnect();
+      setWallet(undefined);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return <AnimatePresence initial={false} mode="wait" onExitComplete={() => null} />;
 
   return (
@@ -44,9 +46,9 @@ const ModalWallet: React.FC<WalletModalProps> = ({ walletRepo, setOpen, isOpen }
           <div className="flex flex-col gap-8">
             {walletRepo ? (
               <>
-                <AvailableWallet walletRepo={walletRepo} />
-                <ConectingWallet chainName={walletRepo.chainRecord.name} />
-                <SuccessConnect chainName={walletRepo.chainRecord.name} />
+                {!wallet && <AvailableWallet walletRepo={walletRepo} setWallet={(w) => setWallet(w)} />}
+                <ConectingWallet wallet={wallet} />
+                <SuccessConnect wallet={wallet} />
               </>
             ) : null}
           </div>

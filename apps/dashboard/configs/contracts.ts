@@ -11,6 +11,10 @@ const neutrontestnet_plugin_registry = process.env.NEXT_PUBLIC_NEUTRON_PLUGIN_RE
 const archwaytestnet_plugin_registry = process.env.NEXT_PUBLIC_ARCHWAY_PLUGIN_REGISTRY_ADDRESS;
 
 const addresses = {
+  juno: {
+    factoryAddress: junotestnet_factory,
+    pluginRegistryAddress: junotestnet_plugin_registry
+  },
   junotestnet: {
     factoryAddress: junotestnet_factory,
     pluginRegistryAddress: junotestnet_plugin_registry

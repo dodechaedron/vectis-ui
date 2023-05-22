@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
 
-import { useChain } from '@cosmos-kit/react-lite';
-
-import { desktopWallets } from '~/configs/wallets';
+import useMediaQuery from '~/hooks/useMediaQuery';
 
 import VectisIcon from '~/components/Icons/VectisIcon';
 
 import { IconType } from 'react-icons';
 import { BiRightArrow } from 'react-icons/bi';
-import { FaChrome, FaEdge, FaFirefoxBrowser, FaLaptop, FaOpera, FaSafari } from 'react-icons/fa';
+import { FaAndroid, FaApple, FaChrome, FaEdge, FaFirefoxBrowser, FaLaptop, FaOpera, FaSafari } from 'react-icons/fa';
+
+import { ChainWalletBase } from '@cosmos-kit/core/types/bases/chain-wallet';
+import { WalletRepo } from '@cosmos-kit/core/types/repository';
 
 const browserIcon = (browser: string | undefined): IconType => {
   switch (browser?.toString().toLowerCase()) {
@@ -23,43 +24,41 @@ const browserIcon = (browser: string | undefined): IconType => {
       return FaSafari;
     case 'opera':
       return FaOpera;
+    case 'android':
+      return FaAndroid;
+    case 'ios':
+      return FaApple;
     default:
       return FaLaptop;
   }
 };
 
 interface Props {
-  walletRepo: {
-    connect: (walletName: string, sync?: boolean) => Promise<void>;
-    chainRecord: { name: string };
-    wallets: {
-      walletInfo: {
-        logo: string;
-        prettyName: string;
-        name: string;
-      };
-      client: unknown;
-    }[];
-  };
+  walletRepo: WalletRepo;
+  setWallet: (wallet: ChainWalletBase) => void;
 }
 
-const AvailableWallet: React.FC<Props> = ({ walletRepo }) => {
-  const { isWalletDisconnected } = useChain(walletRepo.chainRecord.name);
+const AvailableWallet: React.FC<Props> = ({ walletRepo, setWallet }) => {
+  const isMd = useMediaQuery('md');
 
-  if (!isWalletDisconnected) return null;
+  const wallets = useMemo(() => {
+    if (!walletRepo) return [];
+    return walletRepo.wallets.filter(({ walletInfo }) => walletInfo.name.includes('mobile') !== isMd);
+  }, [walletRepo, isMd]);
 
   return (
     <>
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-bold">Available wallets:</h2>
         <div className="flex flex-col gap-2">
-          {walletRepo.wallets.map(({ walletInfo, client }, i) => {
-            if (!client) return null;
+          {wallets.map((wallet, i) => {
+            const { walletInfo, connect, client } = wallet;
+
             return (
               <div
                 key={`${walletInfo.prettyName}-wallet-${i}`}
                 className="group flex cursor-pointer items-center justify-between gap-4 rounded-lg bg-gray-200 p-2 hover:bg-kashmir-blue-200"
-                onClick={() => walletRepo.connect(walletInfo.name)}
+                onClick={() => [setWallet(wallet), connect(true)]}
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className=" flex h-12 w-12 items-center justify-center rounded-full bg-white p-2">
@@ -71,7 +70,7 @@ const AvailableWallet: React.FC<Props> = ({ walletRepo }) => {
                   </div>
                   <div className="flex flex-col gap-1">
                     <p className="font-bold">{walletInfo.prettyName}</p>
-                    <p className="text-xs text-gray-500">Browser extension</p>
+                    <p className="text-xs text-gray-500">{walletInfo.name.includes('mobile') ? 'Mobile Application' : 'Browser Extension'}</p>
                   </div>
                 </div>
                 <div className="pr-6">
@@ -85,7 +84,7 @@ const AvailableWallet: React.FC<Props> = ({ walletRepo }) => {
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-bold">Download options:</h2>
         <div className="flex flex-col gap-2">
-          {desktopWallets.map(({ walletInfo }, i) => {
+          {wallets.map(({ walletInfo }, i) => {
             return (
               <div
                 key={`${walletInfo.prettyName}-wallet-${i}`}
@@ -101,17 +100,17 @@ const AvailableWallet: React.FC<Props> = ({ walletRepo }) => {
                   </div>
                   <div className="flex flex-col gap-1">
                     <p className="font-bold">{walletInfo.prettyName}</p>
-                    <p className="text-xs text-gray-500">Browser extension</p>
+                    <p className="text-xs text-gray-500">{walletInfo.name.includes('mobile') ? 'Mobile Application' : 'Browser Extension'}</p>
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  {walletInfo?.downloads?.map(({ link, browser }, i) => {
-                    const BrowserIcon = browserIcon(browser);
+                  {walletInfo?.downloads?.map((downloads, i) => {
+                    const BrowserIcon = browserIcon(isMd ? downloads.browser : downloads.os);
                     return (
                       <Link
-                        key={`extension-${browser}-${walletInfo.name}`}
+                        key={`wallet-${walletInfo.name}`}
                         className="rounded-md bg-white p-1 hover:bg-gray-100"
-                        href={link}
+                        href={downloads.link}
                         target="_blank"
                       >
                         {<BrowserIcon className="h-5 w-5 fill-kashmir-blue-600" />}
