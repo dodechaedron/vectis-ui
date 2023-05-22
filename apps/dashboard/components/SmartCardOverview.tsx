@@ -12,18 +12,13 @@ import { GoShield } from 'react-icons/go';
 
 const SmartCardOverview: React.FC = () => {
   const { account } = useVectis();
-  if (!account) return null;
+
   return (
-    <div
-      className="flex-2 relative h-[20rem] w-full rounded-lg bg-white bg-cover bg-center bg-no-repeat "
-      style={{ backgroundImage: `url('/visa-bg-3.jpg')` }}
-    >
+    <div className="relative h-[20rem] w-full rounded-lg bg-white bg-cover bg-center bg-no-repeat ">
       <div
         className={clsx(
           ' flex h-full min-h-[18rem] w-full flex-col justify-between rounded-lg p-4 text-white lg:p-8',
-          account.frozen
-            ? 'bg-gradient-to-tr from-[#2F80ED] to-[#B2FFDA]/50'
-            : 'bg-gradient-to-br from-white/30 via-kashmir-blue-500/50 to-transparent'
+          account.frozen ? 'bg-gradient-to-tr from-[#2F80ED] to-[#B2FFDA]/50' : 'bg-gradient-to-tl from-kashmir-blue-400 to-[#26365f] '
         )}
       >
         {account.frozen && <Snowfall snowflakeCount={25} />}

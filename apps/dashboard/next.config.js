@@ -1,9 +1,13 @@
-/** @type {import('next').NextConfig} */
 const { withSentryConfig } = require("@sentry/nextjs");
 
-const moduleExports = {
+const withBundleAnalyzer = require("@next/bundle-analyzer")
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: false,
-  transpilePackages: ['@vectis/components']
+  transpilePackages: ['@vectis/components', '@vectis/types'],
 };
 
-module.exports = moduleExports;
+module.exports = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})(nextConfig);

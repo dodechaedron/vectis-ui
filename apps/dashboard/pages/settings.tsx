@@ -1,7 +1,4 @@
-import { Suspense, useEffect, useState } from 'react';
 import { useMemo } from 'react';
-import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
 import Head from 'next/head';
 
 import { useVectis } from '~/providers';
@@ -13,12 +10,8 @@ import SettingsGuardians from '~/components/SettingsGuardians';
 
 import type { NextPage } from 'next';
 
-const ManageWallet: NextPage = () => {
-  const { userAddr, signingClient, chainName } = useVectis();
-  const { push: goToPage, query } = useRouter();
-  const { data: account } = useQuery(['settings_vectis_account', query.address], () =>
-    signingClient.getAccountInfo(query.address as string, chainName)
-  );
+const SettingsPage: NextPage = () => {
+  const { account } = useVectis();
 
   const tabs = useMemo(
     () => [
@@ -33,12 +26,6 @@ const ManageWallet: NextPage = () => {
     [account]
   );
 
-  useEffect(() => {
-    if (account) {
-      account.controllerAddr != userAddr && goToPage('/accounts');
-    }
-  }, [account]);
-
   return (
     <>
       <Head>
@@ -50,4 +37,4 @@ const ManageWallet: NextPage = () => {
   );
 };
 
-export default ManageWallet;
+export default SettingsPage;

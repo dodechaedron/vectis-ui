@@ -1,114 +1,141 @@
-import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
-import { useLocalStorage } from 'react-use';
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
 
+import { OfflineSigner } from '@cosmjs/proto-signing';
 import { useChain } from '@cosmos-kit/react-lite';
+import { useQuery } from '@tanstack/react-query';
 
-import { VectisQueryService, VectisService } from '~/services/vectis';
-import * as factories from '~/utils/factories';
-import * as pluginRegistries from '~/utils/plugin-registry';
+import { getDefaultFee } from '~/configs/assets';
+import { Chain, chainIds, chains } from '~/configs/chains';
+import { getContractAddresses } from '~/configs/contracts';
+import { getEndpoints } from '~/configs/endpoints';
+import { VectisService } from '~/services/vectis';
+import { protectedRoutes } from '~/utils/links';
 
-import { CoinInfo, VectisAccount } from '~/interfaces';
-import { Chain } from '@chain-registry/types';
+import Spinner from '~/components/Spinner';
+
+import { CoinInfo, Endpoints, VectisAccount } from '~/interfaces';
 
 export interface VectisState {
   userAddr: string;
+  username: string;
+  account: VectisAccount;
+  userAccounts: string[];
+  endpoints: Endpoints;
   defaultFee: CoinInfo;
-  chainInfo: Chain;
+  chains: Chain[];
+  chain: Chain;
   chainName: string;
   setChain: (chainName: string) => void;
-  supportedChains: string[];
-  queryClient: VectisQueryService;
-  signingClient: VectisService;
-  account: VectisAccount;
-  changeAccount: (wallet: VectisAccount) => void;
+  isWalletConnected: boolean;
   connect: () => void;
   disconnect: () => void;
+  vectis: VectisService;
 }
-
-const supportedChains = ['junotestnet', 'injectivetestnet'];
 
 const VectisContext = createContext<VectisState | null>(null);
 
 export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
-  const [signingClient, setSigningClient] = useState<VectisService | null>(null);
-  const [queryClient, setQueryClient] = useState<VectisQueryService | null>(null);
-  const [account, changeAccount] = useLocalStorage<VectisAccount>('vectis@v1:account');
+  const [vectis, setVectis] = useState<VectisService | null>(null);
+  const [userAccounts, setUserAccounts] = useState<string[]>([]);
+  const [chain, setChain] = useState<Chain>(chains[0]);
+  const [walletName, setWalletName] = useState<string>();
 
-  const [chainName, setChain] = useLocalStorage<string>('vectis@v1:selectedNetwork', 'junotestnet');
-  const {
-    address,
-    chain: chainInfo,
-    assets,
-    disconnect,
-    getOfflineSignerDirect,
-    walletRepo,
-    connect,
-    isWalletConnected
-  } = useChain(chainName as string);
-  const addresses = useMemo(
-    () => ({
-      factoryAddress: factories[`${chainInfo.chain_name}_factory`],
-      pluginRegistryAddress: pluginRegistries[`${chainInfo.chain_name}_plugin_registry`]
-    }),
-    [chainInfo]
+  const { address, username, disconnect: logout, connect, isWalletConnected, chainWallet, walletRepo, wallet } = useChain(chain.chain_name);
+  const { isReady: isRouterReady, query, pathname, push: goToPage } = useRouter();
+
+  const disconnect = useCallback(() => [logout(), goToPage('/'), setWalletName(undefined)], []);
+
+  const endpoints = useMemo(() => getEndpoints(chain.chain_name), [chain]);
+  const defaultFee = useMemo(() => getDefaultFee(chain), [chain]);
+
+  const { isFetched: isReady, data: account } = useQuery(
+    ['vectis_account', query.vectis, vectis],
+    () => vectis?.getAccountInfo(query.vectis as string, chain.chain_name),
+    {
+      enabled: Boolean(query.vectis) && (query.vectis as string).startsWith(chain.bech32_prefix)
+    }
   );
 
-  const defaultFee = useMemo(() => {
-    const { average_gas_price, denom } = chainInfo.fees!.fee_tokens[0];
-    const assetInfo = assets?.assets.find((asset) => asset.base === denom);
-    if (!assetInfo) throw new Error('Fee asset info not found');
-    const denomUnit = assetInfo.denom_units.find((u) => u.denom === assetInfo.display);
-    if (!denomUnit) throw new Error('Fee denom unit not found');
-
-    return {
-      exponent: denomUnit.exponent as number,
-      averageGasPrice: average_gas_price as number,
-      udenom: assetInfo.base,
-      symbol: assetInfo.symbol,
-      img: assetInfo.logo_URIs?.svg || assetInfo.logo_URIs?.png || assetInfo.logo_URIs?.jpeg,
-      coingeckoId: assetInfo.coingecko_id
-    };
-  }, [chainInfo, assets]);
-
-  const endpoints = useMemo(() => {
-    const domain = chainInfo.chain_name.includes('testnet') ? 'testcosmos.directory' : 'cosmos.directory';
-    return {
-      rpcUrl: `https://rpc.${domain}/${chainInfo.chain_name}`,
-      restUrl: `https://rest.${domain}/${chainInfo.chain_name}`,
-      grpcUrl: chainInfo.apis!.grpc![0].address
-    };
-  }, [chainInfo]);
+  useEffect(() => {
+    if (!isWalletConnected && walletName) walletRepo.connect(walletName);
+  }, [isWalletConnected]);
 
   useEffect(() => {
-    VectisQueryService.connect(endpoints, addresses).then(setQueryClient);
-  }, [endpoints, addresses]);
+    if (wallet) setWalletName(wallet.name);
+  }, [wallet]);
 
   useEffect(() => {
-    (async () => {
-      if (!isWalletConnected) return;
-      if (!address || !address.includes(chainInfo.bech32_prefix)) return;
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const signer = await getOfflineSignerDirect();
-      VectisService.connectWithSigner(signer, { endpoints, defaultFee, addresses }).then(setSigningClient);
-    })();
-  }, [chainInfo, address, isWalletConnected]);
+    if (!isWalletConnected || !isRouterReady) return;
+    if (isRouterReady && !isWalletConnected && protectedRoutes.includes(pathname)) {
+      connect();
+    }
+    setTimeout(async () => {
+      let chainInfo = chain;
+      if (query.vectis) {
+        const [bech32Prefix] = (query.vectis as string).split('1');
+        const chain = chains.find((c) => c.bech32_prefix === bech32Prefix);
+        if (!chain) return;
+        chainInfo = chain;
+      }
+
+      const signer = await chainWallet?.client.getOfflineSigner?.(chainInfo.chain_id, 'direct');
+
+      const [{ address }] = await signer!.getAccounts();
+      if (vectis?.chainName === chainInfo.chain_name && vectis.userAddr === address) return;
+
+      const service = await VectisService.connectWithSigner(signer as OfflineSigner, {
+        addresses: getContractAddresses(chainInfo.chain_name),
+        endpoints: getEndpoints(chainInfo.chain_name),
+        defaultFee: getDefaultFee(chainInfo),
+        chainName: chainInfo.chain_name
+      });
+
+      setVectis(service);
+      setChain(chainInfo);
+    }, 200);
+  }, [isWalletConnected, isRouterReady, query.vectis, chain]);
+
+  useEffect(() => {
+    if (!isWalletConnected) return;
+    setTimeout(async () => {
+      for (const chain of chains) {
+        await chainWallet?.client.addChain?.({ chain, name: chain.chain_name, assetList: chain.assets });
+      }
+      await chainWallet?.client.enable?.(chainIds);
+      const accounts: string[] = [];
+      for (const chainId of chainIds) {
+        const account = await chainWallet?.client.getAccount?.(chainId);
+        accounts.push(account!.address);
+      }
+      setUserAccounts(accounts);
+    }, 200);
+  }, [isWalletConnected, chainWallet]);
+
+  if (protectedRoutes.includes(pathname) && !isReady) return <Spinner wrapper size="md" />;
+  if (protectedRoutes.includes(pathname) && isReady && !userAccounts.includes(account?.controllerAddr as string)) {
+    console.log(account, userAccounts);
+    return <p>Not your account</p>;
+  }
 
   return (
     <VectisContext.Provider
       value={
         {
-          userAddr: address,
+          account: account,
+          userAddr: address as string,
+          username: username as string,
+          userAccounts,
+          endpoints,
           defaultFee,
-          chainInfo,
-          chainName,
-          setChain,
-          supportedChains,
-          queryClient,
-          signingClient,
-          account,
-          changeAccount,
+          chain,
+          chains,
+          chainName: chain.chain_name,
+          setChain: (chainName: string) => setChain(chains.find((c) => c.chain_name === chainName) as Chain),
           connect,
-          disconnect
+          disconnect,
+          isWalletConnected,
+          vectis: vectis as VectisService
         } as VectisState
       }
     >
@@ -119,8 +146,6 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
 
 export const useVectis = (): VectisState => {
   const context = useContext(VectisContext);
-  if (context === null) {
-    throw new Error('useVectis must be used within a CosmWasmProvider');
-  }
+  if (context === null) throw new Error('useVectis must be used within a CosmWasmProvider');
   return context;
 };

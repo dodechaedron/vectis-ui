@@ -1,16 +1,16 @@
-import React, { PropsWithChildren, useCallback, useState } from "react";
-import { useRouter } from "next/router";
+import React, { PropsWithChildren, useCallback, useState } from 'react';
+import { useRouter } from 'next/router';
 
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from '@sentry/nextjs';
 
-import { useTranslations } from "./TranslationProvider";
+import { useTranslations } from './TranslationProvider';
 
 interface ModalStatus {
-  showModal: (modalName: "send" | "charge") => void;
+  showModal: (modalName: 'send' | 'charge' | 'qr') => void;
   hideModal: () => void;
   showErrorModal: (err: unknown) => void;
   isModalVisible: boolean;
-  activeModal?: "send" | "charge";
+  activeModal?: 'send' | 'charge' | 'qr';
 }
 
 const ModalContext = React.createContext<ModalStatus | null>(null);
@@ -18,17 +18,17 @@ const ModalContext = React.createContext<ModalStatus | null>(null);
 export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { push: goToPage } = useRouter();
   const { language } = useTranslations();
-  const [activeModal, setSelectedModal] = useState<"send" | "charge">();
+  const [activeModal, setSelectedModal] = useState<'send' | 'charge' | 'qr'>();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const onLoad = useCallback(() => {
-    const closeButton = window.document.querySelector(".sentry-error-embed .close");
+    const closeButton = window.document.querySelector('.sentry-error-embed .close');
     if (!closeButton) return;
     const handlerOnClose = () => {
-      goToPage("/accounts");
-      closeButton.removeEventListener("click", handlerOnClose);
+      goToPage('/accounts');
+      closeButton.removeEventListener('click', handlerOnClose);
     };
-    closeButton.addEventListener("click", handlerOnClose);
+    closeButton.addEventListener('click', handlerOnClose);
   }, []);
 
   const showErrorModal = useCallback(
@@ -36,14 +36,14 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
       Sentry.captureException(err);
       Sentry.showReportDialog({
         onLoad,
-        lang: language,
+        lang: language
       });
     },
     [language]
   );
 
   const showModal = useCallback(
-    (modalName: "send" | "charge") => {
+    (modalName: 'send' | 'charge') => {
       setSelectedModal(modalName);
       setIsModalVisible(true);
     },
@@ -59,7 +59,7 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
 export const useModal = () => {
   const context = React.useContext(ModalContext);
-  if (!context) throw new Error("useModal must be used within a ModalProvider");
+  if (!context) throw new Error('useModal must be used within a ModalProvider');
 
   return context;
 };

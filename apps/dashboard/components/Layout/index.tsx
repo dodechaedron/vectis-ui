@@ -1,15 +1,17 @@
-import React, { PropsWithChildren, useEffect } from 'react';
+import React, { PropsWithChildren, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import Heading from 'components/Heading';
-import { useVectis } from 'providers';
+import { Toaster } from 'react-hot-toast';
 
 import { Anek_Latin } from '@next/font/google';
 
-import ConnectWallet from '../ConnectWallet';
-import Loading from '../Loading';
+import { protectedRoutes } from '~/utils/links';
+
+import Heading from '~/components/Heading';
+
 import GlobalModal from '../Modals/GlobalModal';
 
+import AccountSidebar from './AccountsSidebar';
 import Sidebar from './Sidebar';
 
 const font = Anek_Latin({
@@ -18,26 +20,30 @@ const font = Anek_Latin({
 });
 
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
-  const { account, userAddr, queryClient } = useVectis();
-  const { push: goToPage, pathname } = useRouter();
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [drawerAccountsOpen, setDrawerAccountsOpen] = React.useState(false);
 
-  useEffect(() => {
-    if (account?.controllerAddr !== userAddr && pathname === '/') goToPage('/accounts');
-  }, [pathname]);
-  const isLoading = queryClient ? false : true;
+  const { pathname } = useRouter();
 
-  if (isLoading) return <Loading />;
-  const Component = userAddr ? children : <ConnectWallet />;
+  const isProtected = useMemo(() => protectedRoutes.includes(pathname), [pathname]);
+  const sideBarToggle = useCallback(() => {
+    drawerAccountsOpen ? setDrawerAccountsOpen(false) : setIsSidebarOpen((prev) => !prev);
+  }, []);
 
   return (
-    <div className={clsx('flex h-full w-full flex-col bg-gray-100 text-gray-900 md:flex-row', font.className)}>
-      <Sidebar />
-
-      <main className="flex w-full flex-1 flex-col">
-        <Heading />
-        <div className="flex h-full flex-1 flex-col gap-4 p-4">{Component}</div>
+    <div className={clsx('bg-gray-100 text-gray-900', font.className)}>
+      <Heading isSidebarOpen={isSidebarOpen} sideBarToggle={sideBarToggle} isProtected={isProtected} />
+      <main className="max-w-screen flex flex-1">
+        {isProtected ? (
+          <>
+            <Sidebar visible={isSidebarOpen} setVisible={sideBarToggle} seeAccounts={() => setDrawerAccountsOpen(true)} />
+            <AccountSidebar isOpen={drawerAccountsOpen} close={() => setDrawerAccountsOpen(false)} />
+          </>
+        ) : null}
+        <div className="flex w-full flex-1 gap-4">{children}</div>
       </main>
       <GlobalModal />
+      <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };

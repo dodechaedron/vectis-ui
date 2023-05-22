@@ -1,5 +1,6 @@
 import React from 'react';
-import { useQuery } from 'react-query';
+
+import { useQuery } from '@tanstack/react-query';
 
 import { useVectis } from '~/providers';
 import { useToast } from '~/hooks';
@@ -7,21 +8,21 @@ import { useToast } from '~/hooks';
 import { Button } from './Buttons';
 import Spinner from './Spinner';
 
-import { Plugin } from '@vectis/types/PluginRegistry.types';
+import { Plugin } from '@vectis/types/contracts/PluginRegistry.types';
 
 interface Props {
   plugin: Plugin;
 }
 
 const PluginCard: React.FC<Props> = ({ plugin }) => {
-  const { account, signingClient } = useVectis();
+  const { account, vectis } = useVectis();
   const { toast } = useToast();
-  const { data, isLoading, refetch } = useQuery(['user_plugins', account], () => signingClient.getPlugins(account.address));
+  const { data, isLoading, refetch } = useQuery(['user_plugins', account], () => vectis.getPlugins(account.address));
 
   const instantiatePlugin = async () => {
     await toast.promise(
       (async () => {
-        await signingClient.instantiateIdentityPlugin(account.address);
+        await vectis.instantiateIdentityPlugin(account.address);
         await refetch();
       })()
     );

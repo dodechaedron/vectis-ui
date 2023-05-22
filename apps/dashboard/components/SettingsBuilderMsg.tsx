@@ -12,12 +12,11 @@ import { Input } from './Inputs';
 const SettingsBuilderMsg: React.FC = () => {
   const [code, setCode] = React.useState<string | undefined>('');
   const [contractAddress, setContractAddress] = React.useState<string>('');
-  const { signingClient, account } = useVectis();
+  const { vectis, account } = useVectis();
   const { toast, isLoading } = useToast();
   const editorRef = useRef<any>(null);
 
   const execute = async () => {
-    console.log(contractAddress);
     const msg = {
       wasm: {
         execute: {
@@ -27,7 +26,7 @@ const SettingsBuilderMsg: React.FC = () => {
         }
       }
     };
-    const promise = signingClient.proxyExecute(account.address, [msg]);
+    const promise = vectis.proxyExecute(account.address, [msg]);
     await toast.promise(promise);
   };
 
@@ -44,7 +43,7 @@ const SettingsBuilderMsg: React.FC = () => {
   return (
     <>
       <Input placeholder="Contract Address" value={contractAddress} onChange={(e) => setContractAddress(e.target.value)} />
-      <div className="flex flex-col h-[60vh] md:flex-1 w-full bg-white rounded-md shadow-sm  py-6 overflow-hidden">
+      <div className="flex h-[60vh] w-full flex-col overflow-hidden rounded-md bg-white py-6  shadow-sm md:flex-1">
         <Editor
           onMount={handlerOnMount}
           language="json"

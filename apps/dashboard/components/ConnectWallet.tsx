@@ -16,7 +16,7 @@ const ConnectWallet: React.FC = () => {
     setIsConnecting(false);
   };
   return (
-    <div className="flex h-full items-center justify-center">
+    <div className="flex h-full items-center justify-center p-4">
       <div className="mx-auto mt-[8rem] max-w-7xl lg:mt-0 lg:bg-transparent lg:px-8">
         <div className="lg:grid lg:grid-cols-12">
           <div className="relative z-10 lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:bg-transparent lg:py-16">

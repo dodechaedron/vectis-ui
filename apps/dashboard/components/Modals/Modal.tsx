@@ -1,65 +1,69 @@
-import React, { Fragment, PropsWithChildren } from "react";
+import React, { PropsWithChildren } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
-import { Dialog, Transition } from "@headlessui/react";
-
-import { XMarkIcon } from "@heroicons/react/24/outline";
-
+import { XMarkIcon } from '@heroicons/react/24/outline';
 interface Props {
   closeModal: () => void;
   isModalVisible: boolean;
   title?: string;
 }
 
-const Modal: React.FC<PropsWithChildren<Props>> = ({ children, isModalVisible, title, closeModal }) => {
-  return (
-    <Transition.Root show={isModalVisible} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-        </Transition.Child>
+export const modalDropIn = {
+  hidden: {
+    y: '-100vh',
+    opacity: 0
+  },
+  visible: {
+    y: '0',
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      type: 'spring',
+      damping: 25,
+      stiffness: 500
+    }
+  },
+  exit: {
+    y: '100vh',
+    opacity: 0
+  }
+};
 
-        <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              enterTo="opacity-100 translate-y-0 sm:scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+const Modal: React.FC<PropsWithChildren<Props>> = ({ children, isModalVisible, title, closeModal }) => {
+  if (!isModalVisible) return <AnimatePresence initial={false} mode="wait" onExitComplete={() => null} />;
+
+  return (
+    <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
+      <motion.div
+        onClick={closeModal}
+        className="fixed top-0 z-50 flex h-screen w-screen items-center justify-center p-4 backdrop-blur-lg"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          onClick={(e) => e.stopPropagation()}
+          className="flex min-w-[450px] max-w-5xl flex-col gap-8 rounded-lg bg-white p-4 shadow-sm md:p-8"
+          variants={modalDropIn}
+          initial={modalDropIn.hidden}
+          animate={modalDropIn.visible}
+          exit={modalDropIn.exit}
+        >
+          <div className="absolute top-0 left-0 flex w-full justify-between p-4">
+            <h3 className="text-xl font-bold leading-6">{title}</h3>
+            <button
+              type="button"
+              className="hidden rounded-md bg-white text-gray-400 focus:outline-none hover:text-gray-500 sm:block"
+              onClick={closeModal}
             >
-              <Dialog.Panel className="relative w-full transform rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-                {title && (
-                  <Dialog.Title as="h3" className="text-center text-lg font-medium leading-6 text-gray-700 sm:text-left">
-                    {title}
-                  </Dialog.Title>
-                )}
-                <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
-                  <button
-                    type="button"
-                    className="rounded-md bg-white text-gray-400 focus:outline-none hover:text-gray-500"
-                    onClick={closeModal}
-                  >
-                    <span className="sr-only">Close</span>
-                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
-                </div>
-                {children}
-              </Dialog.Panel>
-            </Transition.Child>
+              <span className="sr-only">Close</span>
+              <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+            </button>
           </div>
-        </div>
-      </Dialog>
-    </Transition.Root>
+          {children}
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

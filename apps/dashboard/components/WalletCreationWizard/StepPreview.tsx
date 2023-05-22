@@ -15,19 +15,12 @@ interface Props {
 const StepPreview: React.FC<Props> = ({ goBack, goNext }) => {
   const { defaultFee } = useVectis();
   const { getValues, formState } = useFormContext();
-  const { push: goToPage } = useRouter();
   const { isSubmitting, isSubmitSuccessful } = formState;
   const { guardians, initialFunds, label, multisig, threshold } = getValues();
 
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      goToPage('/accounts');
-    }
-  }, [isSubmitSuccessful]);
-
   return (
     <>
-      <div className="mt-5 overflow-hidden bg-white shadow sm:rounded-lg">
+      <div className="mt-5  min-h-[35rem] overflow-hidden bg-white shadow sm:rounded-lg">
         <div className="py-5 px-6">
           <h3 className="text-lg font-medium leading-6 text-gray-900">Account Information</h3>
           <p className="mt-1 max-w-2xl text-sm text-gray-500">Preview of your information for next account</p>
@@ -63,10 +56,10 @@ const StepPreview: React.FC<Props> = ({ goBack, goNext }) => {
                 <ul role="list" className="divide-y divide-gray-200 rounded-md border border-gray-200">
                   {guardians.map((guardian) => {
                     return (
-                      <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm" key={guardian.value}>
+                      <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm" key={guardian.address}>
                         <div className="flex w-0 flex-1 items-center">
                           <UserIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-                          <span className="ml-2 w-0 flex-1 truncate">{guardian.value}</span>
+                          <span className="ml-2 w-0 flex-1 truncate">{guardian.address}</span>
                         </div>
                       </li>
                     );

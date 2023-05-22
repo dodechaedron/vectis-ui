@@ -20,7 +20,7 @@ const HeadingTabs: React.FC<Props> = ({ tabs, defaultTab }) => {
 
   const { component: Component, props } = useMemo(() => tabs.find((t) => t.name === selectedTab) as Tab, [tabs, selectedTab]);
   return (
-    <>
+    <div className="flex h-full w-full flex-col gap-4 p-4">
       <div className="relative border-b border-gray-200 pb-5 sm:pb-0">
         <div className="mt-3 sm:mt-4">
           <InputSelector
@@ -40,7 +40,7 @@ const HeadingTabs: React.FC<Props> = ({ tabs, defaultTab }) => {
                   className={clsx('cursor-pointer whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium', {
                     'border-kashmir-blue-500 text-kashmir-blue-600': selectedTab === tab.name,
                     'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700': selectedTab !== tab.name,
-                    'hover:cursor-not-allowed text-gray-300  hover:text-gray-300': tab.disabled
+                    'text-gray-300 hover:cursor-not-allowed  hover:text-gray-300': tab.disabled
                   })}
                 >
                   {tab.name}
@@ -51,7 +51,7 @@ const HeadingTabs: React.FC<Props> = ({ tabs, defaultTab }) => {
         </div>
       </div>
       <Component {...props} />
-    </>
+    </div>
   );
 };
 

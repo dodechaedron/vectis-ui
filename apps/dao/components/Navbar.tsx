@@ -41,12 +41,27 @@ const Navbar: React.FC = () => {
         { "fixed !h-screen flex-col !justify-center gap-8": isOpen }
       )}
     >
-      <Link className={clsx("text-xl font-semibold", isOpen ? "absolute top-2 left-4" : "")} href="/">
+      <Link
+        className={clsx(
+          "text-xl font-semibold",
+          isOpen ? "absolute top-2 left-4" : ""
+        )}
+        href="/"
+      >
         <VectisLogo className="h-[24px] w-[100px] fill-kashmir-blue-500" />
       </Link>
-      <motion.ul variants={variants} className={clsx("flex gap-4", isOpen ? "flex-col" : "hidden md:flex")}>
+      <motion.ul
+        variants={variants}
+        className={clsx("flex gap-4", isOpen ? "flex-col" : "hidden md:flex")}
+      >
         {menuLinks.map(({ name, link, icon }, i) => (
-          <MenuItem key={i} name={name} link={link} Icon={icon} toggle={() => toggleOpen()} />
+          <MenuItem
+            key={i}
+            name={name}
+            link={link}
+            Icon={icon}
+            toggle={() => toggleOpen()}
+          />
         ))}
       </motion.ul>
       <HamburguerToggle toggle={() => toggleOpen()} isOpen={isOpen} />
@@ -59,9 +74,23 @@ const Navbar: React.FC = () => {
           )}
           onClick={() => (username ? disconnect : connect)()}
         >
-          <IoLogInOutline className={clsx("h-4 w-4 transition-all", username ? "!w-0" : "mr-2")} />
-          {username ? <p className="text-sm">{username}</p> : <p className="text-sm">Connect Wallet</p>}
-          <IoWalletOutline className={clsx("h-4 w-4 transition-all", username ? "ml-2" : "!w-0")} />
+          <IoLogInOutline
+            className={clsx(
+              "h-4 w-4 transition-all",
+              username ? "!w-0" : "mr-2"
+            )}
+          />
+          {username ? (
+            <p className="text-sm">{username}</p>
+          ) : (
+            <p className="text-sm">Connect Wallet</p>
+          )}
+          <IoWalletOutline
+            className={clsx(
+              "h-4 w-4 transition-all",
+              username ? "ml-2" : "!w-0"
+            )}
+          />
         </button>
       </div>
     </motion.nav>

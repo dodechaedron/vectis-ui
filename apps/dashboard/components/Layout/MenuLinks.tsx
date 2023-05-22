@@ -11,13 +11,13 @@ interface Props {
 
 const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
   const { pathname } = useRouter();
-  const { account, userAddr } = useVectis();
+  const { userAddr, account } = useVectis();
   const links = useMemo(
     () =>
       generalMenu.filter((l) => {
         const dashboard = l.href === '/';
         if (!dashboard) return true;
-        return account?.controllerAddr === userAddr;
+        return account.controllerAddr === userAddr;
       }),
     [userAddr, account]
   );
@@ -29,11 +29,11 @@ const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
         {links.map((item) => {
           const path = pathname.slice(1);
           const isActive = item.href === pathname || path.includes(item.href);
-          const isDisabled = ['Governance'].includes(item.text);
+          const isDisabled = ['Analytics'].includes(item.text);
           return (
             <li key={item.text}>
               <Link
-                href={item.href}
+                href={`${item.href}?vectis=${account?.address}`}
                 onClick={closeMenu}
                 className={clsx(
                   isActive ? 'bg-gray-100 text-kashmir-blue-500' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
@@ -52,7 +52,7 @@ const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
                   aria-hidden="true"
                 />
                 <span className="truncate">{item.text}</span>
-                {item.text === 'Governance' && (
+                {item.text === 'Analytics' && (
                   <span className="ml-2 inline-flex items-center rounded-full bg-kashmir-blue-100 px-2.5 py-0.5 text-xs font-medium text-kashmir-blue-800">
                     Soon
                   </span>
@@ -63,10 +63,9 @@ const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
         })}
       </ul>
       <span className="my-5 h-[1px] w-full bg-gray-300" />
-      <p className="mb-4 text-xs font-medium text-gray-400">Tools</p>
+      <p className="mb-4 text-xs font-medium text-gray-400">External</p>
       <ul className="w-full space-y-1" aria-label="Sidebar">
         {toolsMenu.map((item) => {
-          const isActive = pathname.includes(item.href);
           return (
             <li key={item.text}>
               <Link
@@ -74,15 +73,12 @@ const MenuLinks: React.FC<Props> = ({ closeMenu }) => {
                 target="_blank"
                 onClick={closeMenu}
                 className={clsx(
-                  isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                  'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                   'group flex w-full items-center rounded-md px-3 py-2 text-sm font-medium'
                 )}
-                aria-current={isActive ? 'page' : undefined}
+                aria-current="page"
               >
-                <item.Icon
-                  className={clsx(isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', '-ml-1 mr-3 h-6 w-6 flex-shrink-0')}
-                  aria-hidden="true"
-                />
+                <item.Icon className={clsx('text-gray-400 group-hover:text-gray-500', '-ml-1 mr-3 h-6 w-6 flex-shrink-0')} aria-hidden="true" />
                 <span className="truncate">{item.text}</span>
               </Link>
             </li>

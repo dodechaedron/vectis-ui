@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import InputArray from 'components/Inputs/InputArray';
 import InputRange from 'components/Inputs/InputRange';
 import InputSwitch from 'components/Inputs/InputSwitch';
@@ -6,13 +6,20 @@ import { useFormContext } from 'react-hook-form';
 
 import { Button } from '../Buttons';
 
+import { WalletCreationForm } from './index';
+
 interface Props {
   goNext: () => void;
+  goBack: () => void;
 }
 
-const StepGuardianSelection: React.FC<Props> = ({ goNext }) => {
-  const { control, watch, formState, setValue } = useFormContext();
-  const { errors, isValid } = formState;
+const StepGuardianSelection: React.FC<Props> = ({ goNext, goBack }) => {
+  const { control, watch, formState, setValue } = useFormContext<WalletCreationForm>();
+  const { errors } = formState;
+
+  const guardianErrors = useMemo(() => errors?.guardians?.map?.((e) => e?.address?.message), [formState]);
+
+  const guardians = watch('guardians');
 
   const multisig = watch('multisig');
   const threshold = watch('threshold');
@@ -61,7 +68,8 @@ const StepGuardianSelection: React.FC<Props> = ({ goNext }) => {
             <div>
               <h3 className="text-lg font-medium leading-6 text-gray-900">Guardian List</h3>
               <p className="mt-1 text-sm text-gray-500">This is the list of the guardians who could recover your account.</p>
-              <InputArray control={control} name="guardians" />
+              <InputArray control={control} name="guardians" errors={guardianErrors} />
+              {errors.guardians && <p className="text-sm text-red-500">{errors.guardians.message}</p>}
             </div>
             <p className="my-2 sm:border-t sm:border-gray-200" />
 
@@ -78,7 +86,7 @@ const StepGuardianSelection: React.FC<Props> = ({ goNext }) => {
                   <h3 className="text-md font-medium leading-6 text-gray-900">Threshold: {threshold}</h3>
                   <InputRange
                     min={1}
-                    max={watch('guardians').length}
+                    max={guardians.length}
                     step={1}
                     value={threshold}
                     onChange={(n) => setValue('threshold', n)}
@@ -91,8 +99,11 @@ const StepGuardianSelection: React.FC<Props> = ({ goNext }) => {
         </div>
       </div>
 
-      <div className="flex justify-end">
-        <Button onClick={goNext} className="mt-5">
+      <div className="flex justify-between">
+        <Button onClick={goBack} className="mt-5">
+          Back
+        </Button>
+        <Button onClick={goNext} className="mt-5" disabled={!guardians?.[0].address?.length || !!errors?.guardians?.length}>
           Next
         </Button>
       </div>
