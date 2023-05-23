@@ -173,11 +173,6 @@ export class VectisService {
     return { txs: decodedTxs, pagination };
   }
 
-  async getTest(address: string) {
-    const resp = await this.client.query.wasm.queryContractSmart(address, { plugins: {} });
-    console.log(resp);
-  }
-
   async getAllocation(proxyAddress: string, denom: string) {
     const available = await this.client.query.bank.balance(proxyAddress, denom);
     const rewards = await this.client.query.distribution.delegationTotalRewards(proxyAddress);

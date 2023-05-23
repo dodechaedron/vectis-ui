@@ -17,11 +17,11 @@ const SettingsPage: NextPage = () => {
     () => [
       { name: 'Account', component: SettingsAccount, props: { walletInfo: account }, disabled: false },
       { name: 'Guardians', component: SettingsGuardians, props: { walletInfo: account }, disabled: false },
-      { name: 'Execute Message', component: SettingsBuilderMsg, disabled: false },
+      { name: 'Message Builder', component: SettingsBuilderMsg, disabled: false },
       /* { name: 'Relayers', component: SettingsAccount, disabled: true }, */
-      { name: 'Plugins', component: SettingsAccount, disabled: true },
-      { name: 'Spending Limits', component: SettingsAccount, disabled: true },
-      { name: 'Migrate', component: SettingsAccount, disabled: true }
+      { name: 'Plugins', component: () => null, disabled: true },
+      { name: 'Spending Limits', component: () => null, disabled: true },
+      { name: 'Migrate', component: () => null, disabled: true }
     ],
     [account]
   );

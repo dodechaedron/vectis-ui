@@ -38,8 +38,6 @@ const GuardianRequestCard: React.FC = () => {
     [activeProposal]
   );
 
-  console.log(activeProposal);
-
   if (!activeProposal) {
     return (
       <div className="flex min-h-[28rem] flex-col rounded-md bg-white shadow-sm">
