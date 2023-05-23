@@ -920,7 +920,7 @@ const juno: Chain = {
 
 const mainnetChains = [juno];
 
-const testnetChains = [junotestnet, injectivetestnet, archwaytestnet, neutrontestnet];
+const testnetChains = [junotestnet, injectivetestnet, neutrontestnet];
 
 export const chains: Chains = isTestnet ? testnetChains : mainnetChains;
 export const chainIds = chains.map((chain) => chain.chain_id);

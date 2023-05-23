@@ -12,8 +12,8 @@ import { FaAndroid, FaApple, FaChrome, FaEdge, FaFirefoxBrowser, FaLaptop, FaOpe
 import { ChainWalletBase } from '@cosmos-kit/core/types/bases/chain-wallet';
 import { WalletRepo } from '@cosmos-kit/core/types/repository';
 
-const browserIcon = (browser: string | undefined): IconType => {
-  switch (browser?.toString().toLowerCase()) {
+const DownloadIcon = (platform: string | undefined): IconType => {
+  switch (platform?.toString().toLowerCase()) {
     case 'firefox':
       return FaFirefoxBrowser;
     case 'edge':
@@ -51,12 +51,12 @@ const AvailableWallet: React.FC<Props> = ({ walletRepo, setWallet }) => {
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-bold">Available wallets:</h2>
         <div className="flex flex-col gap-2">
-          {wallets.map((wallet, i) => {
+          {wallets.map((wallet) => {
             const { walletInfo, connect, client } = wallet;
 
             return (
               <div
-                key={`${walletInfo.prettyName}-wallet-${i}`}
+                key={`avaiable-options-${walletInfo.prettyName}`}
                 className="group flex cursor-pointer items-center justify-between gap-4 rounded-lg bg-gray-200 p-2 hover:bg-kashmir-blue-200"
                 onClick={() => [setWallet(wallet), connect(true)]}
               >
@@ -84,10 +84,10 @@ const AvailableWallet: React.FC<Props> = ({ walletRepo, setWallet }) => {
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-bold">Download options:</h2>
         <div className="flex flex-col gap-2">
-          {wallets.map(({ walletInfo }, i) => {
+          {wallets.map(({ walletInfo }) => {
             return (
               <div
-                key={`${walletInfo.prettyName}-wallet-${i}`}
+                key={`download-options-${walletInfo.prettyName}`}
                 className=" flex  items-center justify-between gap-4 rounded-lg bg-gray-200 p-2 "
               >
                 <div className="flex items-center justify-between gap-2">
@@ -105,15 +105,15 @@ const AvailableWallet: React.FC<Props> = ({ walletRepo, setWallet }) => {
                 </div>
                 <div className="flex gap-2">
                   {walletInfo?.downloads?.map((downloads, i) => {
-                    const BrowserIcon = browserIcon(isMd ? downloads.browser : downloads.os);
+                    const Icon = DownloadIcon(isMd ? downloads.browser : downloads.os);
                     return (
                       <Link
-                        key={`wallet-${walletInfo.name}`}
+                        key={`wallet-${walletInfo.name}-${downloads.browser || downloads.os || 'desktop'}`}
                         className="rounded-md bg-white p-1 hover:bg-gray-100"
                         href={downloads.link}
                         target="_blank"
                       >
-                        {<BrowserIcon className="h-5 w-5 fill-kashmir-blue-600" />}
+                        {<Icon className="h-5 w-5 fill-kashmir-blue-600" />}
                       </Link>
                     );
                   })}

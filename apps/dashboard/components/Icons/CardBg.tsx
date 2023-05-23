@@ -4,7 +4,7 @@ const CardBg: React.FC = () => {
   return (
     <svg viewBox="0 0 1600 800" height="100%" width="100%" className="background">
       <rect height="800" width="1600" fill="#7493d1"></rect>
-      <g transform="rotate(-30 500 100)" stroke-opacity="0.05" stroke-width="66.7" stroke="#000">
+      <g transform="rotate(-30 500 100)" strokeOpacity="0.05" strokeWidth="66.7" stroke="#000">
         <circle r="1800" cy="0" cx="0" fill="#7493d1"></circle>
         <circle r="1700" cy="0" cx="0" fill="#6e8bc8"></circle>
         <circle r="1600" cy="0" cx="0" fill="#6884bf"></circle>
