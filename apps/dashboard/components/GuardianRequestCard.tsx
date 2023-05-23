@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
 import { IntlTimeAgo } from '~/services/browser';
 import { useVectis } from '~/providers';
 import { useToast } from '~/hooks';
@@ -13,39 +15,30 @@ import ShowGuardian from './ShowGuardian';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
 const GuardianRequestCard: React.FC = () => {
+  const queryClient = useQueryClient();
   const { vectis, account } = useVectis();
   const { toast } = useToast();
-  const [activeProposal, setActiveProposal] = useState<any | null>(null);
 
-  useEffect(() => {
-    const fetchActiveRequest = async () => {
-      const activeRequest = await vectis.getActiveGuardianRequests(account.address);
-      setActiveProposal(activeRequest);
-    };
-    fetchActiveRequest();
-  }, []);
+  const { data: activeProposal } = useQuery(['guardian_proposal_request', account.address], () =>
+    vectis.getActiveGuardianRequests(account.address)
+  );
+  const { mutateAsync: acceptRequest } = useMutation({
+    mutationFn: () => toast.promise(vectis.proxyAcceptGuardianRequest(account.address)),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['guardian_proposal_request'], type: 'all' })
+  });
 
-  const acceptRequest = useCallback(async () => {
-    try {
-      const promise = vectis.proxyAcceptGuardianRequest(account.address);
-      await toast.promise(promise);
-      setActiveProposal(null);
-    } catch (e) {}
-  }, []);
+  const { mutateAsync: rejectRequest } = useMutation({
+    mutationFn: () => toast.promise(vectis.proxyRejectGuardianRequest(account.address)),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['guardian_proposal_request'], type: 'all' })
+  });
 
-  const rejectRequest = useCallback(async () => {
-    try {
-      const promise = vectis.proxyRejectGuardianRequest(account.address);
-      await toast.promise(promise);
-      setActiveProposal(null);
-    } catch (e) {}
-  }, []);
-
-  const multisig = useMemo(() => activeProposal?.guardians?.guardians_multisig?.threshold_absolute_count, [activeProposal]);
+  const multisig = useMemo(() => activeProposal?.new_guardians?.guardians_multisig, [activeProposal]);
   const activateAt = useMemo(
     () => +new Date(fromNanoSecondsToSeconds((activeProposal?.activate_at as { at_time: string })?.at_time)),
     [activeProposal]
   );
+
+  console.log(activeProposal);
 
   if (!activeProposal) {
     return (
@@ -80,7 +73,7 @@ const GuardianRequestCard: React.FC = () => {
                 <p className="text-sm font-medium text-gray-900">
                   Threshold:{' '}
                   <span className="col-span-1 mt-0 text-sm text-gray-500">
-                    {activeProposal.guardians.guardians_multisig?.threshold_absolute_count}
+                    {activeProposal.new_guardians.guardians_multisig?.threshold_absolute_count}
                   </span>
                 </p>
               )}
@@ -88,18 +81,18 @@ const GuardianRequestCard: React.FC = () => {
             <div className="grid grid-cols-3 gap-4 py-4 px-6">
               <h3 className="text-sm font-medium text-gray-900">Guardians</h3>
               <div className="col-span-3 mt-0 text-sm text-gray-900">
-                <ShowGuardian guardians={activeProposal.guardians.addresses} />
+                <ShowGuardian guardians={activeProposal.new_guardians.addresses} />
               </div>
             </div>
           </dl>
         </div>
       </div>
       <div className="flex justify-between">
-        <Button variant="white" className="px-8" onClick={rejectRequest}>
+        <Button variant="white" className="px-8" onClick={() => rejectRequest()}>
           Reject
         </Button>
         {activateAt < Date.now() ? (
-          <Button className="px-6" onClick={acceptRequest}>
+          <Button className="px-6" onClick={() => acceptRequest()}>
             Confirm
           </Button>
         ) : null}

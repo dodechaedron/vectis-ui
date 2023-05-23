@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { useVectis } from '~/providers';
 import { useToast } from '~/hooks';
 
@@ -14,31 +16,37 @@ import GuardianRequestCard from './GuardianRequestCard';
 import ShowGuardian from './ShowGuardian';
 
 type FormValues = {
-  guardians: { value: string }[];
+  guardians: { address: string }[];
   multisig: boolean;
   threshold: number;
 };
 
 const SettingsGuardians: React.FC = () => {
+  const queryClient = useQueryClient();
   const { vectis, account } = useVectis();
   const { toast } = useToast();
-  const { control, setValue, watch, handleSubmit } = useForm<FormValues>({ defaultValues: { guardians: [{}], threshold: 1 } });
+  const { control, setValue, watch, handleSubmit } = useForm<FormValues>({ defaultValues: { guardians: [{ address: '' }], threshold: 1 } });
+
+  const { mutateAsync: requestGuardianRotation } = useMutation({
+    mutationFn: async (data: FormValues) =>
+      await toast.promise(
+        vectis.proxyRequestUpdateGuardians(
+          account.address,
+          data.guardians.map((g) => g.address),
+          data.multisig ? data.threshold : 0
+        )
+      ),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['guardian_proposal_request'], type: 'all' });
+    }
+  });
 
   const multisig = watch('multisig');
   const threshold = watch('threshold');
 
-  const onSubmit = async (data) => {
-    const promise = vectis.proxyRequestUpdateGuardians(
-      account.address,
-      data.guardians.map((g) => g.value),
-      data.multisig ? data.threshold : 0
-    );
-    await toast.promise(promise, 3000);
-  };
-
   return (
     <div className="flex h-full w-full flex-col gap-4 2xl:flex-row">
-      <form className="flex h-full flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+      <form className="flex h-full flex-col gap-4" onSubmit={handleSubmit((v) => requestGuardianRotation(v))}>
         <div className="flex-2 flex min-h-[28rem] w-full flex-col rounded-md bg-white py-4 px-4 shadow-sm md:px-8">
           <h3 className="text-lg font-medium leading-6 text-gray-900">Guardian List</h3>
           <p className="mt-1 mb-4 text-sm text-gray-500">This is the list of the guardians who could recover your account.</p>
