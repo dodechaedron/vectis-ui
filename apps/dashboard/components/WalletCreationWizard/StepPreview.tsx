@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import React from 'react';
 import { useVectis } from 'providers';
 import { useFormContext } from 'react-hook-form';
 
 import { Button } from '../Buttons';
 
 import { UserIcon } from '@heroicons/react/20/solid';
+import { RiErrorWarningFill } from 'react-icons/ri';
 
 interface Props {
   goBack: () => void;
@@ -15,7 +15,7 @@ interface Props {
 const StepPreview: React.FC<Props> = ({ goBack, goNext }) => {
   const { defaultFee } = useVectis();
   const { getValues, formState } = useFormContext();
-  const { isSubmitting, isSubmitSuccessful } = formState;
+  const { isSubmitting } = formState;
   const { guardians, initialFunds, label, multisig, threshold } = getValues();
 
   return (
@@ -51,36 +51,45 @@ const StepPreview: React.FC<Props> = ({ goBack, goNext }) => {
               )}
             </div>
             <div className="grid grid-cols-3 gap-4 py-4 px-6">
-              <dt className="text-sm font-medium text-gray-900">Guardians</dt>
-              <dd className="col-span-3 mt-0 text-sm text-gray-900">
-                <ul role="list" className="divide-y divide-gray-200 rounded-md border border-gray-200">
-                  {guardians.map((guardian) => {
-                    return (
-                      <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm" key={guardian.address}>
-                        <div className="flex w-0 flex-1 items-center">
-                          <UserIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-                          <span className="ml-2 w-0 flex-1 truncate">{guardian.address}</span>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </dd>
+              <p className="text-sm font-medium text-gray-900">Guardians</p>
+              {guardians.length ? (
+                <div className="col-span-3 mt-0 text-sm text-gray-900">
+                  <ul role="list" className="divide-y divide-gray-200 rounded-md border border-gray-200">
+                    {guardians.map((guardian) => {
+                      return (
+                        <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm" key={guardian.address}>
+                          <div className="flex w-0 flex-1 items-center">
+                            <UserIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+                            <span className="ml-2 w-0 flex-1 truncate">{guardian.address}</span>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ) : (
+                <div className="col-span-3 mt-0 rounded-md bg-kashmir-blue-100 p-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <RiErrorWarningFill className="h-4 w-4" />
+                    <p>
+                      No guardians are define, remember you could define them later.{' '}
+                      <span className="font-bold">{"Keep in mind you can't recovery your account in this scenario."}</span>
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </dl>
         </div>
       </div>
       <div className="flex flex-row-reverse justify-between">
-        {isSubmitSuccessful ? null : (
-          <Button type="submit" className="mt-5" disabled={isSubmitting}>
-            Create Wallet
-          </Button>
-        )}
-        {isSubmitSuccessful ? null : (
-          <Button onClick={goBack} className="mt-5" disabled={isSubmitting}>
-            Back
-          </Button>
-        )}
+        <Button type="submit" className="mt-5" disabled={isSubmitting}>
+          Create Wallet
+        </Button>
+
+        <Button onClick={goBack} className="mt-5" disabled={isSubmitting}>
+          Back
+        </Button>
       </div>
     </>
   );

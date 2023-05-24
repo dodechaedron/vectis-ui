@@ -103,7 +103,7 @@ const StepGuardianSelection: React.FC<Props> = ({ goNext, goBack }) => {
         <Button onClick={goBack} className="mt-5">
           Back
         </Button>
-        <Button onClick={goNext} className="mt-5" disabled={!guardians?.[0].address?.length || !!errors?.guardians?.length}>
+        <Button onClick={goNext} className="mt-5" disabled={!!Object.keys(errors).length}>
           Next
         </Button>
       </div>

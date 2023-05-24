@@ -3,7 +3,6 @@ import ProgressWizard from 'components/Forms/ProgressWizard';
 import { useToast } from 'hooks';
 import { useVectis } from 'providers';
 import { FormProvider, useForm } from 'react-hook-form';
-import { sleep } from 'utils/misc';
 import * as yup from 'yup';
 
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -72,29 +71,33 @@ const WalletCreationWizard: React.FC = () => {
   const queryClient = useQueryClient();
   const { mutateAsync: onSubmit } = useMutation({
     mutationFn: async (inputsValue: WalletCreationForm) => {
-      const guardians = inputsValue.guardians.map((g) => g.address).filter(Boolean);
-      const relayers = [];
-      const initialFunds = convertDenomToMicroDenom(inputsValue.initialFunds, defaultFee.exponent);
-      const promise = async () => {
-        await vectis.createProxyWallet(
-          inputsValue.label,
-          guardians,
-          relayers,
-          inputsValue.multisig,
-          Number(initialFunds),
-          inputsValue.threshold
-        );
-        const accounts = await vectis.getAccounts([userAddr]);
-        setSmartAccount(accounts[accounts.length - 1]);
-        goNext();
-      };
-      return await toast.promise(promise());
+      try {
+        const guardians = inputsValue.guardians.map((g) => g.address).filter(Boolean);
+        const relayers = [];
+        const initialFunds = convertDenomToMicroDenom(inputsValue.initialFunds, defaultFee.exponent);
+        const promise = async () => {
+          await vectis.createProxyWallet(
+            inputsValue.label,
+            guardians,
+            relayers,
+            inputsValue.multisig,
+            Number(initialFunds),
+            inputsValue.threshold
+          );
+          const accounts = await vectis.getAccounts([userAddr]);
+          setSmartAccount(accounts[accounts.length - 1]);
+          goNext();
+        };
+        return await toast.promise(promise());
+      } catch (err) {
+        console.log(err);
+      }
     },
     onSuccess: async () => await queryClient.invalidateQueries({ queryKey: ['vectis_accounts'], type: 'all' })
   });
 
   const methods = useForm<WalletCreationForm>({
-    defaultValues: { guardians: [{ address: '' }], initialFunds: 0 },
+    defaultValues: { guardians: [], initialFunds: 0 },
     resolver: resolver(userAddr, chain.bech32_prefix, convertMicroDenomToDenom(balance.amount, defaultFee.exponent)),
     mode: 'onChange'
   });
