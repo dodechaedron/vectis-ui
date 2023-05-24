@@ -19,7 +19,8 @@ interface Props {
 
 const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
   const { vectis, defaultFee, userAddr, chains, chain, setChain } = useVectis();
-  const { register, watch, setValue } = useFormContext();
+  const { register, watch, setValue, formState } = useFormContext();
+  const { errors } = formState;
 
   const { data: balance } = useQuery(['balance', userAddr, vectis], () => vectis?.getBalance(userAddr, defaultFee.udenom), {
     initialData: { amount: '0', denom: defaultFee.udenom }
@@ -54,7 +55,7 @@ const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-medium leading-6 text-gray-900">Account Name</h3>
               <p className="text-sm text-gray-500">This is the name given to the wallet to make easily to identify.</p>
-              <Input placeholder="Account Name" {...register('label')} />
+              <Input placeholder="Account Name" {...register('label')} error={errors?.label?.message?.toString()} />
               <p className="my-4 sm:border-t sm:border-gray-200" />
             </div>
 
@@ -68,8 +69,10 @@ const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
                     placeholder="0"
                     currency={defaultFee.symbol}
                     className="w-full"
+                    inputMode="decimal"
                     value={initialFunds}
-                    onChange={(e) => setValue('initialFunds', e.target.value)}
+                    error={errors.initialFunds?.message?.toString()}
+                    onChange={(e) => setValue('initialFunds', Number(e.target.value.replace('-', '0')), { shouldValidate: true })}
                   />
                   <InputPrice
                     label="Current Wallet balance (EOA)"
@@ -110,7 +113,7 @@ const StepAccountDetails: React.FC<Props> = ({ goBack, goNext }) => {
         </div>
       </div>
       <div className="flex justify-end">
-        <Button onClick={goNext} className="mt-5" disabled={!accountName?.length}>
+        <Button onClick={goNext} className="mt-5" disabled={!accountName?.length || !!Object.keys(errors).length}>
           Next
         </Button>
       </div>

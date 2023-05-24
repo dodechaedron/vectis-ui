@@ -112,10 +112,13 @@ export const VectisProvider: React.FC<PropsWithChildren<{}>> = ({ children }) =>
     }, 200);
   }, [isWalletConnected, chainWallet]);
 
-  if (protectedRoutes.includes(pathname) && !isReady) return <Spinner wrapper size="md" />;
-  if (protectedRoutes.includes(pathname) && isReady && !userAccounts.includes(account?.controllerAddr as string)) {
-    console.log(account, userAccounts);
-    return <p>Not your account</p>;
+  if ((protectedRoutes.includes(pathname) && !isReady) || (protectedRoutes.includes(pathname) && !account)) {
+    return <Spinner wrapper size="md" />;
+  }
+
+  if (protectedRoutes.includes(pathname) && isReady && account && !userAccounts.includes(account?.controllerAddr as string)) {
+    goToPage('/');
+    return <Spinner wrapper size="md" />;
   }
 
   return (

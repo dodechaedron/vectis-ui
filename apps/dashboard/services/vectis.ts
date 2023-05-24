@@ -302,7 +302,7 @@ export class VectisService {
   }
 
   async proxyRequestUpdateGuardians(proxyAddr: string, newGuardians: string[], threshold?: number): Promise<ExecuteResult> {
-    const multisig = threshold ? { guardians_multisig: { threshold_absolute_count: threshold, multisig_initial_funds: [] } } : {};
+    const multisig = threshold ? { guardians_multisig: { threshold_absolute_count: threshold } } : {};
 
     return await this.client.execute(
       this.userAddr,

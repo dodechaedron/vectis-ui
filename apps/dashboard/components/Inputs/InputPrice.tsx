@@ -8,9 +8,10 @@ interface Props extends ComponentPropsWithoutRef<'input'> {
   label?: string;
   options?: unknown[];
   currency?: string;
+  error?: string;
 }
 
-const InputPrice: React.FC<Partial<UseControllerProps> & Props> = ({ label, options, currency, className, ...props }) => {
+const InputPrice: React.FC<Partial<UseControllerProps> & Props> = ({ label, options, currency, className, error, ...props }) => {
   return (
     <div className={clsx(className)}>
       {label && (
@@ -21,6 +22,7 @@ const InputPrice: React.FC<Partial<UseControllerProps> & Props> = ({ label, opti
       <div className="relative mt-1 flex rounded-md shadow-sm">
         <div className="relative flex flex-grow">
           <Input className="w-full rounded-none rounded-l-md focus:shadow-sm" {...props} />
+          <p className="absolute bottom-[-18px] w-full text-start text-xs text-pink-900 ">{error && error}</p>
         </div>
         {currency && (
           <p className="relative -ml-px inline-flex items-center rounded-r-md border border-gray-300 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 ">

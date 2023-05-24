@@ -1,5 +1,5 @@
-import React from "react";
-import clsx from "clsx";
+import React from 'react';
+import clsx from 'clsx';
 
 type InputProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
@@ -11,21 +11,20 @@ interface Input {
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps & Input>(
-  ({ className, label, helpText, container = "w-full", error, ...props }, ref) => {
+  ({ className, label, helpText, container = 'w-full', error, ...props }, ref) => {
     return (
       <>
-        <div className={clsx("flex flex-col relative gap-1", container)}>
-          {label && <label className="block text-sm font-medium text-gray-900 text-left">{label}</label>}
+        <div className={clsx('relative flex flex-col gap-1', container)}>
+          {label && <label className="block text-left text-sm font-medium text-gray-900">{label}</label>}
           <input
             ref={ref}
             className={clsx(
-              `shadow-sm border text-sm py-2 px-3 rounded-md border-gray-300 outline-none focus:shadow-md transition-all disabled:cursor-help`,
-              className && className,
-              error && "border-pink-700"
+              `rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm outline-none transition-all focus:shadow-md disabled:cursor-help`,
+              className && className
             )}
             {...props}
           />
-          {error && <p className="text-pink-900 text-xs absolute bottom-[-18px] w-full text-left">{error}</p>}
+          {error && <p className="absolute bottom-[-18px] w-full text-left text-xs text-pink-900">{error}</p>}
           {helpText && (
             <p className="mt-2 text-sm text-gray-500" id="email-description">
               {helpText}
@@ -37,5 +36,5 @@ const Input = React.forwardRef<HTMLInputElement, InputProps & Input>(
   }
 );
 
-Input.displayName = "Input";
+Input.displayName = 'Input';
 export default Input;

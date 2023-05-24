@@ -41,7 +41,7 @@ const SmartCardOverview: React.FC = () => {
               <p className="w-full text-[10px] uppercase md:text-[10px]">Threshold</p>
               <div className="flex gap-2">
                 <GoShield className="h-5 w-5 lg:h-6 lg:w-8" />
-                <p className="text-center text-lg">0</p>
+                <p className="text-center text-lg">{account.threshold.weight}</p>
               </div>
             </div>
             <div className="flex flex-col lg:gap-2">

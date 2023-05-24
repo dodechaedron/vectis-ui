@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useVectis } from '~/providers';
@@ -21,11 +23,37 @@ type FormValues = {
   threshold: number;
 };
 
+const resolver = (userAddr: string, bech32Prefix: string) =>
+  yupResolver(
+    yup
+      .object()
+      .shape({
+        guardians: yup.array().of(
+          yup.object().shape({
+            address: yup
+              .string()
+              .matches(new RegExp(`^(${bech32Prefix})[0-9a-zA-Z]{39}`, 'g'), 'Guardian address does not seem to be valid')
+              .not([userAddr], 'Guardian address cannot be the same as the user address')
+          })
+        ),
+        threshold: yup.number(),
+        multisig: yup.boolean()
+      })
+      .required()
+  );
+
 const SettingsGuardians: React.FC = () => {
   const queryClient = useQueryClient();
-  const { vectis, account } = useVectis();
+  const { vectis, account, userAddr, chain } = useVectis();
   const { toast } = useToast();
-  const { control, setValue, watch, handleSubmit } = useForm<FormValues>({ defaultValues: { guardians: [{ address: '' }], threshold: 1 } });
+  const { control, setValue, watch, handleSubmit, formState } = useForm<FormValues>({
+    resolver: resolver(userAddr, chain.bech32_prefix),
+    mode: 'onChange',
+    defaultValues: { guardians: [{ address: '' }], threshold: 1 }
+  });
+  const { errors } = formState;
+
+  const guardianErrors = useMemo(() => errors?.guardians?.map?.((e) => e?.address?.message), [formState]);
 
   const { mutateAsync: requestGuardianRotation } = useMutation({
     mutationFn: async (data: FormValues) =>
@@ -42,6 +70,7 @@ const SettingsGuardians: React.FC = () => {
   });
 
   const multisig = watch('multisig');
+  const guardians = watch('guardians');
   const threshold = watch('threshold');
 
   return (
@@ -57,7 +86,8 @@ const SettingsGuardians: React.FC = () => {
             <div>
               <h3 className="text-lg font-medium leading-6 text-gray-900">Guardians</h3>
               <p className="mt-1 text-sm text-gray-500">Keep in mind that all guardians will be replaced</p>
-              <InputArray control={control} name="guardians" />
+              <InputArray control={control} name="guardians" errors={guardianErrors} />
+              {errors.guardians && <p className="text-sm text-red-500">{errors.guardians.message}</p>}
             </div>
 
             <div>
@@ -73,7 +103,7 @@ const SettingsGuardians: React.FC = () => {
                   <h3 className="text-md font-medium leading-6 text-gray-900">Threshold: {threshold}</h3>
                   <InputRange
                     min={1}
-                    max={2}
+                    max={guardians.length}
                     step={1}
                     value={threshold}
                     onChange={(n) => setValue('threshold', n)}

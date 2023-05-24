@@ -7,9 +7,9 @@ import { sleep } from 'utils/misc';
 import * as yup from 'yup';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { convertDenomToMicroDenom } from '~/utils/conversion';
+import { convertDenomToMicroDenom, convertMicroDenomToDenom } from '~/utils/conversion';
 
 import StepAccountDetails from './StepAccountDetails';
 import StepGuardianSelection from './StepGuardianSelection';
@@ -33,19 +33,23 @@ export type WalletCreationForm = {
   threshold: number;
 };
 
-const resolver = (bech32Prefix: string) =>
+const resolver = (userAddr: string, bech32Prefix: string, maxAmount: number) =>
   yupResolver(
     yup
       .object()
       .shape({
         label: yup.string().required('Account name is required'),
-        initialFunds: yup.number(),
+        initialFunds: yup
+          .number()
+          .min(0, 'Initial funds must be greater than 0')
+          .max(maxAmount, `Initial funds must be less than ${maxAmount}`)
+          .required(),
         guardians: yup.array().of(
           yup.object().shape({
             address: yup
               .string()
               .matches(new RegExp(`^(${bech32Prefix})[0-9a-zA-Z]{39}`, 'g'), 'Guardian address does not seem to be valid')
-              .required()
+              .not([userAddr], 'Guardian address cannot be the same as the user address')
           })
         ),
         threshold: yup.number(),
@@ -60,6 +64,10 @@ const WalletCreationWizard: React.FC = () => {
 
   const { toast } = useToast();
   const { vectis, defaultFee, chain, userAddr } = useVectis();
+
+  const { data: balance } = useQuery(['balance', userAddr, vectis], () => vectis?.getBalance(userAddr, defaultFee.udenom), {
+    initialData: { amount: '0', denom: defaultFee.udenom }
+  });
 
   const queryClient = useQueryClient();
   const { mutateAsync: onSubmit } = useMutation({
@@ -87,7 +95,7 @@ const WalletCreationWizard: React.FC = () => {
 
   const methods = useForm<WalletCreationForm>({
     defaultValues: { guardians: [{ address: '' }], initialFunds: 0 },
-    resolver: resolver(chain.bech32_prefix),
+    resolver: resolver(userAddr, chain.bech32_prefix, convertMicroDenomToDenom(balance.amount, defaultFee.exponent)),
     mode: 'onChange'
   });
   const { handleSubmit } = methods;
